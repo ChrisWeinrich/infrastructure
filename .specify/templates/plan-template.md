@@ -3,7 +3,8 @@
 **Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
 **Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
 
-**Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
+**Note**: This template is filled in by the `/speckit.plan` command. See
+`.codex/prompts/speckit.plan.md` for the execution workflow.
 
 ## Summary
 
@@ -39,6 +40,12 @@
   or remediation.
 - Assumptions are documented with citations for router/OpenWrt/Ansible
   specifics.
+- Router-specific assumptions consult the primary router reference first:
+  https://github.com/gl-inet/docs4.x/blob/master/docs/user_guide/gl-mt6000/index.md
+- Core Ansible/OpenWrt reference:
+  https://github.com/gekmihesg/ansible-openwrt
+- Management access endpoints and methods are documented (IP/hostname,
+  protocol, authentication, location).
 - Code comments and documentation are in English; Markdown prose hard-wraps at
   80 characters.
 

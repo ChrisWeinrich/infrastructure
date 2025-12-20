@@ -1,22 +1,15 @@
 <!--
 Sync Impact Report:
-- Version change: Template -> 1.0.0
-- Modified principles:
-  - Template Principle 1 -> I. Infrastructure-as-Code First
-  - Template Principle 2 -> II. Safety-First Network Changes
-  - Template Principle 3 -> III. Idempotency & Drift Control
-  - Template Principle 4 -> IV. Cited Assumptions
-  - Template Principle 5 -> V. English Code Comments
-- Added principles: VI. English Documentation; VII. Markdown Hard-Wrap at 80
-  Columns
-- Added sections: Operational Standards; Review & Change Control
+- Version change: 1.0.3 -> 1.0.4
+- Modified principles: IV. Cited Assumptions (clarified source precedence)
+- Added sections: None
 - Removed sections: None
 - Templates requiring updates:
   - .specify/templates/plan-template.md ✅ updated
   - .specify/templates/spec-template.md ✅ updated
   - .specify/templates/tasks-template.md ✅ updated
-- Follow-up TODOs:
-  - TODO(RATIFICATION_DATE): original adoption date unknown
+  - .codex/prompts/speckit.plan.md ✅ updated (reference in plan template)
+- Follow-up TODOs: None
 -->
 # Infrastructure Constitution
 
@@ -44,6 +37,8 @@ Rationale: Idempotency and drift control keep infrastructure consistent.
 ### IV. Cited Assumptions
 - Router, OpenWrt, and Ansible specifics MUST cite authoritative sources in
   docs or code comments; no undocumented assumptions.
+- Router-specific guidance MUST first consult the primary router reference
+  before other sources.
 Rationale: Cited sources reduce ambiguity and prevent tribal knowledge.
 
 ### V. English Code Comments
@@ -65,6 +60,12 @@ Rationale: Consistent wrapping improves diffs and readability.
 - Change proposals MUST include a safety plan, rollback steps, and validation
   criteria before and after applying changes.
 - Assumptions and device-specific behavior MUST be documented with sources.
+- Primary router reference (consult first for router-specific guidance):
+  https://github.com/gl-inet/docs4.x/blob/master/docs/user_guide/gl-mt6000/index.md
+- Core reference for Ansible/OpenWrt:
+  https://github.com/gekmihesg/ansible-openwrt
+- Management access endpoints and methods MUST be documented (IP/hostname,
+  protocol, authentication, and location).
 - Idempotency and drift detection MUST be validated as part of change delivery.
 
 ## Review & Change Control
@@ -86,5 +87,5 @@ Rationale: Consistent wrapping improves diffs and readability.
 - Compliance is mandatory: reviewers MUST verify adherence in plans, specs,
   tasks, and code review; exceptions require written approval and risk notes.
 
-**Version**: 1.0.0 | **Ratified**: TODO(RATIFICATION_DATE): unknown original
+**Version**: 1.0.4 | **Ratified**: 2025-12-20
 adoption date | **Last Amended**: 2025-12-20

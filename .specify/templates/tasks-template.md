@@ -69,7 +69,8 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] T008 Configure error handling and logging infrastructure
 - [ ] T009 Setup environment configuration management
 - [ ] T010 Define rollback runbook and out-of-band access validation for
-  network changes (if applicable)
+  network changes (if applicable), including documented management access
+  endpoints and methods
 - [ ] T011 [P] Add idempotency and drift checks for automation changes (if
   applicable)
 

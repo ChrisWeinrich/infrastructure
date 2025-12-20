@@ -106,6 +106,12 @@
   specifics.
 - Avoid undocumented assumptions; capture constraints that affect design or
   operations.
+- Router-specific assumptions must consult the primary router reference first:
+  https://github.com/gl-inet/docs4.x/blob/master/docs/user_guide/gl-mt6000/index.md
+- Core reference for Ansible/OpenWrt:
+  https://github.com/gekmihesg/ansible-openwrt
+- Document management access endpoints and methods (IP/hostname, protocol,
+  authentication, location).
 
 ## Success Criteria *(mandatory)*
 
