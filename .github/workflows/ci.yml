@@ -1,0 +1,45 @@
+---
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint-and-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install pre-commit
+        run: pip install pre-commit
+
+      - name: Install docs dependencies
+        run: pip install -r requirements-docs.txt
+
+      - name: Run pre-commit
+        run: pre-commit run --all-files
+
+      - name: Install Markdown lint dependencies
+        run: npm ci
+
+      - name: Run Markdown lint
+        run: npm run lint:md -- "**/*.md"
+
+      - name: Build docs (strict)
+        run: mkdocs build --strict

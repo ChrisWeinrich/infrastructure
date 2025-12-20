@@ -1,0 +1,9 @@
+---
+site_name: Infrastructure Documentation
+site_url: http://localhost/
+
+theme:
+  name: material
+
+nav:
+  - Home: index.md

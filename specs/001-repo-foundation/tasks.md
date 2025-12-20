@@ -25,11 +25,11 @@ implementation and validation.
 
 **Purpose**: Repository scaffolding and baseline configuration files
 
-- [ ] T001 Create `.gitignore` with common tooling patterns in
+- [x] T001 Create `.gitignore` with common tooling patterns in
   `/Users/christianweinrich/Source/infrastructure/.gitignore`
-- [ ] T002 [P] Add Ansible scaffold README in
+- [x] T002 [P] Add Ansible scaffold README in
   `/Users/christianweinrich/Source/infrastructure/ansible/README.md`
-- [ ] T003 [P] Add Ansible scaffold directories with placeholders:
+- [x] T003 [P] Add Ansible scaffold directories with placeholders:
   `/Users/christianweinrich/Source/infrastructure/ansible/playbooks/.gitkeep`,
   `/Users/christianweinrich/Source/infrastructure/ansible/roles/.gitkeep`,
   `/Users/christianweinrich/Source/infrastructure/ansible/inventory/.gitkeep`
@@ -44,20 +44,20 @@ implementation and validation.
 
 ### Configuration
 
-- [ ] T010 Add pre-commit hooks with pinned revisions in
+- [x] T010 Add pre-commit hooks with pinned revisions in
   `/Users/christianweinrich/Source/infrastructure/.pre-commit-config.yaml`
-- [ ] T011 [P] Add YAML lint config in
+- [x] T011 [P] Add YAML lint config in
   `/Users/christianweinrich/Source/infrastructure/.yamllint.yml`
-- [ ] T012 [P] Add Ansible lint config in
+- [x] T012 [P] Add Ansible lint config in
   `/Users/christianweinrich/Source/infrastructure/.ansible-lint.yml`
-- [ ] T013 [P] Add Markdown lint config in
+- [x] T013 [P] Add Markdown lint config in
   `/Users/christianweinrich/Source/infrastructure/.markdownlint-cli2.yaml`
-- [ ] T014 Add pinned Markdown lint tool versions in
+- [x] T014 Add pinned Markdown lint tool versions in
   `/Users/christianweinrich/Source/infrastructure/package.json` and
   `/Users/christianweinrich/Source/infrastructure/package-lock.json`
-- [ ] T015 Add pinned MkDocs tool versions in
+- [x] T015 Add pinned MkDocs tool versions in
   `/Users/christianweinrich/Source/infrastructure/requirements-docs.txt`
-- [ ] T016 Add local verification instructions in
+- [x] T016 Add local verification instructions in
   `/Users/christianweinrich/Source/infrastructure/README.md`
 
 ---
@@ -68,9 +68,9 @@ implementation and validation.
 
 **Independent Test**: Build docs and open the generated index page
 
-- [ ] T020 Add MkDocs configuration in
+- [x] T020 Add MkDocs configuration in
   `/Users/christianweinrich/Source/infrastructure/mkdocs.yml`
-- [ ] T021 [P] Add initial docs index page in
+- [x] T021 [P] Add initial docs index page in
   `/Users/christianweinrich/Source/infrastructure/docs/index.md`
 
 ---
@@ -81,7 +81,7 @@ implementation and validation.
 
 **Independent Test**: Introduce a lint violation and confirm CI fails
 
-- [ ] T030 Add GitHub Actions workflow in
+- [x] T030 Add GitHub Actions workflow in
   `/Users/christianweinrich/Source/infrastructure/.github/workflows/ci.yml`
   with least-privilege permissions and no secrets for fork PRs
 
@@ -91,6 +91,6 @@ implementation and validation.
 
 **Purpose**: Consistency and documentation updates
 
-- [ ] T040 Ensure all new documentation is English and hard-wrapped at 80
+- [x] T040 Ensure all new documentation is English and hard-wrapped at 80
   characters in `/Users/christianweinrich/Source/infrastructure/docs/index.md`
   and `/Users/christianweinrich/Source/infrastructure/README.md`
