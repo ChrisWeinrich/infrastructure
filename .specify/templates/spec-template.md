@@ -100,6 +100,13 @@
 - **[Entity 1]**: [What it represents, key attributes without implementation]
 - **[Entity 2]**: [What it represents, relationships to other entities]
 
+## Assumptions & Sources *(mandatory)*
+
+- List assumptions and cite authoritative sources for router/OpenWrt/Ansible
+  specifics.
+- Avoid undocumented assumptions; capture constraints that affect design or
+  operations.
+
 ## Success Criteria *(mandatory)*
 
 <!--
