@@ -46,6 +46,7 @@
   https://github.com/gekmihesg/ansible-openwrt
 - Management access endpoints and methods are documented (IP/hostname,
   protocol, authentication, location).
+- Changes that affect behavior or usage update `docs/` and any README.md.
 - Code comments and documentation are in English; Markdown prose hard-wraps at
   80 characters.
 

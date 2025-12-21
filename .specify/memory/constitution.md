@@ -1,14 +1,13 @@
 <!--
 Sync Impact Report:
-- Version change: 1.0.3 -> 1.0.4
-- Modified principles: IV. Cited Assumptions (clarified source precedence)
-- Added sections: None
+- Version change: 1.0.4 -> 1.1.0
+- Modified principles: None
+- Added sections: VIII. Documentation & README Sync
 - Removed sections: None
 - Templates requiring updates:
   - .specify/templates/plan-template.md ✅ updated
   - .specify/templates/spec-template.md ✅ updated
   - .specify/templates/tasks-template.md ✅ updated
-  - .codex/prompts/speckit.plan.md ✅ updated (reference in plan template)
 - Follow-up TODOs: None
 -->
 # Infrastructure Constitution
@@ -53,6 +52,11 @@ Rationale: English documentation ensures consistent team understanding.
 - Markdown prose MUST be hard-wrapped at 80 characters; code blocks are exempt.
 Rationale: Consistent wrapping improves diffs and readability.
 
+### VIII. Documentation & README Sync
+- Changes that affect behavior, operation, or usage MUST update relevant files
+  under `docs/` and any existing README.md in the repository.
+Rationale: Users rely on docs and READMEs to operate and validate changes.
+
 ## Operational Standards
 
 - Infrastructure changes MUST be made through Ansible/OpenWrt configurations
@@ -67,6 +71,8 @@ Rationale: Consistent wrapping improves diffs and readability.
 - Management access endpoints and methods MUST be documented (IP/hostname,
   protocol, authentication, and location).
 - Idempotency and drift detection MUST be validated as part of change delivery.
+- Changes affecting behavior or usage MUST update `docs/` and README.md when
+  present.
 
 ## Review & Change Control
 
@@ -87,5 +93,4 @@ Rationale: Consistent wrapping improves diffs and readability.
 - Compliance is mandatory: reviewers MUST verify adherence in plans, specs,
   tasks, and code review; exceptions require written approval and risk notes.
 
-**Version**: 1.0.4 | **Ratified**: 2025-12-20
-adoption date | **Last Amended**: 2025-12-20
+**Version**: 1.1.0 | **Ratified**: 2025-12-20 | **Last Amended**: 2025-12-21
