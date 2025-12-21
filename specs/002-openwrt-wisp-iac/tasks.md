@@ -19,18 +19,18 @@ implementation and testing of each story.
 
 **Purpose**: Establish management connectivity and project structure
 
-- [ ] T001 Create directories `playbooks/`, `inventories/openwrt/`,
+- [X] T001 Create directories `playbooks/`, `inventories/openwrt/`,
   `snapshots/`, `configs/openwrt/`, and `docs/runbooks/`
-- [ ] T002 Create inventory for the router (no Python on target) in
+- [X] T002 Create inventory for the router (no Python on target) in
   `inventories/openwrt/hosts.yml`
-- [ ] T003 [P] Add shared inventory variables in
+- [X] T003 [P] Add shared inventory variables in
   `inventories/openwrt/group_vars/all.yml`
-- [ ] T004 [P] Declare the OpenWrt role in `ansible/requirements.yml`
-- [ ] T005 Document dcli-based secrets usage and SSH key retrieval in
+- [X] T004 [P] Declare the OpenWrt role in `ansible/requirements.yml`
+- [X] T005 Document dcli-based secrets usage and SSH key retrieval in
   `docs/runbooks/openwrt-secrets.md`
-- [ ] T006 Add SSH connectivity checks using dcli in
+- [X] T006 Add SSH connectivity checks using dcli in
   `docs/runbooks/openwrt-verification.md`
-- [ ] T007 Define a required positive SSH connection test gate in
+- [X] T007 Define a required positive SSH connection test gate in
   `docs/runbooks/openwrt-verification.md`
 
 ---
@@ -42,12 +42,12 @@ be implemented
 
 **CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T008 Add UCI read checks and client DNS/internet checks to
+- [X] T008 Add UCI read checks and client DNS/internet checks to
   `docs/runbooks/openwrt-verification.md`
-- [ ] T009 Define recovery and rollback steps in
+- [X] T009 Define recovery and rollback steps in
   `docs/runbooks/openwrt-recovery.md`
-- [ ] T010 Implement verification playbook in `playbooks/verify-openwrt.yml`
-- [ ] T011 Decide and document the first small declarative change in
+- [X] T010 Implement verification playbook in `playbooks/verify-openwrt.yml`
+- [X] T011 Decide and document the first small declarative change in
   `docs/runbooks/openwrt-apply.md`
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
@@ -63,18 +63,18 @@ Wi-Fi connectivity plus LAN client internet access
 
 ### Implementation for User Story 1
 
-- [ ] T012 [US1] Capture desired `network` config in
+- [X] T012 [US1] Capture desired `network` config in
   `configs/openwrt/network`
-- [ ] T013 [P] [US1] Capture desired `wireless` config in
+- [X] T013 [P] [US1] Capture desired `wireless` config in
   `configs/openwrt/wireless`
-- [ ] T014 [P] [US1] Capture desired `firewall` config in
+- [X] T014 [P] [US1] Capture desired `firewall` config in
   `configs/openwrt/firewall`
-- [ ] T015 [P] [US1] Capture desired `dhcp` config in
+- [X] T015 [P] [US1] Capture desired `dhcp` config in
   `configs/openwrt/dhcp`
-- [ ] T016 [P] [US1] Capture desired `system` config in
+- [X] T016 [P] [US1] Capture desired `system` config in
   `configs/openwrt/system`
-- [ ] T017 [US1] Implement staged apply in `playbooks/apply-openwrt.yml`
-- [ ] T018 [US1] Document staged apply sequence in
+- [X] T017 [US1] Implement staged apply in `playbooks/apply-openwrt.yml`
+- [X] T018 [US1] Document staged apply sequence in
   `docs/runbooks/openwrt-apply.md`
 
 **Checkpoint**: User Story 1 is functional and independently testable
@@ -90,9 +90,9 @@ snapshot appears under `snapshots/<router>/`
 
 ### Implementation for User Story 2
 
-- [ ] T019 [US2] Implement read-only snapshot for `/etc/config/*` in
+- [X] T019 [US2] Implement read-only snapshot for `/etc/config/*` in
   `playbooks/snapshot-openwrt.yml`
-- [ ] T020 [P] [US2] Document snapshot structure in `snapshots/README.md`
+- [X] T020 [P] [US2] Document snapshot structure in `snapshots/README.md`
 
 **Checkpoint**: User Story 2 is functional and independently testable
 
@@ -107,12 +107,12 @@ clean drift report
 
 ### Implementation for User Story 3
 
-- [ ] T021 [US3] Implement drift reporting in `playbooks/drift-openwrt.yml`
-- [ ] T022 [P] [US3] Document drift workflow in
+- [X] T021 [US3] Implement drift reporting in `playbooks/drift-openwrt.yml`
+- [X] T022 [P] [US3] Document drift workflow in
   `docs/runbooks/openwrt-drift.md`
-- [ ] T023 [US3] Implement the first small change idempotently in
+- [X] T023 [US3] Implement the first small change idempotently in
   `playbooks/apply-openwrt.yml`
-- [ ] T024 [US3] Verify no lockout after the first change in
+- [X] T024 [US3] Verify no lockout after the first change in
   `docs/runbooks/openwrt-verification.md`
 
 **Checkpoint**: User Story 3 is functional and independently testable
@@ -123,9 +123,9 @@ clean drift report
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T025 [P] Update `specs/002-openwrt-wisp-iac/quickstart.md` with dcli
+- [X] T025 [P] Update `specs/002-openwrt-wisp-iac/quickstart.md` with dcli
   usage and new playbooks
-- [ ] T026 [P] Link runbooks from `docs/index.md`
+- [X] T026 [P] Link runbooks from `docs/index.md`
 
 ---
 

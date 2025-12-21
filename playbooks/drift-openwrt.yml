@@ -1,0 +1,65 @@
+---
+- name: Report OpenWrt configuration drift
+  hosts: openwrt
+  gather_facts: false
+  vars:
+    drift_ts: "{{ lookup('pipe', 'date -u +%Y%m%dT%H%M%SZ') }}"
+    drift_dir: "{{ openwrt_snapshot_root }}/{{ openwrt_router_name }}/drift"
+    drift_report: "{{ drift_dir }}/{{ drift_ts }}.diff"
+    uci_files: "{{ openwrt_uci_files | default([]) }}"
+  tasks:
+    - name: Ensure drift directory exists
+      ansible.builtin.file:
+        path: "{{ drift_dir }}"
+        state: directory
+        mode: "0750"
+      delegate_to: localhost
+      run_once: true
+
+    - name: Create temporary drift workspace
+      ansible.builtin.tempfile:
+        state: directory
+        prefix: openwrt-drift-
+      register: drift_tmp
+      delegate_to: localhost
+      run_once: true
+
+    - name: Fetch live configuration for drift comparison
+      ansible.builtin.fetch:
+        src: "{{ openwrt_config_dir }}/{{ item }}"
+        dest: "{{ drift_tmp.path }}/{{ item }}"
+        flat: true
+        fail_on_missing: true
+      loop: "{{ uci_files }}"
+
+    - name: Compare repository config to live config
+      ansible.builtin.command: >
+        diff -u {{ openwrt_config_repo_dir }}/{{ item }} {{ drift_tmp.path }}/{{ item }}
+      loop: "{{ uci_files }}"
+      register: drift_diffs
+      failed_when: false
+      changed_when: false
+      delegate_to: localhost
+      run_once: true
+
+    - name: Write drift report
+      ansible.builtin.copy:
+        dest: "{{ drift_report }}"
+        content: |
+          {% set diffs = drift_diffs.results | map(attribute='stdout') | list %}
+          {% set combined = diffs | select('string') | list %}
+          {% if combined | join('') | length == 0 %}
+          No drift detected.
+          {% else %}
+          {{ combined | join('\n') }}
+          {% endif %}
+        mode: "0640"
+      delegate_to: localhost
+      run_once: true
+
+    - name: Clean up temporary drift workspace
+      ansible.builtin.file:
+        path: "{{ drift_tmp.path }}"
+        state: absent
+      delegate_to: localhost
+      run_once: true

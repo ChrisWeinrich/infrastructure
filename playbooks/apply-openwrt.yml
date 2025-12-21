@@ -1,0 +1,44 @@
+---
+- name: Apply OpenWrt configuration in staged steps
+  hosts: openwrt
+  gather_facts: false
+  vars:
+    uci_files: "{{ openwrt_uci_files | default([]) }}"
+    openwrt_hostname: mt6000
+    openwrt_apply_full: false
+    openwrt_apply_pause: true
+  tasks:
+    - name: Apply first small change (hostname)
+      ansible.builtin.raw: |
+        current="$(uci -q get system.@system[0].hostname)"
+        if [ "$current" != "{{ openwrt_hostname }}" ]; then
+          uci set system.@system[0].hostname="{{ openwrt_hostname }}"
+          uci commit system
+          echo changed
+        fi
+      register: hostname_apply
+      changed_when: "'changed' in hostname_apply.stdout"
+
+    - name: Apply configuration files from repository
+      when: openwrt_apply_full | bool
+      loop: "{{ uci_files }}"
+      loop_control:
+        label: "{{ item }}"
+      block:
+        - name: Write configuration file from repo
+          ansible.builtin.raw: |
+            cat <<'EOF' > {{ openwrt_config_dir }}/{{ item }}
+            {{ lookup('file', openwrt_config_repo_dir + '/' + item) }}
+            EOF
+
+        - name: Commit configuration file
+          ansible.builtin.raw: "uci commit {{ item }}"
+
+        - name: Read back configuration file
+          ansible.builtin.raw: "uci show {{ item }}"
+          changed_when: false
+
+        - name: Pause for verification
+          ansible.builtin.pause:
+            prompt: "Run verification checks, then press Enter to continue."
+          when: openwrt_apply_pause | bool

@@ -8,3 +8,9 @@ continuous integration. It will expand as runbooks and automation are added.
 - Repository standards for linting and documentation.
 - Ansible automation structure and conventions.
 - CI guidance for safe, reproducible changes.
+- OpenWrt runbooks:
+  - `docs/runbooks/openwrt-secrets.md`
+  - `docs/runbooks/openwrt-verification.md`
+  - `docs/runbooks/openwrt-apply.md`
+  - `docs/runbooks/openwrt-recovery.md`
+  - `docs/runbooks/openwrt-drift.md`
