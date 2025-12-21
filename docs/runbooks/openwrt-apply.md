@@ -12,15 +12,17 @@ The first change is intentionally low risk: set the system hostname to
 
 1. Run the verification checklist in `docs/runbooks/openwrt-verification.md`.
 2. Apply the first small change using `ansible/playbooks/apply-openwrt.yml`.
+   This run captures a pre-apply snapshot and removes it automatically if the
+   apply makes no changes.
 3. Re-run the verification checklist.
 4. Apply configuration files in the following order, pausing after each file
    for verification:
 
-   1. `configs/openwrt/network`
-   2. `configs/openwrt/wireless`
-   3. `configs/openwrt/firewall`
-   4. `configs/openwrt/dhcp`
-   5. `configs/openwrt/system`
+   1. `ansible/configs/openwrt/network`
+   2. `ansible/configs/openwrt/wireless`
+   3. `ansible/configs/openwrt/firewall`
+   4. `ansible/configs/openwrt/dhcp`
+   5. `ansible/configs/openwrt/system`
 
 5. After each stage, re-run the verification checklist.
 

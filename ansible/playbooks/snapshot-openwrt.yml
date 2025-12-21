@@ -8,7 +8,7 @@
     - name: Set snapshot root
       ansible.builtin.set_fact:
         snapshot_root: >-
-          {{ lookup('pipe', 'cd ' + playbook_dir + '/.. && pwd') }}/{{ openwrt_snapshot_root | default('snapshots') }}
+          {{ lookup('pipe', 'cd ' + playbook_dir + '/../.. && pwd') }}/{{ openwrt_snapshot_root | default('snapshots') }}
       delegate_to: localhost
       run_once: true
 

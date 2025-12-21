@@ -142,6 +142,8 @@ runtime.
 SSH private key.
 - **FR-013**: System MUST reload `system` and restart `dnsmasq` when the router
 hostname changes.
+- **FR-014**: System MUST capture a snapshot before apply and delete the
+snapshot if no changes are applied.
 
 Acceptance for these requirements is demonstrated by the User Scenarios and the
 Success Criteria outcomes.
@@ -190,3 +192,5 @@ reported changes and no loss of reachability.
 within 5 minutes of initiating the change.
 - **SC-005**: The repository contains the feature spec, a plan, and task list
 for this feature before implementation work begins.
+- **SC-006**: When an apply run results in no changes, the pre-apply snapshot is
+deleted.

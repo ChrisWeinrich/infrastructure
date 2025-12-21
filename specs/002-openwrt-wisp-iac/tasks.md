@@ -19,18 +19,18 @@ implementation and testing of each story.
 
 **Purpose**: Establish management connectivity and project structure
 
-- [X] T001 Create directories `ansible/playbooks/`, `ansible/inventory/openwrt/`,
-  `snapshots/`, `configs/openwrt/`, and `docs/runbooks/`
-- [X] T002 Create inventory for the router (no Python on target) in
+- [ ] T001 Create directories `ansible/playbooks/`, `ansible/inventory/openwrt/`,
+  `ansible/configs/openwrt/`, `snapshots/`, and `docs/runbooks/`
+- [ ] T002 Create inventory for the router (no Python on target) in
   `ansible/inventory/openwrt/hosts.yml`
-- [X] T003 [P] Add shared inventory variables in
+- [ ] T003 [P] Add shared inventory variables in
   `ansible/inventory/openwrt/group_vars/all.yml`
-- [X] T004 [P] Declare the OpenWrt role in `ansible/requirements.yml`
-- [X] T005 Document dcli-based secrets usage and SSH key retrieval in
+- [ ] T004 [P] Declare the OpenWrt role in `ansible/requirements.yml`
+- [ ] T005 Document dcli-based secrets usage and SSH key retrieval in
   `docs/runbooks/openwrt-secrets.md`
-- [X] T006 Add SSH connectivity checks using dcli in
+- [ ] T006 Add SSH connectivity checks using dcli in
   `docs/runbooks/openwrt-verification.md`
-- [X] T007 Define a required positive SSH connection test gate in
+- [ ] T007 Define a required positive SSH connection test gate in
   `docs/runbooks/openwrt-verification.md`
 
 ---
@@ -42,12 +42,13 @@ be implemented
 
 **CRITICAL**: No user story work can begin until this phase is complete
 
-- [X] T008 Add UCI read checks and client DNS/internet checks to
+- [ ] T008 Add UCI read checks and client DNS/internet checks to
   `docs/runbooks/openwrt-verification.md`
-- [X] T009 Define recovery and rollback steps in
+- [ ] T009 Define recovery and rollback steps in
   `docs/runbooks/openwrt-recovery.md`
-- [X] T010 Implement verification playbook in `ansible/playbooks/verify-openwrt.yml`
-- [X] T011 Decide and document the first small declarative change in
+- [ ] T010 Implement verification playbook in
+  `ansible/playbooks/verify-openwrt.yml`
+- [ ] T011 Decide and document the first small declarative change in
   `docs/runbooks/openwrt-apply.md`
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
@@ -63,18 +64,18 @@ Wi-Fi connectivity plus LAN client internet access
 
 ### Implementation for User Story 1
 
-- [X] T012 [US1] Capture desired `network` config in
-  `configs/openwrt/network`
-- [X] T013 [P] [US1] Capture desired `wireless` config in
-  `configs/openwrt/wireless`
-- [X] T014 [P] [US1] Capture desired `firewall` config in
-  `configs/openwrt/firewall`
-- [X] T015 [P] [US1] Capture desired `dhcp` config in
-  `configs/openwrt/dhcp`
-- [X] T016 [P] [US1] Capture desired `system` config in
-  `configs/openwrt/system`
-- [X] T017 [US1] Implement staged apply in `ansible/playbooks/apply-openwrt.yml`
-- [X] T018 [US1] Document staged apply sequence in
+- [ ] T012 [US1] Capture desired `network` config in
+  `ansible/configs/openwrt/network`
+- [ ] T013 [P] [US1] Capture desired `wireless` config in
+  `ansible/configs/openwrt/wireless`
+- [ ] T014 [P] [US1] Capture desired `firewall` config in
+  `ansible/configs/openwrt/firewall`
+- [ ] T015 [P] [US1] Capture desired `dhcp` config in
+  `ansible/configs/openwrt/dhcp`
+- [ ] T016 [P] [US1] Capture desired `system` config in
+  `ansible/configs/openwrt/system`
+- [ ] T017 [US1] Implement staged apply in `ansible/playbooks/apply-openwrt.yml`
+- [ ] T018 [US1] Document staged apply sequence in
   `docs/runbooks/openwrt-apply.md`
 
 **Checkpoint**: User Story 1 is functional and independently testable
@@ -90,9 +91,9 @@ snapshot appears under `snapshots/<router>/`
 
 ### Implementation for User Story 2
 
-- [X] T019 [US2] Implement read-only snapshot for `/etc/config/*` in
+- [ ] T019 [US2] Implement read-only snapshot for `/etc/config/*` in
   `ansible/playbooks/snapshot-openwrt.yml`
-- [X] T020 [P] [US2] Document snapshot structure in `snapshots/README.md`
+- [ ] T020 [P] [US2] Document snapshot structure in `snapshots/README.md`
 
 **Checkpoint**: User Story 2 is functional and independently testable
 
@@ -106,9 +107,13 @@ snapshot appears under `snapshots/<router>/`
 
 ### Implementation for User Story 3
 
-- [X] T021 [US3] Implement the first small change idempotently in
+- [ ] T021 [US3] Implement the first small change idempotently in
   `ansible/playbooks/apply-openwrt.yml`
-- [X] T022 [US3] Verify no lockout after the first change in
+- [X] T022 [US3] Add pre-apply snapshot capture and delete the snapshot when
+  apply results in no changes in `ansible/playbooks/apply-openwrt.yml`
+- [X] T023 [US3] Update apply runbook with auto-snapshot behavior in
+  `docs/runbooks/openwrt-apply.md`
+- [ ] T024 [US3] Verify no lockout after the first change in
   `docs/runbooks/openwrt-verification.md`
 
 **Checkpoint**: User Story 3 is functional and independently testable
@@ -119,9 +124,9 @@ snapshot appears under `snapshots/<router>/`
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [X] T025 [P] Update `specs/002-openwrt-wisp-iac/quickstart.md` with dcli
-  usage and new playbooks
-- [X] T026 [P] Link runbooks from `docs/index.md`
+- [X] T025 [P] Update `specs/002-openwrt-wisp-iac/quickstart.md` with the
+  auto-snapshot apply flow
+- [ ] T026 [P] Link runbooks from `docs/index.md`
 
 ---
 
@@ -144,9 +149,9 @@ snapshot appears under `snapshots/<router>/`
 ### Parallel Opportunities
 
 - Setup tasks T003 and T004 can run in parallel
-- User Story 1 tasks T012 to T015 can run in parallel
+- User Story 1 tasks T013 to T016 can run in parallel
 - User Story 2 task T019 can run in parallel with T018 after prerequisites
-- User Story 3 task T021 can run in parallel with T020
+- User Story 3 tasks T022 and T023 can run in parallel
 - Polish tasks T025 and T026 can run in parallel
 
 ---
@@ -154,10 +159,10 @@ snapshot appears under `snapshots/<router>/`
 ## Parallel Example: User Story 1
 
 ```bash
-Task: "Capture desired wireless config in configs/openwrt/wireless"
-Task: "Capture desired firewall config in configs/openwrt/firewall"
-Task: "Capture desired dhcp config in configs/openwrt/dhcp"
-Task: "Capture desired system config in configs/openwrt/system"
+Task: "Capture desired wireless config in ansible/configs/openwrt/wireless"
+Task: "Capture desired firewall config in ansible/configs/openwrt/firewall"
+Task: "Capture desired dhcp config in ansible/configs/openwrt/dhcp"
+Task: "Capture desired system config in ansible/configs/openwrt/system"
 ```
 
 ## Parallel Example: User Story 2
@@ -171,10 +176,10 @@ Task: "Document snapshot structure in snapshots/README.md"
 ## Parallel Example: User Story 3
 
 ```bash
-Task: "Implement the first small change idempotently in
-ansible/playbooks/apply-openwrt.yml"
-Task: "Verify no lockout after the first change in
-docs/runbooks/openwrt-verification.md"
+Task: "Add pre-apply snapshot capture and delete the snapshot when apply
+results in no changes in ansible/playbooks/apply-openwrt.yml"
+Task: "Update apply runbook with auto-snapshot behavior in
+docs/runbooks/openwrt-apply.md"
 ```
 
 ---
@@ -198,11 +203,5 @@ docs/runbooks/openwrt-verification.md"
 
 ### Parallel Team Strategy
 
-With multiple contributors:
-
-1. Complete Setup + Foundational together
-2. After Foundational:
-   - Contributor A: User Story 1
-   - Contributor B: User Story 2
-   - Contributor C: User Story 3
-3. Polish after all stories pass validation
+- After Foundational phase completion, User Stories 1 to 3 can be executed in
+  parallel by different operators if coordination permits.

@@ -39,7 +39,8 @@ available outside the repository.
 2. Apply changes in small increments with a verification checklist after each
 step.
 3. Confirm LAN clients can resolve DNS and reach the internet after each apply.
-4. Use the staged apply playbook:
+4. Use the staged apply playbook (it captures a pre-apply snapshot and removes
+   it automatically if the apply makes no changes):
 
    ```bash
    ANSIBLE_PRIVATE_KEY_FILE=~/.ssh/openwrt_mt6000 \
