@@ -1,0 +1,51 @@
+---
+- name: Verify OpenWrt connectivity and baseline checks
+  hosts: openwrt
+  gather_facts: false
+  vars:
+    uci_files: "{{ openwrt_uci_files | default([]) }}"
+  tasks:
+    - name: Verify SSH connectivity
+      ansible.builtin.raw: "echo ok"
+      register: ssh_check
+      changed_when: false
+
+    - name: Gate on SSH connectivity
+      ansible.builtin.assert:
+        that:
+          - ssh_check.rc == 0
+        fail_msg: "SSH connectivity check failed. Stop and recover access."
+
+    - name: Read UCI configuration files
+      ansible.builtin.raw: "uci show {{ item }}"
+      loop: "{{ uci_files }}"
+      register: uci_reads
+      changed_when: false
+
+    - name: Gate on UCI reads
+      ansible.builtin.assert:
+        that:
+          - uci_reads.results | map(attribute='rc') | list | max == 0
+        fail_msg: "One or more UCI read checks failed."
+
+    - name: Verify DNS resolution from the router
+      ansible.builtin.raw: "nslookup {{ openwrt_verify_dns_domain }}"
+      register: dns_check
+      changed_when: false
+
+    - name: Gate on DNS resolution
+      ansible.builtin.assert:
+        that:
+          - dns_check.rc == 0
+        fail_msg: "DNS resolution failed on the router."
+
+    - name: Verify HTTP reachability from the router
+      ansible.builtin.raw: "wget -q --spider {{ openwrt_verify_http_url }}"
+      register: http_check
+      changed_when: false
+
+    - name: Gate on HTTP reachability
+      ansible.builtin.assert:
+        that:
+          - http_check.rc == 0
+        fail_msg: "HTTP reachability failed on the router."

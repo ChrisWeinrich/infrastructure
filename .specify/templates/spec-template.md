@@ -112,6 +112,7 @@
   https://github.com/gekmihesg/ansible-openwrt
 - Document management access endpoints and methods (IP/hostname, protocol,
   authentication, location).
+- Changes affecting behavior or usage must update `docs/` and any README.md.
 
 ## Success Criteria *(mandatory)*
 

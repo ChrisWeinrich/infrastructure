@@ -1,0 +1,66 @@
+---
+- name: Capture OpenWrt configuration snapshot
+  hosts: openwrt
+  gather_facts: false
+  vars:
+    uci_files: "{{ openwrt_uci_files | default([]) }}"
+  tasks:
+    - name: Set snapshot root
+      ansible.builtin.set_fact:
+        snapshot_root: >-
+          {{ lookup('pipe', 'cd ' + playbook_dir + '/../.. && pwd') }}/{{ openwrt_snapshot_root | default('snapshots') }}
+      delegate_to: localhost
+      run_once: true
+
+    - name: Set snapshot timestamp
+      ansible.builtin.set_fact:
+        snapshot_ts: "{{ lookup('pipe', 'date -u +%Y%m%dT%H%M%SZ') }}"
+      delegate_to: localhost
+      run_once: true
+
+    - name: Set snapshot directory
+      ansible.builtin.set_fact:
+        snapshot_dir: "{{ snapshot_root }}/{{ openwrt_router_name }}/{{ snapshot_ts }}"
+      delegate_to: localhost
+      run_once: true
+
+    - name: Ensure snapshot directory exists
+      ansible.builtin.file:
+        path: "{{ snapshot_dir }}"
+        state: directory
+        mode: "0750"
+      delegate_to: localhost
+      run_once: true
+
+    - name: Read UCI configuration files
+      ansible.builtin.raw: "cat {{ openwrt_config_dir }}/{{ item }}"
+      loop: "{{ uci_files }}"
+      register: openwrt_configs
+      changed_when: false
+
+    - name: Write snapshot files
+      ansible.builtin.copy:
+        dest: "{{ snapshot_dir }}/{{ item.item }}"
+        content: >-
+          {{ (item.stdout
+          | replace("\r", "")
+          | regex_replace("(?m)^.*option key.*\\n?", "")
+          ) if item.item == 'wireless' else (item.stdout | replace("\r", "")) }}
+        mode: "0440"
+      loop: "{{ openwrt_configs.results }}"
+      delegate_to: localhost
+      run_once: true
+
+    - name: Strip wireless keys from snapshot
+      ansible.builtin.command: >-
+        sed -i '' -E '/^[[:space:]]*option[[:space:]]+key[[:space:]]+/d' {{ snapshot_dir }}/wireless
+      when: "'wireless' in uci_files"
+      delegate_to: localhost
+      run_once: true
+
+    - name: Normalize wireless snapshot line endings
+      ansible.builtin.command: >-
+        sed -i '' -e 's/\\r$//' {{ snapshot_dir }}/wireless
+      when: "'wireless' in uci_files"
+      delegate_to: localhost
+      run_once: true
