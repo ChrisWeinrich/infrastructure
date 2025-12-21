@@ -13,7 +13,6 @@
 - **Relationships**:
   - has many Configuration Snapshots
   - has one Desired Configuration
-  - has many Drift Reports
 
 ### Configuration Snapshot
 
@@ -34,17 +33,6 @@
   - last_applied_at
 - **Relationships**:
   - belongs to Router
-
-### Drift Report
-
-- **Fields**:
-  - router_id
-  - compared_at
-  - differences (file-level diffs)
-  - status (clean, drifted)
-- **Relationships**:
-  - belongs to Router
-  - compares Desired Configuration to live Router Configuration
 
 ### Verification Checklist
 
@@ -72,8 +60,6 @@
 feature spec.
 - Desired Configuration MUST preserve WISP uplink behavior unless explicitly
 superseded by a future feature.
-- Drift Report status MUST be `clean` when no diffs are detected and `drifted`
-when any file differs.
 - Verification Checklist MUST include DNS resolution and external reachability
 checks.
 - Recovery Plan MUST include a vendor reset/repair step as last resort.
@@ -81,5 +67,4 @@ checks.
 ## State Transitions
 
 - Configuration Snapshot: `planned` -> `captured` -> `verified`.
-- Drift Report: `pending` -> `generated` -> `reviewed`.
 - Verification Checklist: `draft` -> `executed` -> `recorded`.

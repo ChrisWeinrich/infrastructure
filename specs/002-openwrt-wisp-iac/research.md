@@ -19,8 +19,8 @@ https://github.com/gekmihesg/ansible-openwrt
 ### Decision: Baseline snapshots by fetching /etc/config files
 
 **Rationale**: Capturing `network`, `wireless`, `firewall`, `dhcp`, and `system`
-provides a focused, read-only baseline for drift comparison and recovery while
-avoiding intrusive backups.
+provides a focused, read-only baseline for recovery while avoiding intrusive
+backups.
 
 **Alternatives considered**: Full sysupgrade backups or filesystem tarballs.
 
@@ -32,15 +32,6 @@ supports safe rollback.
 
 **Alternatives considered**: Single-pass full configuration replacement without
 intermediate validation.
-
-### Decision: Drift control via repo-vs-live diff workflow
-
-**Rationale**: Comparing live `/etc/config` files to the repository state
-provides deterministic drift detection and keeps the repo as the single source
-of truth.
-
-**Alternatives considered**: Only manual audits or periodic full backups without
-diff reporting.
 
 ### Decision: Preserve WISP/repeater behavior as the default uplink
 

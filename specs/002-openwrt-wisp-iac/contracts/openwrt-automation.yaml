@@ -3,9 +3,9 @@ info:
   title: OpenWrt WISP Automation Contract
   version: 0.1.0
   description: |
-    Conceptual contract for snapshot, apply, verify, and drift operations used
-    by the IaC workflow. This represents the expected inputs and outputs for
-    automation actions rather than a public service API.
+    Conceptual contract for snapshot, apply, and verify operations used by the
+    IaC workflow. This represents the expected inputs and outputs for automation
+    actions rather than a public service API.
 servers:
   - url: http://localhost
 paths:
@@ -57,22 +57,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/VerifyResult"
-  /drift:
-    get:
-      summary: Get drift report
-      parameters:
-        - in: query
-          name: router_id
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Drift report
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DriftReport"
 components:
   schemas:
     SnapshotRequest:
@@ -137,18 +121,3 @@ components:
           enum: [pass, fail]
         details:
           type: string
-    DriftReport:
-      type: object
-      properties:
-        router_id:
-          type: string
-        compared_at:
-          type: string
-          format: date-time
-        status:
-          type: string
-          enum: [clean, drifted]
-        differences:
-          type: array
-          items:
-            type: string

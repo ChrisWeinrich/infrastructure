@@ -22,12 +22,12 @@ and keep secrets out of the repository.
 
    ```bash
    ANSIBLE_PRIVATE_KEY_FILE=~/.ssh/openwrt_mt6000 \
-     ansible-playbook playbooks/verify-openwrt.yml \
-     -i inventories/openwrt/hosts.yml
+     ansible-playbook ansible/playbooks/verify-openwrt.yml \
+     -i ansible/inventory/openwrt/hosts.yml
    ```
 
 ## Operational Notes
 
 - Do not store SSH keys in the repository.
-- Keep host and user values in `inventories/openwrt/hosts.yml` only.
+- Keep host and user values in `ansible/inventory/openwrt/hosts.yml` only.
 - Keep the key file in `~/.ssh` with `0600` permissions.

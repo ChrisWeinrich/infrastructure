@@ -11,7 +11,7 @@ The first change is intentionally low risk: set the system hostname to
 ## Staged Apply Sequence
 
 1. Run the verification checklist in `docs/runbooks/openwrt-verification.md`.
-2. Apply the first small change using `playbooks/apply-openwrt.yml`.
+2. Apply the first small change using `ansible/playbooks/apply-openwrt.yml`.
 3. Re-run the verification checklist.
 4. Apply configuration files in the following order, pausing after each file
    for verification:
@@ -28,8 +28,8 @@ The first change is intentionally low risk: set the system hostname to
 
 ```bash
 ANSIBLE_PRIVATE_KEY_FILE=~/.ssh/openwrt_mt6000 \
-  ansible-playbook playbooks/apply-openwrt.yml \
-  -i inventories/openwrt/hosts.yml
+  ansible-playbook ansible/playbooks/apply-openwrt.yml \
+  -i ansible/inventory/openwrt/hosts.yml
 ```
 
 ## Notes

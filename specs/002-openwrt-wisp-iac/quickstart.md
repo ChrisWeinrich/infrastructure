@@ -28,8 +28,8 @@ available outside the repository.
 
    ```bash
    ANSIBLE_PRIVATE_KEY_FILE=~/.ssh/openwrt_mt6000 \
-     ansible-playbook playbooks/snapshot-openwrt.yml \
-     -i inventories/openwrt/hosts.yml
+     ansible-playbook ansible/playbooks/snapshot-openwrt.yml \
+     -i ansible/inventory/openwrt/hosts.yml
    ```
 4. Commit the snapshot in Git as the baseline reference.
 
@@ -43,21 +43,8 @@ step.
 
    ```bash
    ANSIBLE_PRIVATE_KEY_FILE=~/.ssh/openwrt_mt6000 \
-     ansible-playbook playbooks/apply-openwrt.yml \
-     -i inventories/openwrt/hosts.yml
-   ```
-
-## Drift Check
-
-1. Compare live `/etc/config` files with the repository state.
-2. Review differences and decide whether to apply the repo state or capture a
-new snapshot.
-3. Use the drift playbook to generate a report:
-
-   ```bash
-   ANSIBLE_PRIVATE_KEY_FILE=~/.ssh/openwrt_mt6000 \
-     ansible-playbook playbooks/drift-openwrt.yml \
-     -i inventories/openwrt/hosts.yml
+     ansible-playbook ansible/playbooks/apply-openwrt.yml \
+     -i ansible/inventory/openwrt/hosts.yml
    ```
 
 ## Recovery

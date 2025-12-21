@@ -1,0 +1,26 @@
+---
+- name: Apply OpenWrt configuration in staged steps
+  hosts: openwrt
+  gather_facts: false
+  vars:
+    uci_files: "{{ openwrt_uci_files | default([]) }}"
+    openwrt_hostname: mt6000
+    openwrt_apply_full: false
+    openwrt_apply_pause: true
+  tasks:
+    - name: Apply first small change (hostname)
+      ansible.builtin.raw: |
+        current="$(uci -q get system.@system[0].hostname)"
+        if [ "$current" != "{{ openwrt_hostname }}" ]; then
+          uci set system.@system[0].hostname="{{ openwrt_hostname }}"
+          uci commit system
+          echo changed
+        fi
+      register: hostname_apply
+      changed_when: "'changed' in hostname_apply.stdout"
+
+    - name: Reload system and dnsmasq when hostname changes
+      ansible.builtin.raw: |
+        /etc/init.d/system reload
+        /etc/init.d/dnsmasq restart
+      when: hostname_apply.changed

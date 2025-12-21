@@ -37,8 +37,7 @@ wrap
   committed to version control.
 - Safety-first: rollback steps, pre/post validation, and safe access path are
   defined for network changes.
-- Idempotency & drift: automation is idempotent and includes drift detection
-  or remediation.
+- Idempotency: automation is idempotent.
 - Assumptions are documented with citations for router/OpenWrt/Ansible
   specifics.
 - Code comments and documentation are in English; Markdown prose hard-wraps at

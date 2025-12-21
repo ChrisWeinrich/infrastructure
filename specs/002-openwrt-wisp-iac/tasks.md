@@ -19,12 +19,12 @@ implementation and testing of each story.
 
 **Purpose**: Establish management connectivity and project structure
 
-- [X] T001 Create directories `playbooks/`, `inventories/openwrt/`,
+- [X] T001 Create directories `ansible/playbooks/`, `ansible/inventory/openwrt/`,
   `snapshots/`, `configs/openwrt/`, and `docs/runbooks/`
 - [X] T002 Create inventory for the router (no Python on target) in
-  `inventories/openwrt/hosts.yml`
+  `ansible/inventory/openwrt/hosts.yml`
 - [X] T003 [P] Add shared inventory variables in
-  `inventories/openwrt/group_vars/all.yml`
+  `ansible/inventory/openwrt/group_vars/all.yml`
 - [X] T004 [P] Declare the OpenWrt role in `ansible/requirements.yml`
 - [X] T005 Document dcli-based secrets usage and SSH key retrieval in
   `docs/runbooks/openwrt-secrets.md`
@@ -46,7 +46,7 @@ be implemented
   `docs/runbooks/openwrt-verification.md`
 - [X] T009 Define recovery and rollback steps in
   `docs/runbooks/openwrt-recovery.md`
-- [X] T010 Implement verification playbook in `playbooks/verify-openwrt.yml`
+- [X] T010 Implement verification playbook in `ansible/playbooks/verify-openwrt.yml`
 - [X] T011 Decide and document the first small declarative change in
   `docs/runbooks/openwrt-apply.md`
 
@@ -73,7 +73,7 @@ Wi-Fi connectivity plus LAN client internet access
   `configs/openwrt/dhcp`
 - [X] T016 [P] [US1] Capture desired `system` config in
   `configs/openwrt/system`
-- [X] T017 [US1] Implement staged apply in `playbooks/apply-openwrt.yml`
+- [X] T017 [US1] Implement staged apply in `ansible/playbooks/apply-openwrt.yml`
 - [X] T018 [US1] Document staged apply sequence in
   `docs/runbooks/openwrt-apply.md`
 
@@ -83,7 +83,7 @@ Wi-Fi connectivity plus LAN client internet access
 
 ## Phase 4: User Story 2 - Capture Baseline Before Changes (Priority: P2)
 
-**Goal**: Capture a read-only baseline snapshot for drift comparison
+**Goal**: Capture a read-only baseline snapshot for recovery reference
 
 **Independent Test**: Run the snapshot playbook and confirm a timestamped
 snapshot appears under `snapshots/<router>/`
@@ -91,7 +91,7 @@ snapshot appears under `snapshots/<router>/`
 ### Implementation for User Story 2
 
 - [X] T019 [US2] Implement read-only snapshot for `/etc/config/*` in
-  `playbooks/snapshot-openwrt.yml`
+  `ansible/playbooks/snapshot-openwrt.yml`
 - [X] T020 [P] [US2] Document snapshot structure in `snapshots/README.md`
 
 **Checkpoint**: User Story 2 is functional and independently testable
@@ -100,19 +100,15 @@ snapshot appears under `snapshots/<router>/`
 
 ## Phase 5: User Story 3 - Safe, Repeatable Changes (Priority: P3)
 
-**Goal**: Provide idempotent apply, drift detection, and recovery guidance
+**Goal**: Provide idempotent apply and recovery guidance
 
-**Independent Test**: Re-apply configuration with zero changes and generate a
-clean drift report
+**Independent Test**: Re-apply configuration with zero changes
 
 ### Implementation for User Story 3
 
-- [X] T021 [US3] Implement drift reporting in `playbooks/drift-openwrt.yml`
-- [X] T022 [P] [US3] Document drift workflow in
-  `docs/runbooks/openwrt-drift.md`
-- [X] T023 [US3] Implement the first small change idempotently in
-  `playbooks/apply-openwrt.yml`
-- [X] T024 [US3] Verify no lockout after the first change in
+- [X] T021 [US3] Implement the first small change idempotently in
+  `ansible/playbooks/apply-openwrt.yml`
+- [X] T022 [US3] Verify no lockout after the first change in
   `docs/runbooks/openwrt-verification.md`
 
 **Checkpoint**: User Story 3 is functional and independently testable
@@ -151,7 +147,7 @@ clean drift report
 - User Story 1 tasks T012 to T015 can run in parallel
 - User Story 2 task T019 can run in parallel with T018 after prerequisites
 - User Story 3 task T021 can run in parallel with T020
-- Polish tasks T024 and T025 can run in parallel
+- Polish tasks T025 and T026 can run in parallel
 
 ---
 
@@ -168,15 +164,17 @@ Task: "Capture desired system config in configs/openwrt/system"
 
 ```bash
 Task: "Implement read-only snapshot for /etc/config/* in
-playbooks/snapshot-openwrt.yml"
+ansible/playbooks/snapshot-openwrt.yml"
 Task: "Document snapshot structure in snapshots/README.md"
 ```
 
 ## Parallel Example: User Story 3
 
 ```bash
-Task: "Implement drift reporting in playbooks/drift-openwrt.yml"
-Task: "Document drift workflow in docs/runbooks/openwrt-drift.md"
+Task: "Implement the first small change idempotently in
+ansible/playbooks/apply-openwrt.yml"
+Task: "Verify no lockout after the first change in
+docs/runbooks/openwrt-verification.md"
 ```
 
 ---

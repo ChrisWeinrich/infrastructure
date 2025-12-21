@@ -9,8 +9,8 @@ Use this checklist before and after every change. Stop if any gate fails.
 
    ```bash
    ANSIBLE_PRIVATE_KEY_FILE=~/.ssh/openwrt_mt6000 \
-     ansible-playbook playbooks/verify-openwrt.yml \
-     -i inventories/openwrt/hosts.yml
+     ansible-playbook ansible/playbooks/verify-openwrt.yml \
+     -i ansible/inventory/openwrt/hosts.yml
    ```
 
 **Gate**: If SSH connectivity fails, do not apply any changes.
@@ -46,7 +46,7 @@ curl -I https://example.com
 
 After the first small change and after each staged apply step:
 
-1. Confirm SSH access still works via `playbooks/verify-openwrt.yml`.
+1. Confirm SSH access still works via `ansible/playbooks/verify-openwrt.yml`.
 2. Confirm the LAN client DNS and internet checks still pass.
 
 If any check fails, stop and follow the recovery runbook.

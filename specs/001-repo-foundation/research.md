@@ -23,5 +23,5 @@ workflows for linting and docs builds.
 **Alternatives considered**: GitLab CI, CircleCI.
 
 ### Decision: Pin linting tool versions where possible
-**Rationale**: Pinned versions improve reproducibility and reduce CI drift.
+**Rationale**: Pinned versions improve reproducibility and reduce CI variability.
 **Alternatives considered**: Floating latest versions.

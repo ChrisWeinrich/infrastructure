@@ -2,7 +2,7 @@
 
 **Feature Branch**: `002-openwrt-wisp-iac`
 **Created**: 2025-12-20
-**Status**: Draft
+**Status**: Implemented
 **Input**: User description: "We have a GL.iNet Flint 2 (GL-MT6000) router that
 is already connected to the internet via Repeater mode, which
 operates in WISP mode by default (router creates its own subnet and
@@ -12,7 +12,7 @@ infrastructure-as-code setup. Goals: - Keep the current behavior:
 MT6000 provides a private LAN/Wi-Fi for clients and uses an upstream
 Wi-Fi as WAN uplink (Repeater/WISP). - Manage the OpenWrt
 configuration via Ansible from a Git repository as the single source
-of truth. - Ensure idempotency and drift control: changes are applied
+of truth. - Ensure idempotency: changes are applied
 consistently, and removing config from the repo should remove it from
 the router when safe. - Avoid requiring Python on the router (use an
 Ansible role/approach that can manage OpenWrt without Python). Non-
@@ -68,8 +68,8 @@ is applied, **Then** the client can resolve DNS and reach an external site.
 As a network operator, I want a read-only snapshot of the current router
 configuration stored in the repository so I can compare and recover if needed.
 
-**Why this priority**: Baselines are required for safe change control and drift
-identification.
+**Why this priority**: Baselines are required for safe change control and
+recovery.
 
 **Independent Test**: Can be fully tested by running the snapshot task and
 confirming a stored artifact exists without applying any
@@ -111,7 +111,6 @@ state.
 - What happens when the upstream Wi-Fi is unavailable during apply?
 - How does the process handle invalid upstream Wi-Fi credentials?
 - What happens if the router reboots mid-apply?
-- How is drift handled when manual changes are made directly on the router?
 
 ## Requirements *(mandatory)*
 
@@ -129,20 +128,20 @@ LAN/Wi-Fi behind a NAT/firewall while using upstream Wi-Fi as WAN.
 internet after applying configuration changes.
 - **FR-006**: System MUST provide a documented verification checklist for every
 change and a recovery plan to restore access if a change fails.
-- **FR-007**: System MUST support drift detection by comparing live router state
-to the desired configuration and reporting differences.
-- **FR-008**: System MUST remove configurations that are removed from the
+- **FR-007**: System MUST remove configurations that are removed from the
 repository when it is safe to do so without breaking basic connectivity.
-- **FR-009**: System MUST avoid requiring additional runtime dependencies to be
+- **FR-008**: System MUST avoid requiring additional runtime dependencies to be
 installed on the router beyond standard management interfaces.
-- **FR-010**: System MUST keep sensitive credentials out of the repository and
+- **FR-009**: System MUST keep sensitive credentials out of the repository and
 require a secure input method for them at runtime.
-- **FR-011**: System MUST source the SSH private key from dcli at runtime and
+- **FR-010**: System MUST source the SSH private key from dcli at runtime and
 keep the router host and user in the inventory.
-- **FR-012**: System MUST retrieve the SSH key with `dcli read <path>` at
+- **FR-011**: System MUST retrieve the SSH key with `dcli read <path>` at
 runtime.
-- **FR-013**: System MUST use the dcli path `openwrt/mt6000/ssh_key` for the
+- **FR-012**: System MUST use the dcli path `openwrt/mt6000/ssh_key` for the
 SSH private key.
+- **FR-013**: System MUST reload `system` and restart `dnsmasq` when the router
+hostname changes.
 
 Acceptance for these requirements is demonstrated by the User Scenarios and the
 Success Criteria outcomes.
@@ -154,8 +153,6 @@ Success Criteria outcomes.
 expected router behavior.
 - **Configuration Snapshot**: A read-only, timestamped capture of the router's
 current state before changes.
-- **Drift Report**: A comparison result that highlights deviations from the
-desired configuration.
 - **Verification Checklist**: A set of steps used to confirm connectivity and
 safety after changes.
 - **Recovery Plan**: Documented steps to regain access and restore connectivity

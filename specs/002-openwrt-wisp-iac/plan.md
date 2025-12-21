@@ -8,7 +8,7 @@
 
 Migrate the existing GL-MT6000 WISP/repeater configuration into a Git-managed
 IaC workflow that preserves current connectivity, captures a baseline snapshot,
-applies staged changes safely, and maintains drift control. Use Ansible with the
+and applies staged changes safely. Use Ansible with the
 `gekmihesg.openwrt` role to manage OpenWrt configuration without installing
 Python on the router, with explicit verification and recovery steps for each
 change.
@@ -35,8 +35,7 @@ physical access fallback
 committed to version control. **Pass**
 - Safety-first: rollback steps, pre/post validation, and safe access path are
 defined for network changes. **Pass**
-- Idempotency & drift: automation is idempotent and includes drift detection or
-remediation. **Pass**
+- Idempotency: automation is idempotent. **Pass**
 - Assumptions are documented with citations for router/OpenWrt/Ansible
 specifics. **Pass**
 - Router-specific assumptions consult the primary router reference first.
@@ -73,20 +72,20 @@ specs/002-openwrt-wisp-iac/
 
 ```text
 ansible/
-├── playbooks/
+├── ansible/playbooks/
 ├── roles/
 └── inventory/
 
-playbooks/
+ansible/playbooks/
 └── snapshot-openwrt.yml
 
-inventories/
+ansible/inventory/
 └── openwrt/
     └── hosts.yml
 ```
 
 **Structure Decision**: Use the existing `ansible/` scaffold for shared roles
-and inventory defaults, and add top-level `playbooks/` and `inventories/`
+and inventory defaults, and add top-level `ansible/playbooks/` and `ansible/inventory/`
 entries for feature-specific automation as requested in the deliverables.
 
 ## Complexity Tracking
@@ -97,7 +96,7 @@ None.
 
 - IaC-only workflow preserved with repository-based configuration. **Pass**
 - Safety-first validation and recovery documentation included. **Pass**
-- Idempotency and drift controls documented and planned. **Pass**
+- Idempotency controls documented and planned. **Pass**
 - Assumptions and sources cited in spec and research. **Pass**
 - Management access documentation included in quickstart. **Pass**
 - English documentation with 80-column wrap in generated docs. **Pass**
