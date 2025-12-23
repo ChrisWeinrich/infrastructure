@@ -50,3 +50,18 @@ After the first small change and after each staged apply step:
 2. Confirm the LAN client DNS and internet checks still pass.
 
 If any check fails, stop and follow the recovery runbook.
+
+## Tailscale Remote Access Checks (When Enabled)
+
+1. Confirm the Tailscale service is running:
+
+   ```bash
+   /etc/init.d/tailscale status
+   tailscale status
+   ```
+
+2. From an external network, confirm access to the server at 192.168.8.135.
+3. If subnet routing is enabled, confirm access to at least one additional LAN
+   host within 192.168.8.0/24.
+4. If access fails, check Tailnet ACLs and the approved routes in the
+   Tailscale admin console.

@@ -3,6 +3,21 @@
 This runbook describes how to retrieve the OpenWrt SSH private key using dcli
 and keep secrets out of the repository.
 
+## Tailscale Auth Key Storage
+
+1. Create a reusable auth key in the Tailscale admin console.
+2. Store the auth key in dcli:
+
+   ```bash
+   dcli write openwrt/mt6000/tailscale/auth_key
+   ```
+
+3. Confirm the key is retrievable on the control host:
+
+   ```bash
+   dcli read openwrt/mt6000/tailscale/auth_key
+   ```
+
 ## SSH Private Key Retrieval
 
 1. Fetch the SSH private key from dcli.

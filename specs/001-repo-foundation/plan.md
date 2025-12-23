@@ -1,33 +1,32 @@
-# Implementation Plan: Repository foundation (linting, docs, CI)
+# Implementation Plan: [FEATURE]
 
-**Branch**: `001-repo-foundation` | **Date**: 2025-12-20 | **Spec**:
-`/Users/christianweinrich/Source/infrastructure/specs/001-repo-foundation/spec.md`
-**Input**: Feature specification from
-`/specs/001-repo-foundation/spec.md`
+**Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
+**Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
 
 **Note**: This template is filled in by the `/speckit.plan` command. See
-`.specify/templates/commands/plan.md` for the execution workflow.
+`.codex/prompts/speckit.plan.md` for the execution workflow.
 
 ## Summary
 
-Establish repository foundations for linting and documentation: add pre-commit
-hooks for YAML and Ansible linting, markdownlint-cli2 for Markdown, and MkDocs
-(with Material theme) for docs, plus GitHub Actions CI to run all checks and
-fail on violations.
+[Extract from feature spec: primary requirement + technical approach from research]
 
 ## Technical Context
 
-**Language/Version**: N/A (repo-level tooling)
-**Primary Dependencies**: pre-commit, yamllint, ansible-lint,
-markdownlint-cli2, MkDocs, mkdocs-material, Node.js (for markdownlint-cli2)
-**Storage**: N/A
-**Testing**: Linting and documentation build checks
-**Target Platform**: GitHub Actions (Ubuntu runner)
-**Project Type**: Single repository with config/docs
-**Performance Goals**: N/A
-**Constraints**: Pinned tool versions, strict docs build, 80-column Markdown
-wrap
-**Scale/Scope**: Repository foundation for linting and docs
+<!--
+  ACTION REQUIRED: Replace the content in this section with the technical details
+  for the project. The structure here is presented in advisory capacity to guide
+  the iteration process.
+-->
+
+**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
+**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
+**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
+**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
+**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
+**Project Type**: [single/web/mobile - determines source structure]  
+**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
+**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
+**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
 
 ## Constitution Check
 
@@ -37,62 +36,86 @@ wrap
   committed to version control.
 - Safety-first: rollback steps, pre/post validation, and safe access path are
   defined for network changes.
-- Idempotency: automation is idempotent.
+- Idempotency & drift: automation is idempotent and includes drift detection
+  or remediation.
 - Assumptions are documented with citations for router/OpenWrt/Ansible
   specifics.
+- Router-specific assumptions consult the primary router reference first:
+  https://github.com/gl-inet/docs4.x/blob/master/docs/user_guide/gl-mt6000/index.md
+- Core Ansible/OpenWrt reference:
+  https://github.com/gekmihesg/ansible-openwrt
+- Management access endpoints and methods are documented (IP/hostname,
+  protocol, authentication, location).
+- Changes that affect behavior or usage update `docs/` and any README.md.
 - Code comments and documentation are in English; Markdown prose hard-wraps at
   80 characters.
-
-**Gate status**: Pass. This work adds tooling and docs only; no network changes.
-
-**Post-design check**: Pass. No changes affecting network or device behavior.
 
 ## Project Structure
 
 ### Documentation (this feature)
 
 ```text
-/Users/christianweinrich/Source/infrastructure/specs/001-repo-foundation/
+specs/[###-feature]/
 ├── plan.md              # This file (/speckit.plan command output)
 ├── research.md          # Phase 0 output (/speckit.plan command)
 ├── data-model.md        # Phase 1 output (/speckit.plan command)
 ├── quickstart.md        # Phase 1 output (/speckit.plan command)
 ├── contracts/           # Phase 1 output (/speckit.plan command)
-└── tasks.md             # Phase 2 output (/speckit.tasks command)
+└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
 ```
 
 ### Source Code (repository root)
+<!--
+  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
+  for this feature. Delete unused options and expand the chosen structure with
+  real paths (e.g., apps/admin, packages/something). The delivered plan must
+  not include Option labels.
+-->
 
 ```text
-/Users/christianweinrich/Source/infrastructure/
-├── .github/workflows/ci.yml
-├── .pre-commit-config.yaml
-├── .yamllint.yml
-├── .ansible-lint.yml
-├── .markdownlint-cli2.yaml
-├── mkdocs.yml
-├── docs/
-│   └── index.md
-└── ansible/
-    └── README.md
+# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
+src/
+├── models/
+├── services/
+├── cli/
+└── lib/
+
+tests/
+├── contract/
+├── integration/
+└── unit/
+
+# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
+backend/
+├── src/
+│   ├── models/
+│   ├── services/
+│   └── api/
+└── tests/
+
+frontend/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   └── services/
+└── tests/
+
+# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
+api/
+└── [same as backend above]
+
+ios/ or android/
+└── [platform-specific structure: feature modules, UI flows, platform tests]
 ```
 
-**Structure Decision**: Single repo with config, docs, and Ansible scaffold
-files at the root.
-
-## Planned Changes
-
-- Add or update lint configs for YAML, Ansible, and Markdown.
-- Add MkDocs config and initial documentation.
-- Add minimal Ansible scaffold structure and README.
-- Add GitHub Actions workflow for pre-commit and MkDocs strict build.
-- Document local verification commands.
-
-## Local Verification Commands
-
-- `pre-commit run --all-files`
-- `mkdocs build --strict`
+**Structure Decision**: [Document the selected structure and reference the real
+directories captured above]
 
 ## Complexity Tracking
 
-No Constitution Check violations; complexity tracking not required.
+> **Fill ONLY if Constitution Check has violations that must be justified**
+
+| Violation | Why Needed | Simpler Alternative Rejected Because |
+|-----------|------------|-------------------------------------|
+| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
+| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |

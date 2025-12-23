@@ -15,7 +15,13 @@ The first change is intentionally low risk: set the system hostname to
    This run captures a pre-apply snapshot and removes it automatically if the
    apply makes no changes.
 3. Re-run the verification checklist.
-4. Apply configuration files in the following order, pausing after each file
+4. If Tailscale is being configured for the first time:
+   - Create a reusable auth key in the Tailscale admin console.
+   - Store the auth key in dcli at `openwrt/mt6000/tailscale/auth_key`.
+   - Ensure the Tailnet ACLs allow your user/device to reach the LAN subnet.
+   - After the first `tailscale up`, approve advertised routes in the admin
+     console.
+5. Apply configuration files in the following order, pausing after each file
    for verification:
 
    1. `ansible/configs/openwrt/network`
@@ -23,6 +29,7 @@ The first change is intentionally low risk: set the system hostname to
    3. `ansible/configs/openwrt/firewall`
    4. `ansible/configs/openwrt/dhcp`
    5. `ansible/configs/openwrt/system`
+   6. `ansible/configs/openwrt/tailscale`
 
 5. After each stage, re-run the verification checklist.
 

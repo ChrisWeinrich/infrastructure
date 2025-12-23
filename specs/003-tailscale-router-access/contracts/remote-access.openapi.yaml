@@ -1,0 +1,68 @@
+openapi: 3.0.3
+info:
+  title: Remote Access Verification API
+  version: 1.0.0
+  description: >
+    Contract used by automation to validate remote access to the LAN. This is
+    intended for verification tooling, not a public service.
+paths:
+  /remote-access/status:
+    get:
+      summary: Get current remote access status
+      responses:
+        "200":
+          description: Status summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RemoteAccessStatus"
+  /remote-access/verify:
+    post:
+      summary: Run a remote access verification check
+      responses:
+        "202":
+          description: Verification started
+  /lan/hosts:
+    get:
+      summary: List reachable LAN hosts from remote context
+      responses:
+        "200":
+          description: Host list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LanHostList"
+components:
+  schemas:
+    RemoteAccessStatus:
+      type: object
+      required:
+        - router_online
+        - routes_advertised
+        - last_checked_at
+      properties:
+        router_online:
+          type: boolean
+        routes_advertised:
+          type: array
+          items:
+            type: string
+        last_checked_at:
+          type: string
+          format: date-time
+    LanHost:
+      type: object
+      required:
+        - ip_address
+        - reachable
+      properties:
+        ip_address:
+          type: string
+        hostname:
+          type: string
+        reachable:
+          type: boolean
+    LanHostList:
+      type: array
+      items:
+        $ref: "#/components/schemas/LanHost"

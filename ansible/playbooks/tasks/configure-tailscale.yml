@@ -1,0 +1,23 @@
+---
+- name: Read Tailscale status
+  ansible.builtin.raw: "tailscale status --json"
+  register: tailscale_status
+  changed_when: false
+  failed_when: false
+
+- name: Determine if Tailscale configuration is needed
+  ansible.builtin.set_fact:
+    tailscale_needs_up: >-
+      {{ tailscale_status.rc != 0 or
+      '"BackendState":"Running"' not in tailscale_status.stdout or
+      (openwrt_tailscale_routes | join(',')) not in tailscale_status.stdout }}
+
+- name: Configure Tailscale routes
+  ansible.builtin.raw: >-
+    tailscale up
+    --authkey {{ openwrt_tailscale_authkey }}
+    --advertise-routes={{ openwrt_tailscale_routes | join(',') }}
+  when: tailscale_needs_up | bool
+  register: tailscale_up
+  changed_when: true
+  no_log: true

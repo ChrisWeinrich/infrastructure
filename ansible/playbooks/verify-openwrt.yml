@@ -49,3 +49,25 @@
         that:
           - http_check.rc == 0
         fail_msg: "HTTP reachability failed on the router."
+
+    - name: Verify Tailscale binary is available
+      ansible.builtin.raw: "command -v tailscale"
+      register: tailscale_binary
+      changed_when: false
+
+    - name: Gate on Tailscale availability
+      ansible.builtin.assert:
+        that:
+          - tailscale_binary.rc == 0
+        fail_msg: "Tailscale binary not found on the router."
+
+    - name: Capture Tailscale status
+      ansible.builtin.raw: "tailscale status --json"
+      register: tailscale_status
+      changed_when: false
+
+    - name: Gate on Tailscale status
+      ansible.builtin.assert:
+        that:
+          - tailscale_status.rc == 0
+        fail_msg: "Tailscale status check failed."

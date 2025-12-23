@@ -8,5 +8,11 @@ openwrt_uci_files:
   - firewall
   - dhcp
   - system
+  - tailscale
 openwrt_verify_dns_domain: example.com
 openwrt_verify_http_url: https://example.com
+openwrt_tailscale_authkey_dcli_path: openwrt/mt6000/tailscale/auth_key
+openwrt_tailscale_authkey: >-
+  {{ lookup('pipe', 'dcli read ' + openwrt_tailscale_authkey_dcli_path) }}
+openwrt_tailscale_routes:
+  - 192.168.8.135/32

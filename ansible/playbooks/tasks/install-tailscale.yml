@@ -1,0 +1,24 @@
+---
+- name: Check if Tailscale is installed
+  ansible.builtin.raw: "command -v tailscale"
+  register: tailscale_binary
+  changed_when: false
+  failed_when: false
+
+- name: Install Tailscale if missing
+  ansible.builtin.raw: |
+    if [ {{ tailscale_binary.rc }} -ne 0 ]; then
+      opkg update
+      opkg install tailscale
+      echo changed
+    fi
+  register: tailscale_install
+  changed_when: "'changed' in tailscale_install.stdout"
+
+- name: Enable and start Tailscale service
+  ansible.builtin.raw: |
+    if [ -x /etc/init.d/tailscale ]; then
+      /etc/init.d/tailscale enable
+      /etc/init.d/tailscale start
+    fi
+  changed_when: false
