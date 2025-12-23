@@ -113,6 +113,9 @@
 - Document management access endpoints and methods (IP/hostname, protocol,
   authentication, location).
 - Changes affecting behavior or usage must update `docs/` and any README.md.
+- Hostnames, SSIDs, and inventory labels must follow the Theme + Role naming
+  scheme (Titans for servers, Heroes for clients, WLAN SSIDs from
+  Olympus/Styx/Asphodel with role suffixes).
 
 ## Success Criteria *(mandatory)*
 

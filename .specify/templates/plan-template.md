@@ -34,6 +34,8 @@
 
 - IaC only: router/network changes expressed in Ansible/OpenWrt configs and
   committed to version control.
+- Single-source config: all Ansible configuration values live in the single
+  main YAML file with no hidden or external values.
 - Safety-first: rollback steps, pre/post validation, and safe access path are
   defined for network changes.
 - Idempotency & drift: automation is idempotent and includes drift detection
@@ -49,6 +51,8 @@
 - Changes that affect behavior or usage update `docs/` and any README.md.
 - Code comments and documentation are in English; Markdown prose hard-wraps at
   80 characters.
+- Naming follows the Theme + Role scheme (Titans for servers, Heroes for
+  clients, WLAN SSIDs from Olympus/Styx/Asphodel with role suffixes).
 
 ## Project Structure
 
