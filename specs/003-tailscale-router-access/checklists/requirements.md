@@ -1,9 +1,8 @@
-# Specification Quality Checklist: OpenWrt WISP IaC
+# Specification Quality Checklist: Tailscale Router Access
 
-**Purpose**: Validate specification completeness and quality before proceeding
-to planning
-**Created**: 2025-12-20
-**Feature**: specs/002-openwrt-wisp-iac/spec.md
+**Purpose**: Validate specification completeness and quality before proceeding to planning
+**Created**: 2025-12-23
+**Feature**: /Users/christianweinrich/Source/infrastructure/specs/001-tailscale-router-access/spec.md
 
 ## Content Quality
 
@@ -32,5 +31,4 @@ to planning
 
 ## Notes
 
-- Items marked incomplete require spec updates before `/speckit.clarify` or
-  `/speckit.plan`
+- Items marked incomplete require spec updates before `/speckit.clarify` or `/speckit.plan`

@@ -60,4 +60,3 @@ config domain
 config dhcp 'secondwan'
 	option interface 'secondwan'
 	option ignore '1'
-

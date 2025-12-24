@@ -167,4 +167,3 @@ config interface 'wwan'
 	option metric '20'
 	option hostname '*'
 	option mtu '1500'
-

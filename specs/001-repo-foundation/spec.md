@@ -6,13 +6,14 @@
 **Input**: User description:
 "/prompts::speckit.specify Write Spec 001: Repository foundation (linting,
 docs, CI). Goals: - Add YAML linting, Markdown linting, and Ansible linting.
+
 - Add docs/ that renders via MkDocs and builds in CI (strict). - Add a minimal
-ansible/ scaffold. - Run checks locally and in GitHub Actions CI. Acceptance
-criteria: - CI runs on push + pull_request and fails on violations. - MkDocs
-build succeeds with strict mode in CI. - docs/ contains an initial index page.
+  ansible/ scaffold. - Run checks locally and in GitHub Actions CI. Acceptance
+  criteria: - CI runs on push + pull_request and fails on violations. - MkDocs
+  build succeeds with strict mode in CI. - docs/ contains an initial index page.
 - Linting configs are reproducible and pinned where appropriate."
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Prevent regressions via CI (Priority: P1)
 
@@ -75,7 +76,7 @@ index page renders.
 - Documentation build fails when warnings are present (strict mode).
 - CI handles pull requests from forks without exposing secrets.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -94,7 +95,7 @@ index page renders.
 - **FR-007**: The same checks MUST be runnable locally with documented steps.
 - **FR-008**: CI MUST run safely on fork pull requests without using secrets.
 
-## Assumptions & Sources *(mandatory)*
+## Assumptions & Sources _(mandatory)_
 
 - GitHub Actions is the CI platform, per the feature request.
 - MkDocs is the documentation generator, per the feature request.
@@ -102,7 +103,7 @@ index page renders.
 - No router/OpenWrt device specifics are required for this feature; therefore no
   external citations are needed here.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

@@ -13,3 +13,6 @@ continuous integration. It will expand as runbooks and automation are added.
   - `docs/runbooks/openwrt-verification.md`
   - `docs/runbooks/openwrt-apply.md`
   - `docs/runbooks/openwrt-recovery.md`
+  - `docs/runbooks/openwrt-tailscale.md`
+  - Tailscale remote access is covered in the apply, verification, secrets,
+    and recovery runbooks above.

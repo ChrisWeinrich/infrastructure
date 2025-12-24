@@ -57,11 +57,11 @@
 ## Validation Rules
 
 - Snapshot files MUST include the five `/etc/config` files identified in the
-feature spec.
+  feature spec.
 - Desired Configuration MUST preserve WISP uplink behavior unless explicitly
-superseded by a future feature.
+  superseded by a future feature.
 - Verification Checklist MUST include DNS resolution and external reachability
-checks.
+  checks.
 - Recovery Plan MUST include a vendor reset/repair step as last resort.
 
 ## State Transitions

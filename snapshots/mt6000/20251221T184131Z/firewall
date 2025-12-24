@@ -273,4 +273,3 @@ config rule 'ovpnserver_drop_leaked_adgdns'
 config include 'portal_ttl'
 	option path '/etc/firewall-portal.user'
 	option reload '1'
-

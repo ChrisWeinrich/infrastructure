@@ -8,7 +8,7 @@ already have local access to the router and a safe fallback path.
 
 - Physical or wired fallback access to the router during changes.
 - Router management endpoint (IP or hostname), protocol, and credentials
-available outside the repository.
+  available outside the repository.
 - Upstream Wi-Fi credentials available at runtime.
 - SSH private key retrieved at runtime via dcli.
 
@@ -24,20 +24,21 @@ available outside the repository.
    ```
 
 3. Run the snapshot playbook to capture `/etc/config` files into the
-`snapshots/<router>/` directory.
+   `snapshots/<router>/` directory.
 
    ```bash
    ANSIBLE_PRIVATE_KEY_FILE=~/.ssh/openwrt_mt6000 \
      ansible-playbook ansible/playbooks/snapshot-openwrt.yml \
      -i ansible/inventory/openwrt/hosts.yml
    ```
+
 4. Commit the snapshot in Git as the baseline reference.
 
 ## Declarative Apply
 
 1. Derive desired configuration files from the baseline snapshot.
 2. Apply changes in small increments with a verification checklist after each
-step.
+   step.
 3. Confirm LAN clients can resolve DNS and reach the internet after each apply.
 4. Use the staged apply playbook (it captures a pre-apply snapshot and removes
    it automatically if the apply makes no changes):

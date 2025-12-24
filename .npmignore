@@ -18,8 +18,5 @@ dist/
 Thumbs.db
 *.tmp
 *.swp
-.ansible/
-.obsidian/
-snapshots/
 .vscode/
 .idea/

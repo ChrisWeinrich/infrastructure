@@ -16,10 +16,21 @@ reachability before making new changes.
    uci commit firewall
    uci commit dhcp
    uci commit system
+   uci commit tailscale
    ```
 
-5. Reboot the router if configuration services do not reload cleanly.
-6. Re-run the verification checklist in
+5. Disable Tailscale if it was part of the failed change:
+
+   ```bash
+   /etc/init.d/tailscale stop
+   /etc/init.d/tailscale disable
+   uci set tailscale.settings.enabled='0'
+   uci commit tailscale
+   tailscale down
+   ```
+
+6. Reboot the router if configuration services do not reload cleanly.
+7. Re-run the verification checklist in
    `docs/runbooks/openwrt-verification.md`.
 
 ## Last Resort

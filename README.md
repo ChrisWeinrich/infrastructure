@@ -22,3 +22,13 @@ documentation.
 - Source files live in `docs/`.
 - The MkDocs configuration is `mkdocs.yml`.
 - Update `docs/` and README.md when changes affect usage or behavior.
+- Remote access via Tailscale is documented in the OpenWrt runbooks under
+  `docs/runbooks/`.
+
+## OpenWrt Remote Access
+
+- Apply and verification flow: `docs/runbooks/openwrt-apply.md`,
+  `docs/runbooks/openwrt-verification.md`
+- Secrets and recovery steps: `docs/runbooks/openwrt-secrets.md`,
+  `docs/runbooks/openwrt-recovery.md`
+- Tailscale overview: `docs/runbooks/openwrt-tailscale.md`
