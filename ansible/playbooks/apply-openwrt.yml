@@ -90,15 +90,6 @@
 
     - name: Configure Tailscale
       ansible.builtin.include_tasks: tasks/configure-tailscale.yml
-
-    - name: Apply configuration files from repository
-      ansible.builtin.include_tasks: tasks/apply-uci-file.yml
-      when: openwrt_apply_full | bool
-      loop: "{{ uci_files }}"
-      loop_control:
-        label: "{{ item }}"
-      register: uci_apply_results
-
     - name: Determine whether apply changed router state
       ansible.builtin.set_fact:
         apply_changed: >-

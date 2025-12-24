@@ -20,12 +20,15 @@ This directory contains the Ansible automation for managing the OpenWrt router.
 ## Common Commands
 
 ```bash
+# Hello-world connectivity check
 ansible-playbook ansible/playbooks/verify-openwrt.yml \
   -i ansible/inventory/openwrt/hosts.yml
 
+# Snapshot is only needed once at the beginning
 ansible-playbook ansible/playbooks/snapshot-openwrt.yml \
   -i ansible/inventory/openwrt/hosts.yml
 
+# Apply automatically captures a snapshot before changes
 ansible-playbook ansible/playbooks/apply-openwrt.yml \
   -i ansible/inventory/openwrt/hosts.yml
 ```
