@@ -15,8 +15,8 @@ research.md, data-model.md, contracts/, quickstart.md
 
 **Purpose**: Project initialization and basic structure
 
-- [X] T001 Review scope and priorities in specs/001-docker-vlan-nginx/spec.md
-- [X] T002 Review implementation plan in specs/001-docker-vlan-nginx/plan.md
+- [x] T001 Review scope and priorities in specs/001-docker-vlan-nginx/spec.md
+- [x] T002 Review implementation plan in specs/001-docker-vlan-nginx/plan.md
 
 ---
 
@@ -27,10 +27,10 @@ can be implemented
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [X] T003 [P] Add VLAN 40 and hostname data to ansible/configs/network.yml
-- [X] T004 [P] Add VLAN rollback/validation notes to docs/runbooks/network-config.md
-- [X] T005 [P] Add hostname access notes to docs/runbooks/openwrt-tailscale.md
-- [X] T006 [P] Add VLAN service reference to docs/index.md
+- [x] T003 [P] Add VLAN 40 and hostname data to ansible/configs/network.yml
+- [x] T004 [P] Add VLAN rollback/validation notes to docs/runbooks/network-config.md
+- [x] T005 [P] Add hostname access notes to docs/runbooks/openwrt-tailscale.md
+- [x] T006 [P] Add VLAN service reference to docs/index.md
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 
@@ -46,11 +46,11 @@ atlas-host and service responds on the VLAN subnet.
 
 ### Implementation for User Story 1
 
-- [X] T007 [US1] Add Docker Engine and Compose install tasks in ansible/playbooks/apply-server.yml
-- [X] T008 [US1] Add VLAN 40 interface tasks in ansible/playbooks/apply-server.yml
-- [X] T009 [US1] Add macvlan network and nginx container tasks in ansible/playbooks/apply-server.yml
-- [X] T010 [US1] Add VLAN/container validation tasks in ansible/playbooks/apply-server.yml
-- [X] T011 [P] [US1] Add server rollback steps in docs/runbooks/network-config.md
+- [x] T007 [US1] Add Docker Engine and Compose install tasks in ansible/playbooks/apply-server.yml
+- [x] T008 [US1] Add VLAN 40 interface tasks in ansible/playbooks/apply-server.yml
+- [x] T009 [US1] Add macvlan network and nginx container tasks in ansible/playbooks/apply-server.yml
+- [x] T010 [US1] Add VLAN/container validation tasks in ansible/playbooks/apply-server.yml
+- [x] T011 [P] [US1] Add server rollback steps in docs/runbooks/network-config.md
 
 **Checkpoint**: User Story 1 is functional and testable independently
 
@@ -65,10 +65,10 @@ hostname and receive the hello world response.
 
 ### Implementation for User Story 2
 
-- [X] T012 [US2] Add VLAN 40 routing/firewall tasks in ansible/playbooks/apply-openwrt.yml
-- [X] T013 [US2] Add DHCP/DNS hostname tasks in ansible/playbooks/apply-openwrt.yml
-- [X] T014 [US2] Add routing/DNS validation in ansible/playbooks/verify-openwrt.yml
-- [X] T015 [P] [US2] Add LAN/Tailscale validation steps in docs/runbooks/openwrt-tailscale.md
+- [x] T012 [US2] Add VLAN 40 routing/firewall tasks in ansible/playbooks/apply-openwrt.yml
+- [x] T013 [US2] Add DHCP/DNS hostname tasks in ansible/playbooks/apply-openwrt.yml
+- [x] T014 [US2] Add routing/DNS validation in ansible/playbooks/verify-openwrt.yml
+- [x] T015 [P] [US2] Add LAN/Tailscale validation steps in docs/runbooks/openwrt-tailscale.md
 
 **Checkpoint**: User Stories 1 and 2 work independently
 

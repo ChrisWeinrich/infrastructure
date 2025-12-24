@@ -5,13 +5,13 @@
 **Status**: Draft  
 **Input**: User description: "wir sind beim nächeten feature und haben nun 004-.... DAs feature dreht sich um folgendes auf dem Server docker udn docker compose installieren. Ein Vlan dafüber ein richten und einen hello world nginx container deployen"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 <!--
   IMPORTANT: User stories should be PRIORITIZED as user journeys ordered by importance.
   Each user story/journey must be INDEPENDENTLY TESTABLE - meaning if you implement just ONE of them,
   you should still have a viable MVP (Minimum Viable Product) that delivers value.
-  
+
   Assign priorities (P1, P2, P3, etc.) to each story, where P1 is the most critical.
   Think of each story as a standalone slice of functionality that can be:
   - Developed independently
@@ -73,7 +73,7 @@ As an infrastructure admin, I want to re-run provisioning without creating dupli
 - What happens if the service port is already occupied on the server?
 - What happens if the LAN or Tailscale routes to the service are missing?
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 <!--
   ACTION REQUIRED: The content in this section represents placeholders.
@@ -90,13 +90,13 @@ As an infrastructure admin, I want to re-run provisioning without creating dupli
 - **FR-006**: System MUST support DNS hostnames for the hello world service for LAN and remote admin access.
 - **FR-007**: System MUST support repeatable provisioning without creating duplicate network configuration or services.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Isolated Network Segment**: The VLAN-based network segment configured on the server (ID, subnet, uplink association).
 - **Hello World Service Endpoint**: The network endpoint exposed by the sample service (address, port, expected response).
 - **Service Hostname**: The DNS name mapped to the hello world service (name, resolution scope).
 
-## Assumptions & Sources *(mandatory)*
+## Assumptions & Sources _(mandatory)_
 
 - Target server is "atlas-host" and is reachable via existing SSH host alias
   `atlas-host` on the management network.
@@ -111,7 +111,7 @@ As an infrastructure admin, I want to re-run provisioning without creating dupli
 - Any behavior or usage changes will update `docs/` and any README.md.
 - Code, scripts, configs, and YAML files will include English comments where steps are not self-explanatory.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 <!--
   ACTION REQUIRED: Define measurable success criteria.
