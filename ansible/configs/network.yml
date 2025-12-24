@@ -1,0 +1,31 @@
+---
+# Central network configuration grouped by site, networks, devices, and
+# addressing so operators can find values quickly.
+
+site:
+  name: "primary"
+  description: "Primary LAN site"
+  networks:
+    lan:
+      name: "olympus-lan"
+      subnet: "192.168.8.0/24"
+      gateway: "192.168.8.1"
+      router:
+        name: "hermes-gateway"
+        role: "router"
+        management_address: "192.168.8.1"
+        notes: "LAN gateway and DHCP authority"
+        management:
+          protocol: "ssh"
+          port: 22
+        attached_devices:
+          server:
+            name: "atlas-host"
+            role: "server"
+            management_address: "192.168.8.134"
+            mac_address: "18:31:bf:dd:1b:c0"
+            notes: "Primary server connected to the router LAN"
+            management:
+              protocol: "ssh"
+              port: 22
+          clients: {}

@@ -7,8 +7,11 @@ reachability before making new changes.
 
 1. Stop the current apply process and keep physical access to the router.
 2. Reconnect via the last known-good management path (wired or local Wi-Fi).
-3. Restore the last snapshot into `/etc/config` using SCP or SFTP.
-4. Commit the restored configuration:
+3. Use `ansible/configs/network.yml` and
+   `ansible/inventory/openwrt/hosts.yml` to confirm the last known-good
+   management address before restoring snapshots.
+4. Restore the last snapshot into `/etc/config` using SCP or SFTP.
+5. Commit the restored configuration:
 
    ```bash
    uci commit network
@@ -19,7 +22,7 @@ reachability before making new changes.
    uci commit tailscale
    ```
 
-5. Disable Tailscale if it was part of the failed change:
+6. Disable Tailscale if it was part of the failed change:
 
    ```bash
    /etc/init.d/tailscale stop
@@ -29,8 +32,8 @@ reachability before making new changes.
    tailscale down
    ```
 
-6. Reboot the router if configuration services do not reload cleanly.
-7. Re-run the verification checklist in
+7. Reboot the router if configuration services do not reload cleanly.
+8. Re-run the verification checklist in
    `docs/runbooks/openwrt-verification.md`.
 
 ## Last Resort

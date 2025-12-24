@@ -1,0 +1,63 @@
+---
+# Sync repository UCI config files to the router in a controlled, idempotent
+# way so later steps can rely on consistent configuration state.
+
+- name: Resolve repository root for config paths
+  ansible.builtin.set_fact:
+    repo_root: >-
+      {{ lookup('pipe', 'cd ' + playbook_dir + '/../.. && pwd') }}
+  delegate_to: localhost
+  run_once: true
+
+- name: Check which UCI files exist in the repo
+  ansible.builtin.stat:
+    path: "{{ repo_root }}/{{ openwrt_config_repo_dir }}/{{ item }}"
+  loop: "{{ uci_files | default([]) }}"
+  register: uci_repo_files
+  delegate_to: localhost
+  run_once: true
+
+- name: Collect present UCI files
+  ansible.builtin.set_fact:
+    uci_repo_present: >-
+      {{ uci_repo_files.results
+         | selectattr('stat.exists', 'equalto', true)
+         | map(attribute='item')
+         | list }}
+  delegate_to: localhost
+  run_once: true
+
+- name: Fail if no UCI files are available to apply
+  ansible.builtin.assert:
+    that:
+      - uci_repo_present | length > 0
+    fail_msg: >-
+      No UCI config files found in {{ openwrt_config_repo_dir }}. Populate the
+      repo config directory before running apply.
+  delegate_to: localhost
+  run_once: true
+
+- name: Copy UCI config files to the router using raw shell
+  ansible.builtin.raw: |
+    tmp_path="/tmp/uci_{{ item }}"
+    dest_path="{{ openwrt_config_dir }}/{{ item }}"
+    cat <<'UCI_EOF_{{ item | upper | regex_replace('[^A-Z0-9]', '_') }}' > "${tmp_path}"
+    {{ lookup('file', repo_root ~ '/' ~ openwrt_config_repo_dir ~ '/' ~ item) }}
+    UCI_EOF_{{ item | upper | regex_replace('[^A-Z0-9]', '_') }}
+    if [ -f "${dest_path}" ] && cmp -s "${tmp_path}" "${dest_path}"; then
+      rm -f "${tmp_path}"
+      echo unchanged
+    else
+      mv "${tmp_path}" "${dest_path}"
+      chmod 0644 "${dest_path}"
+      echo changed
+    fi
+  loop: "{{ uci_repo_present }}"
+  register: uci_apply_results
+  changed_when: "'changed' in uci_apply_results.stdout"
+
+- name: Commit UCI files after sync
+  ansible.builtin.raw: "uci commit {{ item }}"
+  loop: "{{ uci_repo_present }}"
+  register: uci_commit_results
+  changed_when: false

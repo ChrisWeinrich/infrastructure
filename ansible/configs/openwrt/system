@@ -1,0 +1,4 @@
+# System configuration for OpenWrt.
+
+config system
+  option hostname 'hermes-gateway'

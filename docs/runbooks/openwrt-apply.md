@@ -12,20 +12,23 @@ The first change is intentionally low risk: set the system hostname to
 
 1. For a quick hello-world check, run the verification checklist in
    `docs/runbooks/openwrt-verification.md`.
-2. The snapshot playbook is only required once at the beginning. After that,
+2. Confirm the central network configuration in `ansible/configs/network.yml`
+   is up to date and passes the validation checks in
+   `ansible/playbooks/verify-openwrt.yml`.
+3. The snapshot playbook is only required once at the beginning. After that,
    `ansible/playbooks/apply-openwrt.yml` automatically captures a snapshot
    before applying changes.
-3. Apply the first small change using `ansible/playbooks/apply-openwrt.yml`.
+4. Apply the first small change using `ansible/playbooks/apply-openwrt.yml`.
    This run captures a pre-apply snapshot and removes it automatically if the
    apply makes no changes.
-4. Re-run the verification checklist.
-5. If Tailscale is being configured for the first time:
+5. Re-run the verification checklist.
+6. If Tailscale is being configured for the first time:
    - Create a reusable auth key in the Tailscale admin console.
    - Store the auth key in dcli at `openwrt/mt6000/tailscale/auth_key`.
    - Ensure the Tailnet ACLs allow your user/device to reach the LAN subnet.
    - After the first `tailscale up`, approve advertised routes in the admin
      console.
-6. Apply configuration files in the following order, pausing after each file
+7. Apply configuration files in the following order, pausing after each file
    for verification:
    1. `ansible/configs/openwrt/network`
    2. `ansible/configs/openwrt/wireless`
@@ -34,7 +37,7 @@ The first change is intentionally low risk: set the system hostname to
    5. `ansible/configs/openwrt/system`
    6. `ansible/configs/openwrt/tailscale`
 
-7. After each stage, re-run the verification checklist.
+8. After each stage, re-run the verification checklist.
 
 ## Tailscale Apply Notes
 
@@ -45,8 +48,9 @@ The first change is intentionally low risk: set the system hostname to
 
 ## Management Access Endpoints
 
-- SSH: `root@192.168.8.1:22` (inventory host `mt6000`)
-- Web UI: `http://192.168.8.1` on the LAN
+- Reference `ansible/configs/network.yml` and
+  `ansible/inventory/openwrt/hosts.yml` for the current router endpoints.
+- Update both files together when management addressing changes.
 
 ## Example Invocation
 
