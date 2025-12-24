@@ -67,16 +67,16 @@ can be implemented
 
 ### Implementation for User Story 1
 
-- [ ] T009 [US1] Populate ansible/configs/openwrt/tailscale with auth key
+- [X] T009 [US1] Populate ansible/configs/openwrt/tailscale with auth key
   reference and route 192.168.8.135/32
-- [ ] T010 [US1] Create configuration task in
+- [X] T010 [US1] Create configuration task in
   ansible/playbooks/tasks/configure-tailscale.yml to run `tailscale up` with
   the server-only route
-- [ ] T011 [US1] Update ansible/playbooks/apply-openwrt.yml to include
+- [X] T011 [US1] Update ansible/playbooks/apply-openwrt.yml to include
   tasks/configure-tailscale.yml after install
-- [ ] T012 [US1] Update docs/runbooks/openwrt-verification.md with an external
+- [X] T012 [US1] Update docs/runbooks/openwrt-verification.md with an external
   check for 192.168.8.135 access
-- [ ] T013 [US1] Update docs/runbooks/openwrt-recovery.md with rollback steps
+- [X] T013 [US1] Update docs/runbooks/openwrt-recovery.md with rollback steps
   to disable Tailscale and restore prior state
 
 **Checkpoint**: User Story 1 is independently functional and verifiable
@@ -92,12 +92,12 @@ at least two distinct LAN hosts within 192.168.8.0/24
 
 ### Implementation for User Story 2
 
-- [ ] T014 [US2] Update
+- [X] T014 [US2] Update
   ansible/inventory/openwrt/group_vars/all.yml to advertise
   192.168.8.0/24 instead of 192.168.8.135/32
-- [ ] T015 [US2] Create ansible/configs/openwrt/firewall with a Tailscale zone
+- [X] T015 [US2] Create ansible/configs/openwrt/firewall with a Tailscale zone
   and forwarding rules to the LAN
-- [ ] T016 [US2] Update docs/runbooks/openwrt-verification.md to include
+- [X] T016 [US2] Update docs/runbooks/openwrt-verification.md to include
   multi-host access checks and subnet-overlap guidance
 
 **Checkpoint**: User Stories 1 and 2 both work independently
@@ -113,11 +113,11 @@ describe management access and verification steps
 
 ### Implementation for User Story 3
 
-- [ ] T017 [US3] Update docs/runbooks/openwrt-apply.md with Tailscale apply
+- [X] T017 [US3] Update docs/runbooks/openwrt-apply.md with Tailscale apply
   steps and management access endpoints
 - [X] T018 [US3] Update docs/runbooks/openwrt-secrets.md with DCLI secret
   handling and storage guidance
-- [ ] T019 [US3] Update README.md with a remote access overview and links to
+- [X] T019 [US3] Update README.md with a remote access overview and links to
   runbooks
 
 **Checkpoint**: All user stories are independently functional and documented
@@ -128,8 +128,8 @@ describe management access and verification steps
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T020 [P] Update docs/index.md to link the new Tailscale runbook content
-- [ ] T021 Run quickstart validation and sync steps in
+- [X] T020 [P] Update docs/index.md to link the new Tailscale runbook content
+- [X] T021 Run quickstart validation and sync steps in
   specs/003-tailscale-router-access/quickstart.md
 
 ---

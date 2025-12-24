@@ -24,6 +24,8 @@ reachability before making new changes.
    ```bash
    /etc/init.d/tailscale stop
    /etc/init.d/tailscale disable
+   uci set tailscale.settings.enabled='0'
+   uci commit tailscale
    tailscale down
    ```
 

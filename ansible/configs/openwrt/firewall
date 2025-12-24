@@ -1,0 +1,13 @@
+# Tailscale firewall additions (managed by Ansible).
+config zone
+  option name 'tailscale'
+  option input 'ACCEPT'
+  option output 'ACCEPT'
+  option forward 'ACCEPT'
+  option masq '0'
+  option mtu_fix '1'
+  option device 'tailscale0'
+
+config forwarding
+  option src 'tailscale'
+  option dest 'lan'

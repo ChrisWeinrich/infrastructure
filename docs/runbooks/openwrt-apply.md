@@ -37,6 +37,18 @@ The first change is intentionally low risk: set the system hostname to
 
 5. After each stage, re-run the verification checklist.
 
+## Tailscale Apply Notes
+
+- `ansible/playbooks/apply-openwrt.yml` installs Tailscale and runs
+  `tailscale up` using the auth key stored in dcli.
+- After the first apply, approve advertised routes in the Tailscale admin
+  console and re-run the verification checklist.
+
+## Management Access Endpoints
+
+- SSH: `root@192.168.8.1:22` (inventory host `mt6000`)
+- Web UI: `http://192.168.8.1` on the LAN
+
 ## Example Invocation
 
 ```bash

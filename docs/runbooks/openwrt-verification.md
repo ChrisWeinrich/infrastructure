@@ -61,7 +61,16 @@ If any check fails, stop and follow the recovery runbook.
    ```
 
 2. From an external network, confirm access to the server at 192.168.8.135.
+   Example checks:
+
+   ```bash
+   ping -c 3 192.168.8.135
+   ssh <user>@192.168.8.135
+   ```
 3. If subnet routing is enabled, confirm access to at least one additional LAN
    host within 192.168.8.0/24.
-4. If access fails, check Tailnet ACLs and the approved routes in the
+4. If the remote client's local subnet overlaps with 192.168.8.0/24, switch
+   to a non-overlapping network (mobile hotspot or alternate uplink) before
+   retrying verification.
+5. If access fails, check Tailnet ACLs and the approved routes in the
    Tailscale admin console.
