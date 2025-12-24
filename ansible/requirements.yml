@@ -2,3 +2,5 @@
 roles:
   - name: gekmihesg.openwrt
     src: https://github.com/gekmihesg/ansible-openwrt
+collections:
+  - name: ansible.posix
