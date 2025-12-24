@@ -1,6 +1,7 @@
 # Ansible Automation
 
-This directory contains the Ansible automation for managing the OpenWrt router.
+This directory contains the Ansible automation for managing the OpenWrt router
+and server hosts (including Atlas).
 
 ## Structure
 
@@ -20,6 +21,9 @@ This directory contains the Ansible automation for managing the OpenWrt router.
 ## Common Commands
 
 ```bash
+# Apply server configuration to Atlas
+ansible-playbook -i ansible/inventory ansible/playbooks/apply-server.yml
+
 # Hello-world connectivity check
 ansible-playbook ansible/playbooks/verify-openwrt.yml \
   -i ansible/inventory/openwrt/hosts.yml
