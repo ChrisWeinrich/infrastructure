@@ -3,11 +3,16 @@
   hosts: openwrt
   gather_facts: false
   vars:
+    # Snapshot only the configured UCI files.
     uci_files: "{{ openwrt_uci_files | default([]) }}"
+    # Use a stable hostname for the initial low-risk change.
     openwrt_hostname: mt6000
+    # Reserved for staged apply extensions.
     openwrt_apply_full: false
+    # Reserved for staged apply extensions.
     openwrt_apply_pause: true
   tasks:
+    # Resolve the snapshot root directory on the control host.
     - name: Set snapshot root
       ansible.builtin.set_fact:
         snapshot_root: >-
@@ -15,18 +20,21 @@
       delegate_to: localhost
       run_once: true
 
+    # Use a UTC timestamp so snapshots are sortable and unambiguous.
     - name: Set snapshot timestamp
       ansible.builtin.set_fact:
         snapshot_ts: "{{ lookup('pipe', 'date -u +%Y%m%dT%H%M%SZ') }}"
       delegate_to: localhost
       run_once: true
 
+    # Compose the router-specific snapshot directory path.
     - name: Set snapshot directory
       ansible.builtin.set_fact:
         snapshot_dir: "{{ snapshot_root }}/{{ openwrt_router_name }}/{{ snapshot_ts }}"
       delegate_to: localhost
       run_once: true
 
+    # Ensure the snapshot directory exists before writing files.
     - name: Ensure snapshot directory exists
       ansible.builtin.file:
         path: "{{ snapshot_dir }}"
@@ -35,12 +43,14 @@
       delegate_to: localhost
       run_once: true
 
+    # Read each UCI config file from the router.
     - name: Read UCI configuration files
       ansible.builtin.raw: "cat {{ openwrt_config_dir }}/{{ item }}"
       loop: "{{ uci_files }}"
       register: openwrt_configs
       changed_when: false
 
+    # Write snapshot files locally, stripping wireless keys for safety.
     - name: Write snapshot files
       ansible.builtin.copy:
         dest: "{{ snapshot_dir }}/{{ item.item }}"
@@ -54,6 +64,7 @@
       delegate_to: localhost
       run_once: true
 
+    # Remove any remaining wireless key lines from the snapshot.
     - name: Strip wireless keys from snapshot
       ansible.builtin.command: >-
         sed -i '' -E '/^[[:space:]]*option[[:space:]]+key[[:space:]]+/d' {{ snapshot_dir }}/wireless
@@ -61,6 +72,7 @@
       delegate_to: localhost
       run_once: true
 
+    # Normalize line endings to avoid diffs caused by CRLF.
     - name: Normalize wireless snapshot line endings
       ansible.builtin.command: >-
         sed -i '' -e 's/\\r$//' {{ snapshot_dir }}/wireless
@@ -68,6 +80,7 @@
       delegate_to: localhost
       run_once: true
 
+    # Apply a low-risk hostname change as the first staged step.
     - name: Apply first small change (hostname)
       ansible.builtin.raw: |
         current="$(uci -q get system.@system[0].hostname)"
@@ -79,17 +92,22 @@
       register: hostname_apply
       changed_when: "'changed' in hostname_apply.stdout"
 
+    # Reload services only when the hostname is changed.
     - name: Reload system and dnsmasq when hostname changes
       ansible.builtin.raw: |
         /etc/init.d/system reload
         /etc/init.d/dnsmasq restart
       when: hostname_apply.changed
 
+    # Ensure the Tailscale package is installed and running.
     - name: Install Tailscale
       ansible.builtin.include_tasks: tasks/install-tailscale.yml
 
+    # Configure Tailscale routes and auth key on the router.
     - name: Configure Tailscale
       ansible.builtin.include_tasks: tasks/configure-tailscale.yml
+
+    # Track whether any task changed router state to decide snapshot cleanup.
     - name: Determine whether apply changed router state
       ansible.builtin.set_fact:
         apply_changed: >-
@@ -97,6 +115,7 @@
           (uci_apply_results is defined and
           (uci_apply_results.results | selectattr('changed') | list | length > 0)) }}
 
+    # Remove the snapshot when nothing changed to keep the repo clean.
     - name: Remove snapshot if no changes were applied
       ansible.builtin.file:
         path: "{{ hostvars['localhost'].snapshot_dir }}"

@@ -1,14 +1,17 @@
 ---
+# Determine whether the tailscale binary is present.
 - name: Check if Tailscale is installed
   ansible.builtin.raw: "command -v tailscale"
   register: tailscale_binary
   changed_when: false
   failed_when: false
 
+# Refresh package metadata before install/upgrade.
 - name: Update package lists
   ansible.builtin.raw: "opkg update"
   changed_when: false
 
+# Install tailscale if missing, otherwise upgrade it.
 - name: Install or upgrade Tailscale
   ansible.builtin.raw: |
     if [ {{ tailscale_binary.rc }} -ne 0 ]; then
@@ -21,6 +24,7 @@
   register: tailscale_install
   changed_when: "'changed' in tailscale_install.stdout"
 
+# Ensure the tailscale service is enabled and running.
 - name: Enable and start Tailscale service
   ansible.builtin.raw: |
     if [ -x /etc/init.d/tailscale ]; then

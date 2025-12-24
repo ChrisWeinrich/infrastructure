@@ -1,8 +1,9 @@
 <!--
 Sync Impact Report:
-- Version change: 1.0.4 -> 1.1.0
-- Modified principles: None
-- Added sections: VIII. Documentation & README Sync
+- Version change: 1.1.0 -> 1.2.0
+- Modified principles: V. English Code Comments -> V. Commented Code &
+  Configurations
+- Added sections: None
 - Removed sections: None
 - Templates requiring updates:
   - .specify/templates/plan-template.md ✅ updated
@@ -40,9 +41,11 @@ Rationale: Idempotency and drift control keep infrastructure consistent.
   before other sources.
 Rationale: Cited sources reduce ambiguity and prevent tribal knowledge.
 
-### V. English Code Comments
-- All code comments MUST be in English; update touched comments to comply.
-Rationale: A shared language keeps reviews and maintenance efficient.
+### V. Commented Code & Configurations
+- All code, scripts, configs, and YAML files MUST include comments that make
+  each step, function, class, or block understandable at a glance.
+- Comments MUST be in English; update touched comments to comply.
+Rationale: Clear English comments speed reviews and reduce operational risk.
 
 ### VI. English Documentation
 - All documentation MUST be in English, including runbooks and change records.
@@ -64,6 +67,8 @@ Rationale: Users rely on docs and READMEs to operate and validate changes.
 - Change proposals MUST include a safety plan, rollback steps, and validation
   criteria before and after applying changes.
 - Assumptions and device-specific behavior MUST be documented with sources.
+- Code, scripts, configs, and YAML files MUST be commented so each step,
+  function, class, or block is immediately understandable.
 - Primary router reference (consult first for router-specific guidance):
   https://github.com/gl-inet/docs4.x/blob/master/docs/user_guide/gl-mt6000/index.md
 - Core reference for Ansible/OpenWrt:
@@ -93,4 +98,4 @@ Rationale: Users rely on docs and READMEs to operate and validate changes.
 - Compliance is mandatory: reviewers MUST verify adherence in plans, specs,
   tasks, and code review; exceptions require written approval and risk notes.
 
-**Version**: 1.1.0 | **Ratified**: 2025-12-20 | **Last Amended**: 2025-12-21
+**Version**: 1.2.0 | **Ratified**: 2025-12-20 | **Last Amended**: 2025-12-24

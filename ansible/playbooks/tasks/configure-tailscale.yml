@@ -1,10 +1,12 @@
 ---
+# Capture current Tailscale status for idempotent configuration.
 - name: Read Tailscale status
   ansible.builtin.raw: "tailscale status --json"
   register: tailscale_status
   changed_when: false
   failed_when: false
 
+# Enable the Tailscale UCI config to keep service enabled across reboots.
 - name: Ensure Tailscale UCI is enabled
   ansible.builtin.raw: |
     enabled="$(uci -q get tailscale.settings.enabled || echo 0)"
@@ -16,6 +18,7 @@
   register: tailscale_uci_enable
   changed_when: "'changed' in tailscale_uci_enable.stdout"
 
+# Make sure the daemon is running before running `tailscale up`.
 - name: Ensure Tailscale service is running before configuration
   ansible.builtin.raw: |
     if [ -x /etc/init.d/tailscale ]; then
@@ -24,6 +27,7 @@
     fi
   changed_when: false
 
+# Decide if `tailscale up` must be re-run based on status or routes.
 - name: Determine if Tailscale configuration is needed
   ansible.builtin.set_fact:
     tailscale_needs_up: >-
@@ -31,6 +35,7 @@
       '"BackendState":"Running"' not in tailscale_status.stdout or
       (openwrt_tailscale_routes | join(',')) not in tailscale_status.stdout }}
 
+# Apply auth key and advertised routes when configuration is needed.
 - name: Configure Tailscale routes
   ansible.builtin.raw: >-
     tailscale up
