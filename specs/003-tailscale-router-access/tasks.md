@@ -26,7 +26,7 @@ implementation and testing of each story.
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Create Tailscale UCI config file at
+- [X] T001 Create Tailscale UCI config file at
   ansible/configs/openwrt/tailscale
 
 ---
@@ -36,22 +36,22 @@ implementation and testing of each story.
 **Purpose**: Core infrastructure that MUST be complete before ANY user story
 can be implemented
 
-- [ ] T002 Update
+- [X] T002 Update
   ansible/inventory/openwrt/group_vars/all.yml to add Tailscale variables and
   include `tailscale` in `openwrt_uci_files`
-- [ ] T003 Add DCLI secret reference for the Tailscale auth key in
+- [X] T003 Add DCLI secret reference for the Tailscale auth key in
   ansible/inventory/openwrt/group_vars/all.yml and document the lookup command
   in ansible/README.md
-- [ ] T004 Manually create a Tailscale auth key per
+- [X] T004 Manually create a Tailscale auth key per
   docs/runbooks/openwrt-secrets.md and store it in DCLI
-- [ ] T005 Manually approve advertised routes and ACL access per
+- [X] T005 Manually approve advertised routes and ACL access per
   docs/runbooks/openwrt-apply.md in the Tailscale admin console
-- [ ] T006 Create install task in
+- [X] T006 Create install task in
   ansible/playbooks/tasks/install-tailscale.yml to install the package and
   enable the service
-- [ ] T007 Update ansible/playbooks/apply-openwrt.yml to include
+- [X] T007 Update ansible/playbooks/apply-openwrt.yml to include
   tasks/install-tailscale.yml before configuration apply
-- [ ] T008 Update ansible/playbooks/verify-openwrt.yml to assert Tailscale is
+- [X] T008 Update ansible/playbooks/verify-openwrt.yml to assert Tailscale is
   running and to record advertised routes
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
@@ -115,7 +115,7 @@ describe management access and verification steps
 
 - [ ] T017 [US3] Update docs/runbooks/openwrt-apply.md with Tailscale apply
   steps and management access endpoints
-- [ ] T018 [US3] Update docs/runbooks/openwrt-secrets.md with DCLI secret
+- [X] T018 [US3] Update docs/runbooks/openwrt-secrets.md with DCLI secret
   handling and storage guidance
 - [ ] T019 [US3] Update README.md with a remote access overview and links to
   runbooks

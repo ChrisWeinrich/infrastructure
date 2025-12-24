@@ -5,11 +5,17 @@
   changed_when: false
   failed_when: false
 
-- name: Install Tailscale if missing
+- name: Update package lists
+  ansible.builtin.raw: "opkg update"
+  changed_when: false
+
+- name: Install or upgrade Tailscale
   ansible.builtin.raw: |
     if [ {{ tailscale_binary.rc }} -ne 0 ]; then
-      opkg update
       opkg install tailscale
+      echo changed
+    else
+      opkg upgrade tailscale
       echo changed
     fi
   register: tailscale_install

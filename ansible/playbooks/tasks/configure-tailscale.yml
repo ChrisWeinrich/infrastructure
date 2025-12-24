@@ -5,6 +5,25 @@
   changed_when: false
   failed_when: false
 
+- name: Ensure Tailscale UCI is enabled
+  ansible.builtin.raw: |
+    enabled="$(uci -q get tailscale.settings.enabled || echo 0)"
+    if [ "$enabled" != "1" ]; then
+      uci set tailscale.settings.enabled='1'
+      uci commit tailscale
+      echo changed
+    fi
+  register: tailscale_uci_enable
+  changed_when: "'changed' in tailscale_uci_enable.stdout"
+
+- name: Ensure Tailscale service is running before configuration
+  ansible.builtin.raw: |
+    if [ -x /etc/init.d/tailscale ]; then
+      /etc/init.d/tailscale enable
+      /etc/init.d/tailscale restart
+    fi
+  changed_when: false
+
 - name: Determine if Tailscale configuration is needed
   ansible.builtin.set_fact:
     tailscale_needs_up: >-
@@ -20,4 +39,4 @@
   when: tailscale_needs_up | bool
   register: tailscale_up
   changed_when: true
-  no_log: true
+  no_log: "{{ openwrt_tailscale_no_log | default(true) }}"

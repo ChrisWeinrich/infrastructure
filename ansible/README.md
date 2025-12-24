@@ -15,7 +15,7 @@ This directory contains the Ansible automation for managing the OpenWrt router.
 - Document assumptions and cite sources when needed.
 - Store the Tailscale auth key in dcli at
   `openwrt/mt6000/tailscale/auth_key` and retrieve it on the control host
-  with `dcli read openwrt/mt6000/tailscale/auth_key`.
+  with `dcli p --output console title=openwrt/mt6000/tailscale/auth_key`.
 
 ## Common Commands
 
