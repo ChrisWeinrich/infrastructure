@@ -1,0 +1,12 @@
+---
+- name: Apply server hostname configuration
+  hosts: servers
+  gather_facts: false
+  become: true
+  vars:
+    server_hostname: atlas-host
+  tasks:
+    # Ensure the server hostname matches the inventory name.
+    - name: Set server hostname
+      ansible.builtin.hostname:
+        name: "{{ server_hostname }}"

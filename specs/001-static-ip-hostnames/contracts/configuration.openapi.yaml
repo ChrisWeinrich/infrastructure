@@ -1,0 +1,161 @@
+---
+openapi: 3.0.3
+info:
+  title: Network Configuration Contract
+  version: 1.0.0
+  description: |
+    Conceptual contract for configuration validation and inspection actions
+    derived from the feature requirements.
+servers:
+  - url: https://config.local
+paths:
+  /config:
+    get:
+      summary: Retrieve the full network configuration
+      responses:
+        "200":
+          description: Full configuration payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Configuration"
+  /config/devices:
+    get:
+      summary: List all devices in the network configuration
+      responses:
+        "200":
+          description: List of devices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Device"
+  /config/devices/{deviceId}/address:
+    put:
+      summary: Set or update a device's fixed IP address
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddressAssignment"
+      responses:
+        "200":
+          description: Updated device address
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Device"
+  /config/devices/{deviceId}/hostname:
+    put:
+      summary: Set or update a device hostname
+      parameters:
+        - in: path
+          name: deviceId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Hostname"
+      responses:
+        "200":
+          description: Updated device hostname
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Device"
+  /config/validate:
+    post:
+      summary: Validate configuration for IP and hostname conflicts
+      responses:
+        "200":
+          description: Validation results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationResult"
+components:
+  schemas:
+    Configuration:
+      type: object
+      required:
+        - site
+        - networks
+        - devices
+      properties:
+        site:
+          type: string
+        networks:
+          type: array
+          items:
+            $ref: "#/components/schemas/Network"
+        devices:
+          type: array
+          items:
+            $ref: "#/components/schemas/Device"
+    Network:
+      type: object
+      required:
+        - name
+        - subnet
+      properties:
+        name:
+          type: string
+        subnet:
+          type: string
+    Device:
+      type: object
+      required:
+        - id
+        - role
+        - hostname
+        - management_address
+      properties:
+        id:
+          type: string
+        role:
+          type: string
+        hostname:
+          type: string
+        management_address:
+          type: string
+    AddressAssignment:
+      type: object
+      required:
+        - address
+        - subnet
+      properties:
+        address:
+          type: string
+        subnet:
+          type: string
+    Hostname:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+    ValidationResult:
+      type: object
+      required:
+        - status
+        - conflicts
+      properties:
+        status:
+          type: string
+        conflicts:
+          type: array
+          items:
+            type: string

@@ -1,0 +1,14 @@
+# DHCP and static lease configuration for OpenWrt.
+
+config dnsmasq
+  option domainneeded '1'
+  option boguspriv '1'
+  option authoritative '1'
+  option readethers '1'
+  option localservice '1'
+
+# Static lease for atlas-host on the LAN.
+config host
+  option name 'atlas-host'
+  option mac '18:31:bf:dd:1b:c0'
+  option ip '192.168.1.134'

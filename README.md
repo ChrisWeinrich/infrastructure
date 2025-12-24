@@ -24,6 +24,8 @@ documentation.
 - Update `docs/` and README.md when changes affect usage or behavior.
 - Remote access via Tailscale is documented in the OpenWrt runbooks under
   `docs/runbooks/`.
+- Central network configuration layout:
+  `docs/runbooks/network-config.md`
 
 ## OpenWrt Remote Access
 

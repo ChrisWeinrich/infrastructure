@@ -7,7 +7,7 @@
     # Snapshot only the configured UCI files.
     uci_files: "{{ openwrt_uci_files | default([]) }}"
     # Use a stable hostname for the initial low-risk change.
-    openwrt_hostname: mt6000
+    openwrt_hostname: "{{ openwrt_hostname | default(openwrt_router_name) }}"
     # Reserved for staged apply extensions.
     openwrt_apply_full: false
     # Reserved for staged apply extensions.
@@ -98,6 +98,10 @@
       register: hostname_apply
       changed_when: "'changed' in hostname_apply.stdout"
       notify: Reload system services
+
+    # Sync repository UCI files to the router before enabling services.
+    - name: Apply repository UCI configuration files
+      ansible.builtin.include_tasks: tasks/apply-openwrt-uci.yml
 
     # Ensure the Tailscale package is installed and running.
     - name: Install Tailscale

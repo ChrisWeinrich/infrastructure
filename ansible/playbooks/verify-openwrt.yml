@@ -33,6 +33,10 @@
           - uci_reads.results | map(attribute='rc') | list | max == 0
         fail_msg: "One or more UCI read checks failed."
 
+    # Validate the central network configuration before deeper checks.
+    - name: Validate central network configuration
+      ansible.builtin.include_tasks: tasks/validate-network.yml
+
     # Validate DNS resolution from the router.
     - name: Verify DNS resolution from the router
       ansible.builtin.raw: "nslookup {{ openwrt_verify_dns_domain }}"
