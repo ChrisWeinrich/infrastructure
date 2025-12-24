@@ -6,8 +6,6 @@
   vars:
     # Snapshot only the configured UCI files.
     uci_files: "{{ openwrt_uci_files | default([]) }}"
-    # Use a stable hostname for the initial low-risk change.
-    openwrt_hostname_apply: "{{ openwrt_hostname | default(openwrt_router_name) }}"
     # Reserved for staged apply extensions.
     openwrt_apply_full: false
     # Reserved for staged apply extensions.
@@ -86,19 +84,6 @@
       delegate_to: localhost
       run_once: true
 
-    # Apply a low-risk hostname change as the first staged step.
-    - name: Apply first small change (hostname)
-      ansible.builtin.raw: |
-        current="$(uci -q get system.@system[0].hostname)"
-        if [ "$current" != "{{ openwrt_hostname_apply }}" ]; then
-          uci set system.@system[0].hostname="{{ openwrt_hostname_apply }}"
-          uci commit system
-          echo changed
-        fi
-      register: hostname_apply
-      changed_when: "'changed' in hostname_apply.stdout"
-      notify: Reload system services
-
     # Sync repository UCI files to the router before enabling services.
     - name: Apply repository UCI configuration files
       ansible.builtin.include_tasks: tasks/apply-openwrt-uci.yml
@@ -115,9 +100,8 @@
     - name: Determine whether apply changed router state
       ansible.builtin.set_fact:
         apply_changed: >-
-          {{ hostname_apply.changed or
-          (uci_apply_results is defined and
-          (uci_apply_results.results | selectattr('changed') | list | length > 0)) }}
+          {{ uci_apply_results is defined and
+          (uci_apply_results.results | selectattr('changed') | list | length > 0) }}
 
     # Remove the snapshot when nothing changed to keep the repo clean.
     - name: Remove snapshot if no changes were applied
@@ -130,10 +114,4 @@
       delegate_to: localhost
       run_once: true
 
-  handlers:
-    # Reload services only when the hostname is changed.
-    - name: Reload system services
-      ansible.builtin.shell: |
-        /etc/init.d/system reload
-        /etc/init.d/dnsmasq restart
-      changed_when: false
+  handlers: []
