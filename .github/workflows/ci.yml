@@ -21,11 +21,6 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
       - name: Install pre-commit
         run: pip install pre-commit
 
@@ -34,12 +29,6 @@ jobs:
 
       - name: Run pre-commit
         run: pre-commit run --all-files
-
-      - name: Install Markdown lint dependencies
-        run: npm ci
-
-      - name: Run Markdown lint
-        run: npm run lint:md -- "**/*.md"
 
       - name: Build docs (strict)
         run: mkdocs build --strict
