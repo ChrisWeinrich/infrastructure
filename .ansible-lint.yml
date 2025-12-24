@@ -4,3 +4,6 @@ exclude_paths:
   - .venv/
   - node_modules/
   - .specify/
+skip_list:
+  # run_once is required for control-host snapshot orchestration in OpenWrt playbooks.
+  - run-once

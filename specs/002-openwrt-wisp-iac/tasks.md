@@ -20,18 +20,18 @@ implementation and testing of each story.
 **Purpose**: Establish management connectivity and project structure
 
 - [ ] T001 Create directories `ansible/playbooks/`, `ansible/inventory/openwrt/`,
-  `ansible/configs/openwrt/`, `snapshots/`, and `docs/runbooks/`
+      `ansible/configs/openwrt/`, `snapshots/`, and `docs/runbooks/`
 - [ ] T002 Create inventory for the router (no Python on target) in
-  `ansible/inventory/openwrt/hosts.yml`
+      `ansible/inventory/openwrt/hosts.yml`
 - [ ] T003 [P] Add shared inventory variables in
-  `ansible/inventory/openwrt/group_vars/all.yml`
+      `ansible/inventory/openwrt/group_vars/all.yml`
 - [ ] T004 [P] Declare the OpenWrt role in `ansible/requirements.yml`
 - [ ] T005 Document dcli-based secrets usage and SSH key retrieval in
-  `docs/runbooks/openwrt-secrets.md`
+      `docs/runbooks/openwrt-secrets.md`
 - [ ] T006 Add SSH connectivity checks using dcli in
-  `docs/runbooks/openwrt-verification.md`
+      `docs/runbooks/openwrt-verification.md`
 - [ ] T007 Define a required positive SSH connection test gate in
-  `docs/runbooks/openwrt-verification.md`
+      `docs/runbooks/openwrt-verification.md`
 
 ---
 
@@ -43,13 +43,13 @@ be implemented
 **CRITICAL**: No user story work can begin until this phase is complete
 
 - [ ] T008 Add UCI read checks and client DNS/internet checks to
-  `docs/runbooks/openwrt-verification.md`
+      `docs/runbooks/openwrt-verification.md`
 - [ ] T009 Define recovery and rollback steps in
-  `docs/runbooks/openwrt-recovery.md`
+      `docs/runbooks/openwrt-recovery.md`
 - [ ] T010 Implement verification playbook in
-  `ansible/playbooks/verify-openwrt.yml`
+      `ansible/playbooks/verify-openwrt.yml`
 - [ ] T011 Decide and document the first small declarative change in
-  `docs/runbooks/openwrt-apply.md`
+      `docs/runbooks/openwrt-apply.md`
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 
@@ -65,18 +65,18 @@ Wi-Fi connectivity plus LAN client internet access
 ### Implementation for User Story 1
 
 - [ ] T012 [US1] Capture desired `network` config in
-  `ansible/configs/openwrt/network`
+      `ansible/configs/openwrt/network`
 - [ ] T013 [P] [US1] Capture desired `wireless` config in
-  `ansible/configs/openwrt/wireless`
+      `ansible/configs/openwrt/wireless`
 - [ ] T014 [P] [US1] Capture desired `firewall` config in
-  `ansible/configs/openwrt/firewall`
+      `ansible/configs/openwrt/firewall`
 - [ ] T015 [P] [US1] Capture desired `dhcp` config in
-  `ansible/configs/openwrt/dhcp`
+      `ansible/configs/openwrt/dhcp`
 - [ ] T016 [P] [US1] Capture desired `system` config in
-  `ansible/configs/openwrt/system`
+      `ansible/configs/openwrt/system`
 - [ ] T017 [US1] Implement staged apply in `ansible/playbooks/apply-openwrt.yml`
 - [ ] T018 [US1] Document staged apply sequence in
-  `docs/runbooks/openwrt-apply.md`
+      `docs/runbooks/openwrt-apply.md`
 
 **Checkpoint**: User Story 1 is functional and independently testable
 
@@ -92,7 +92,7 @@ snapshot appears under `snapshots/<router>/`
 ### Implementation for User Story 2
 
 - [ ] T019 [US2] Implement read-only snapshot for `/etc/config/*` in
-  `ansible/playbooks/snapshot-openwrt.yml`
+      `ansible/playbooks/snapshot-openwrt.yml`
 - [ ] T020 [P] [US2] Document snapshot structure in `snapshots/README.md`
 
 **Checkpoint**: User Story 2 is functional and independently testable
@@ -108,13 +108,13 @@ snapshot appears under `snapshots/<router>/`
 ### Implementation for User Story 3
 
 - [ ] T021 [US3] Implement the first small change idempotently in
-  `ansible/playbooks/apply-openwrt.yml`
-- [X] T022 [US3] Add pre-apply snapshot capture and delete the snapshot when
-  apply results in no changes in `ansible/playbooks/apply-openwrt.yml`
-- [X] T023 [US3] Update apply runbook with auto-snapshot behavior in
-  `docs/runbooks/openwrt-apply.md`
+      `ansible/playbooks/apply-openwrt.yml`
+- [x] T022 [US3] Add pre-apply snapshot capture and delete the snapshot when
+      apply results in no changes in `ansible/playbooks/apply-openwrt.yml`
+- [x] T023 [US3] Update apply runbook with auto-snapshot behavior in
+      `docs/runbooks/openwrt-apply.md`
 - [ ] T024 [US3] Verify no lockout after the first change in
-  `docs/runbooks/openwrt-verification.md`
+      `docs/runbooks/openwrt-verification.md`
 
 **Checkpoint**: User Story 3 is functional and independently testable
 
@@ -124,8 +124,8 @@ snapshot appears under `snapshots/<router>/`
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [X] T025 [P] Update `specs/002-openwrt-wisp-iac/quickstart.md` with the
-  auto-snapshot apply flow
+- [x] T025 [P] Update `specs/002-openwrt-wisp-iac/quickstart.md` with the
+      auto-snapshot apply flow
 - [ ] T026 [P] Link runbooks from `docs/index.md`
 
 ---

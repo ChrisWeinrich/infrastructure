@@ -22,37 +22,39 @@ change.
 **Target Platform**: GL.iNet GL-MT6000 (OpenWrt-based firmware), operator host
 **Project Type**: infrastructure automation
 **Performance Goals**: restore upstream Wi-Fi and LAN internet within\n+2
-                       minutes
+minutes
 **Constraints**: no router-side Python, avoid lockouts, staged apply with
 physical access fallback
 **Scale/Scope**: single router, single upstream Wi-Fi uplink
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - IaC only: router/network changes expressed in Ansible/OpenWrt configs and
-committed to version control. **Pass**
+  committed to version control. **Pass**
 - Safety-first: rollback steps, pre/post validation, and safe access path are
-defined for network changes. **Pass**
+  defined for network changes. **Pass**
 - Idempotency: automation is idempotent. **Pass**
 - Assumptions are documented with citations for router/OpenWrt/Ansible
-specifics. **Pass**
+  specifics. **Pass**
 - Router-specific assumptions consult the primary router reference first.
-**Pass**
+  **Pass**
 
   ```
   https://github.com/gl-inet/docs4.x/blob/master/docs/user_guide/gl-mt6000/index.md
   ```
+
 - Core Ansible/OpenWrt reference. **Pass**
 
   ```
   https://github.com/gekmihesg/ansible-openwrt
   ```
+
 - Management access endpoints and methods are documented (IP/hostname,
-protocol, authentication, location). **Pass**
+  protocol, authentication, location). **Pass**
 - Code comments and documentation are in English; Markdown prose hard-wraps at
-80 columns. **Pass**
+  80 columns. **Pass**
 
 ## Project Structure
 

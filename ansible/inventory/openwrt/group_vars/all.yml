@@ -1,3 +1,4 @@
+---
 openwrt_router_name: mt6000
 openwrt_config_dir: /etc/config
 openwrt_config_repo_dir: ansible/configs/openwrt

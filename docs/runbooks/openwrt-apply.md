@@ -27,7 +27,6 @@ The first change is intentionally low risk: set the system hostname to
      console.
 6. Apply configuration files in the following order, pausing after each file
    for verification:
-
    1. `ansible/configs/openwrt/network`
    2. `ansible/configs/openwrt/wireless`
    3. `ansible/configs/openwrt/firewall`
@@ -35,7 +34,7 @@ The first change is intentionally low risk: set the system hostname to
    5. `ansible/configs/openwrt/system`
    6. `ansible/configs/openwrt/tailscale`
 
-5. After each stage, re-run the verification checklist.
+7. After each stage, re-run the verification checklist.
 
 ## Tailscale Apply Notes
 

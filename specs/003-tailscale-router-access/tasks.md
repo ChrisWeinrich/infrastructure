@@ -1,5 +1,4 @@
 ---
-
 description: "Task list for feature implementation"
 ---
 
@@ -9,7 +8,7 @@ description: "Task list for feature implementation"
 `/Users/christianweinrich/Source/infrastructure/specs/`
 `003-tailscale-router-access/`
 **Prerequisites**: plan.md (required), spec.md (required), research.md,
- data-model.md, contracts/, quickstart.md
+data-model.md, contracts/, quickstart.md
 
 **Tests**: Tests are optional and not requested for this feature.
 
@@ -26,8 +25,8 @@ implementation and testing of each story.
 
 **Purpose**: Project initialization and basic structure
 
-- [X] T001 Create Tailscale UCI config file at
-  ansible/configs/openwrt/tailscale
+- [x] T001 Create Tailscale UCI config file at
+      ansible/configs/openwrt/tailscale
 
 ---
 
@@ -36,23 +35,23 @@ implementation and testing of each story.
 **Purpose**: Core infrastructure that MUST be complete before ANY user story
 can be implemented
 
-- [X] T002 Update
-  ansible/inventory/openwrt/group_vars/all.yml to add Tailscale variables and
-  include `tailscale` in `openwrt_uci_files`
-- [X] T003 Add DCLI secret reference for the Tailscale auth key in
-  ansible/inventory/openwrt/group_vars/all.yml and document the lookup command
-  in ansible/README.md
-- [X] T004 Manually create a Tailscale auth key per
-  docs/runbooks/openwrt-secrets.md and store it in DCLI
-- [X] T005 Manually approve advertised routes and ACL access per
-  docs/runbooks/openwrt-apply.md in the Tailscale admin console
-- [X] T006 Create install task in
-  ansible/playbooks/tasks/install-tailscale.yml to install the package and
-  enable the service
-- [X] T007 Update ansible/playbooks/apply-openwrt.yml to include
-  tasks/install-tailscale.yml before configuration apply
-- [X] T008 Update ansible/playbooks/verify-openwrt.yml to assert Tailscale is
-  running and to record advertised routes
+- [x] T002 Update
+      ansible/inventory/openwrt/group_vars/all.yml to add Tailscale variables and
+      include `tailscale` in `openwrt_uci_files`
+- [x] T003 Add DCLI secret reference for the Tailscale auth key in
+      ansible/inventory/openwrt/group_vars/all.yml and document the lookup command
+      in ansible/README.md
+- [x] T004 Manually create a Tailscale auth key per
+      docs/runbooks/openwrt-secrets.md and store it in DCLI
+- [x] T005 Manually approve advertised routes and ACL access per
+      docs/runbooks/openwrt-apply.md in the Tailscale admin console
+- [x] T006 Create install task in
+      ansible/playbooks/tasks/install-tailscale.yml to install the package and
+      enable the service
+- [x] T007 Update ansible/playbooks/apply-openwrt.yml to include
+      tasks/install-tailscale.yml before configuration apply
+- [x] T008 Update ansible/playbooks/verify-openwrt.yml to assert Tailscale is
+      running and to record advertised routes
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 
@@ -67,17 +66,17 @@ can be implemented
 
 ### Implementation for User Story 1
 
-- [X] T009 [US1] Populate ansible/configs/openwrt/tailscale with auth key
-  reference and route 192.168.8.135/32
-- [X] T010 [US1] Create configuration task in
-  ansible/playbooks/tasks/configure-tailscale.yml to run `tailscale up` with
-  the server-only route
-- [X] T011 [US1] Update ansible/playbooks/apply-openwrt.yml to include
-  tasks/configure-tailscale.yml after install
-- [X] T012 [US1] Update docs/runbooks/openwrt-verification.md with an external
-  check for 192.168.8.135 access
-- [X] T013 [US1] Update docs/runbooks/openwrt-recovery.md with rollback steps
-  to disable Tailscale and restore prior state
+- [x] T009 [US1] Populate ansible/configs/openwrt/tailscale with auth key
+      reference and route 192.168.8.135/32
+- [x] T010 [US1] Create configuration task in
+      ansible/playbooks/tasks/configure-tailscale.yml to run `tailscale up` with
+      the server-only route
+- [x] T011 [US1] Update ansible/playbooks/apply-openwrt.yml to include
+      tasks/configure-tailscale.yml after install
+- [x] T012 [US1] Update docs/runbooks/openwrt-verification.md with an external
+      check for 192.168.8.135 access
+- [x] T013 [US1] Update docs/runbooks/openwrt-recovery.md with rollback steps
+      to disable Tailscale and restore prior state
 
 **Checkpoint**: User Story 1 is independently functional and verifiable
 
@@ -92,13 +91,13 @@ at least two distinct LAN hosts within 192.168.8.0/24
 
 ### Implementation for User Story 2
 
-- [X] T014 [US2] Update
-  ansible/inventory/openwrt/group_vars/all.yml to advertise
-  192.168.8.0/24 instead of 192.168.8.135/32
-- [X] T015 [US2] Create ansible/configs/openwrt/firewall with a Tailscale zone
-  and forwarding rules to the LAN
-- [X] T016 [US2] Update docs/runbooks/openwrt-verification.md to include
-  multi-host access checks and subnet-overlap guidance
+- [x] T014 [US2] Update
+      ansible/inventory/openwrt/group_vars/all.yml to advertise
+      192.168.8.0/24 instead of 192.168.8.135/32
+- [x] T015 [US2] Create ansible/configs/openwrt/firewall with a Tailscale zone
+      and forwarding rules to the LAN
+- [x] T016 [US2] Update docs/runbooks/openwrt-verification.md to include
+      multi-host access checks and subnet-overlap guidance
 
 **Checkpoint**: User Stories 1 and 2 both work independently
 
@@ -113,12 +112,12 @@ describe management access and verification steps
 
 ### Implementation for User Story 3
 
-- [X] T017 [US3] Update docs/runbooks/openwrt-apply.md with Tailscale apply
-  steps and management access endpoints
-- [X] T018 [US3] Update docs/runbooks/openwrt-secrets.md with DCLI secret
-  handling and storage guidance
-- [X] T019 [US3] Update README.md with a remote access overview and links to
-  runbooks
+- [x] T017 [US3] Update docs/runbooks/openwrt-apply.md with Tailscale apply
+      steps and management access endpoints
+- [x] T018 [US3] Update docs/runbooks/openwrt-secrets.md with DCLI secret
+      handling and storage guidance
+- [x] T019 [US3] Update README.md with a remote access overview and links to
+      runbooks
 
 **Checkpoint**: All user stories are independently functional and documented
 
@@ -128,9 +127,9 @@ describe management access and verification steps
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [X] T020 [P] Update docs/index.md to link the new Tailscale runbook content
-- [X] T021 Run quickstart validation and sync steps in
-  specs/003-tailscale-router-access/quickstart.md
+- [x] T020 [P] Update docs/index.md to link the new Tailscale runbook content
+- [x] T021 Run quickstart validation and sync steps in
+      specs/003-tailscale-router-access/quickstart.md
 
 ---
 

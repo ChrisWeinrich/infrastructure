@@ -29,7 +29,7 @@ rollback.
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - IaC only: router/network changes expressed in Ansible/OpenWrt configs and
   committed to version control.

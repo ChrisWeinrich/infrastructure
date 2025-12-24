@@ -1,18 +1,26 @@
 ---
 exclude: ^\.specify/
 repos:
+  # Baseline hygiene checks for YAML and file endings.
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
       - id: check-yaml
       - id: end-of-file-fixer
+  # YAML linting against repo-specific rules.
   - repo: https://github.com/adrienverge/yamllint
     rev: v1.37.1
     hooks:
       - id: yamllint
         args: ["-c", ".yamllint.yml"]
+  # Ansible linting for playbooks/roles per repo rules.
   - repo: https://github.com/ansible/ansible-lint
     rev: v25.12.1
     hooks:
       - id: ansible-lint
         args: ["-c", ".ansible-lint.yml"]
+  # Prettier auto-fix for supported formats.
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v4.0.0-alpha.8
+    hooks:
+      - id: prettier

@@ -67,6 +67,7 @@ If any check fails, stop and follow the recovery runbook.
    ping -c 3 192.168.8.135
    ssh <user>@192.168.8.135
    ```
+
 3. If subnet routing is enabled, confirm access to at least one additional LAN
    host within 192.168.8.0/24.
 4. If the remote client's local subnet overlaps with 192.168.8.0/24, switch

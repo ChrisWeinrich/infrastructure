@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: User description: "ich möchte auf dem roouter tail scale isntallieren. ACC ist das ich von aussen das ganze netzwerk sehe und meinen Server auf 192.168.8.135 erreiche. der ist in dem netz."
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Remote Access to Server (Priority: P1)
 
@@ -56,7 +56,7 @@ As the network owner, I want the remote access setup to persist across router re
 - LAN host is powered off or changes IP from 192.168.8.135 unexpectedly.
 - Remote client's local network overlaps with 192.168.8.0/24.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -67,14 +67,14 @@ As the network owner, I want the remote access setup to persist across router re
 - **FR-005**: The remote access configuration MUST persist across router restarts.
 - **FR-006**: Documentation MUST describe how to access the router for management and how to verify remote connectivity.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Tailnet User**: Authorized person/device allowed to connect remotely.
 - **Router Node**: The OpenWrt router providing remote access to the LAN.
 - **LAN Subnet**: The internal network range (assumed 192.168.8.0/24).
 - **LAN Host**: Any device on the LAN, including the server at 192.168.8.135.
 
-## Assumptions & Sources *(mandatory)*
+## Assumptions & Sources _(mandatory)_
 
 - Router model is GL-MT6000 or compatible with the referenced OpenWrt guidance.
 - Router management access is available over the LAN at a known IP/hostname with admin credentials.
@@ -84,7 +84,7 @@ As the network owner, I want the remote access setup to persist across router re
 - Router reference: https://github.com/gl-inet/docs4.x/blob/master/docs/user_guide/gl-mt6000/index.md
 - Ansible/OpenWrt reference: https://github.com/gekmihesg/ansible-openwrt
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

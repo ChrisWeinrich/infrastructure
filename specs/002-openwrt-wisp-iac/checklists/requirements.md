@@ -1,7 +1,7 @@
 # Specification Quality Checklist: OpenWrt WISP IaC
 
 **Purpose**: Validate specification completeness and quality before proceeding
-             to planning
+to planning
 **Created**: 2025-12-20
 **Feature**: specs/002-openwrt-wisp-iac/spec.md
 

@@ -75,4 +75,3 @@ config wifi-iface 'guest5g'
 	option isolate '1'
 	option hidden '0'
 	option macaddr '46:04:8C:6A:3A:65'
-

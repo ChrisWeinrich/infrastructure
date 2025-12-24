@@ -2,6 +2,7 @@
 - name: Apply OpenWrt configuration in staged steps
   hosts: openwrt
   gather_facts: false
+  strategy: linear
   vars:
     # Snapshot only the configured UCI files.
     uci_files: "{{ openwrt_uci_files | default([]) }}"
@@ -16,7 +17,8 @@
     - name: Set snapshot root
       ansible.builtin.set_fact:
         snapshot_root: >-
-          {{ lookup('pipe', 'cd ' + playbook_dir + '/../.. && pwd') }}/{{ openwrt_snapshot_root | default('snapshots') }}
+          {{ lookup('pipe', 'cd ' + playbook_dir + '/../.. && pwd')
+             ~ '/' ~ (openwrt_snapshot_root | default('snapshots')) }}
       delegate_to: localhost
       run_once: true
 
@@ -57,8 +59,8 @@
         content: >-
           {{ (item.stdout
           | replace("\r", "")
-          | regex_replace("(?m)^.*option key.*\\n?", "")
-          ) if item.item == 'wireless' else (item.stdout | replace("\r", "")) }}
+          | regex_replace("(?m)^.*option key.*\\n?", ""))
+          if item.item == 'wireless' else (item.stdout | replace("\r", "")) }}
         mode: "0440"
       loop: "{{ openwrt_configs.results }}"
       delegate_to: localhost
@@ -66,16 +68,20 @@
 
     # Remove any remaining wireless key lines from the snapshot.
     - name: Strip wireless keys from snapshot
-      ansible.builtin.command: >-
-        sed -i '' -E '/^[[:space:]]*option[[:space:]]+key[[:space:]]+/d' {{ snapshot_dir }}/wireless
+      ansible.builtin.lineinfile:
+        path: "{{ snapshot_dir }}/wireless"
+        regexp: "^[[:space:]]*option[[:space:]]+key[[:space:]]+"
+        state: absent
       when: "'wireless' in uci_files"
       delegate_to: localhost
       run_once: true
 
     # Normalize line endings to avoid diffs caused by CRLF.
     - name: Normalize wireless snapshot line endings
-      ansible.builtin.command: >-
-        sed -i '' -e 's/\\r$//' {{ snapshot_dir }}/wireless
+      ansible.builtin.replace:
+        path: "{{ snapshot_dir }}/wireless"
+        regexp: "\\r$"
+        replace: ""
       when: "'wireless' in uci_files"
       delegate_to: localhost
       run_once: true
@@ -91,13 +97,7 @@
         fi
       register: hostname_apply
       changed_when: "'changed' in hostname_apply.stdout"
-
-    # Reload services only when the hostname is changed.
-    - name: Reload system and dnsmasq when hostname changes
-      ansible.builtin.raw: |
-        /etc/init.d/system reload
-        /etc/init.d/dnsmasq restart
-      when: hostname_apply.changed
+      notify: Reload system services
 
     # Ensure the Tailscale package is installed and running.
     - name: Install Tailscale
@@ -125,3 +125,11 @@
         - hostvars['localhost'].snapshot_dir is defined
       delegate_to: localhost
       run_once: true
+
+  handlers:
+    # Reload services only when the hostname is changed.
+    - name: Reload system services
+      ansible.builtin.shell: |
+        /etc/init.d/system reload
+        /etc/init.d/dnsmasq restart
+      changed_when: false
