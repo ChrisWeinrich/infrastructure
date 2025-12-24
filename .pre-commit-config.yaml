@@ -1,5 +1,8 @@
 ---
 exclude: ^\.specify/
+default_language_version:
+  # Use the system python3; CI provides python3.11 explicitly.
+  python: python3
 repos:
   # Baseline hygiene checks for YAML and file endings.
   - repo: https://github.com/pre-commit/pre-commit-hooks
