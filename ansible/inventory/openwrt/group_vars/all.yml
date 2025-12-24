@@ -6,7 +6,7 @@ openwrt_snapshot_root: snapshots
 # Desired router hostname on the LAN.
 openwrt_hostname: hermes-gateway
 # Static addressing for the LAN-attached server.
-openwrt_static_server_ip: 192.168.1.134
+openwrt_static_server_ip: 192.168.8.134
 openwrt_static_server_mac: 18:31:bf:dd:1b:c0
 openwrt_uci_files:
   - network

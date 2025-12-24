@@ -53,13 +53,20 @@
   delegate_to: localhost
   run_once: true
 
+- name: Filter devices with declared names
+  ansible.builtin.set_fact:
+    named_devices: >-
+      {{ network_devices | selectattr('name', 'defined') | list }}
+  delegate_to: localhost
+  run_once: true
+
 - name: Ensure all devices include required fields
   ansible.builtin.assert:
     that:
       - device_item.name is defined
       - device_item.management_address is defined
     fail_msg: "Every device must include name and management_address."
-  loop: "{{ network_devices }}"
+  loop: "{{ named_devices }}"
   loop_control:
     loop_var: device_item
   delegate_to: localhost
@@ -67,9 +74,9 @@
 
 - name: Collect hostnames and addresses
   ansible.builtin.set_fact:
-    device_hostnames: "{{ network_devices | map(attribute='name') | list }}"
+    device_hostnames: "{{ named_devices | map(attribute='name') | list }}"
     device_addresses: >-
-      {{ network_devices | map(attribute='management_address') | list }}
+      {{ named_devices | map(attribute='management_address') | list }}
   delegate_to: localhost
   run_once: true
 
@@ -92,7 +99,7 @@
 - name: Collect MAC addresses for validation
   ansible.builtin.set_fact:
     device_macs: >-
-      {{ network_devices
+      {{ named_devices
          | selectattr('mac_address', 'defined')
          | map(attribute='mac_address')
          | list }}

@@ -7,7 +7,7 @@
     # Snapshot only the configured UCI files.
     uci_files: "{{ openwrt_uci_files | default([]) }}"
     # Use a stable hostname for the initial low-risk change.
-    openwrt_hostname: "{{ openwrt_hostname | default(openwrt_router_name) }}"
+    openwrt_hostname_apply: "{{ openwrt_hostname | default(openwrt_router_name) }}"
     # Reserved for staged apply extensions.
     openwrt_apply_full: false
     # Reserved for staged apply extensions.
@@ -90,8 +90,8 @@
     - name: Apply first small change (hostname)
       ansible.builtin.raw: |
         current="$(uci -q get system.@system[0].hostname)"
-        if [ "$current" != "{{ openwrt_hostname }}" ]; then
-          uci set system.@system[0].hostname="{{ openwrt_hostname }}"
+        if [ "$current" != "{{ openwrt_hostname_apply }}" ]; then
+          uci set system.@system[0].hostname="{{ openwrt_hostname_apply }}"
           uci commit system
           echo changed
         fi
