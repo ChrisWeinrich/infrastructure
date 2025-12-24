@@ -1,10 +1,22 @@
 ---
 - name: Apply server hostname configuration
   hosts: servers
-  gather_facts: false
+  gather_facts: true
   become: true
   vars:
     server_hostname: atlas-host
+    network_config_path: "{{ playbook_dir }}/../configs/network.yml"
+    docker_packages_primary:
+      - docker.io
+      - docker-compose-plugin
+    docker_packages_fallback:
+      - docker.io
+      - docker-compose
+    vlan40_parent_interface_override: ""
+    vlan40_netmask: "255.255.255.0"
+    vlan40_docker_network: "vlan40_macvlan"
+    vlan40_nginx_container_name: "vlan40-hello-nginx"
+    vlan40_nginx_image: "nginx:alpine"
     # Atlas USB mounts: set UUIDs and mount paths before running.
     # Install required filesystem tooling (adjust package names per distro).
     usb_mount_packages:
@@ -41,6 +53,180 @@
     - name: Set server hostname
       ansible.builtin.hostname:
         name: "{{ server_hostname }}"
+
+    - name: Load network configuration
+      ansible.builtin.include_vars:
+        file: "{{ network_config_path }}"
+        name: network_config
+
+    - name: Select VLAN 40 and service configuration
+      ansible.builtin.set_fact:
+        vlan40_config: "{{ network_config.site.networks.vlan40 }}"
+        vlan40_service: "{{ network_config.site.services.hello_world_nginx }}"
+
+    - name: Resolve VLAN parent interface
+      ansible.builtin.set_fact:
+        vlan40_parent_interface: >-
+          {{ vlan40_parent_interface_override
+          | default(ansible_default_ipv4.interface, true) }}
+
+    # Validate operator-provided values before applying VLAN and Docker tasks.
+    - name: Validate VLAN 40 configuration
+      ansible.builtin.assert:
+        that:
+          - vlan40_config.vlan_id is defined
+          - vlan40_config.subnet is string
+          - vlan40_config.gateway is string
+          - vlan40_config.server.address is defined
+          - vlan40_config.server.interface is defined
+          - vlan40_parent_interface is string
+          - vlan40_parent_interface | length > 0
+          - vlan40_service.address is defined
+          - vlan40_service.hostname is defined
+        fail_msg: "VLAN 40 configuration is incomplete in network.yml."
+        success_msg: "VLAN 40 configuration is present."
+
+    - name: Check for Docker Compose plugin package
+      ansible.builtin.command: apt-cache show docker-compose-plugin
+      register: docker_compose_plugin_check
+      changed_when: false
+      failed_when: false
+
+    - name: Select Docker packages based on availability
+      ansible.builtin.set_fact:
+        docker_packages_selected: >-
+          {{ docker_packages_primary
+          if docker_compose_plugin_check.rc == 0
+          else docker_packages_fallback }}
+
+    - name: Install Docker Engine and Compose package
+      ansible.builtin.apt:
+        name: "{{ docker_packages_selected }}"
+        state: present
+        update_cache: true
+
+    - name: Ensure Docker service is enabled and running
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Detect netplan presence
+      ansible.builtin.stat:
+        path: /etc/netplan
+      register: netplan_dir
+
+    - name: Detect ifupdown presence
+      ansible.builtin.stat:
+        path: /etc/network/interfaces
+      register: ifupdown_config
+
+    - name: Ensure a supported network stack is available
+      ansible.builtin.assert:
+        that:
+          - netplan_dir.stat.exists or ifupdown_config.stat.exists
+        fail_msg: "Neither netplan nor ifupdown was detected on atlas-host."
+        success_msg: "Detected a supported network stack for VLAN config."
+
+    - name: Render netplan VLAN 40 config
+      ansible.builtin.copy:
+        dest: /etc/netplan/99-ansible-vlan40.yaml
+        mode: "0644"
+        content: |-
+          network:
+            version: 2
+            vlans:
+              {{ vlan40_config.server.interface }}:
+                id: {{ vlan40_config.vlan_id }}
+                link: {{ vlan40_parent_interface }}
+                addresses:
+                  - {{ vlan40_config.server.address }}/24
+      when: netplan_dir.stat.exists
+      register: netplan_vlan40
+
+    - name: Apply netplan changes
+      ansible.builtin.command: netplan apply
+      changed_when: true
+      when:
+        - netplan_dir.stat.exists
+        - netplan_vlan40 is changed
+
+    - name: Install VLAN tooling for ifupdown
+      ansible.builtin.apt:
+        name: vlan
+        state: present
+        update_cache: true
+      when:
+        - ifupdown_config.stat.exists
+        - not netplan_dir.stat.exists
+
+    - name: Render ifupdown VLAN 40 config
+      ansible.builtin.copy:
+        dest: "/etc/network/interfaces.d/{{ vlan40_config.server.interface }}.cfg"
+        mode: "0644"
+        content: |-
+          auto {{ vlan40_config.server.interface }}
+          iface {{ vlan40_config.server.interface }} inet static
+            address {{ vlan40_config.server.address }}
+            netmask {{ vlan40_netmask }}
+            vlan-raw-device {{ vlan40_parent_interface }}
+      when:
+        - ifupdown_config.stat.exists
+        - not netplan_dir.stat.exists
+      register: ifupdown_vlan40
+
+    - name: Bring up VLAN 40 interface
+      ansible.builtin.command: "ifup {{ vlan40_config.server.interface }}"
+      register: ifupdown_vlan40_up
+      changed_when: ifupdown_vlan40_up.rc == 0
+      failed_when: ifupdown_vlan40_up.rc not in [0, 1]
+      when:
+        - ifupdown_vlan40 is changed
+        - ifupdown_config.stat.exists
+        - not netplan_dir.stat.exists
+
+    - name: Check VLAN 40 interface state
+      ansible.builtin.command: "ip -o link show {{ vlan40_config.server.interface }}"
+      changed_when: false
+
+    - name: Check Docker macvlan network
+      ansible.builtin.command: "docker network inspect {{ vlan40_docker_network }}"
+      register: docker_network_check
+      changed_when: false
+      failed_when: false
+
+    - name: Create Docker macvlan network
+      ansible.builtin.command: >-
+        docker network create -d macvlan
+        --subnet {{ vlan40_config.subnet }}
+        --gateway {{ vlan40_config.gateway }}
+        -o parent={{ vlan40_config.server.interface }}
+        {{ vlan40_docker_network }}
+      when: docker_network_check.rc != 0
+
+    - name: Check nginx container
+      ansible.builtin.command: "docker inspect {{ vlan40_nginx_container_name }}"
+      register: docker_container_check
+      changed_when: false
+      failed_when: false
+
+    - name: Run hello world nginx container
+      ansible.builtin.command: >-
+        docker run -d
+        --name {{ vlan40_nginx_container_name }}
+        --network {{ vlan40_docker_network }}
+        --ip {{ vlan40_service.address }}
+        --restart unless-stopped
+        {{ vlan40_nginx_image }}
+      when: docker_container_check.rc != 0
+
+    - name: Ensure nginx container is running
+      ansible.builtin.command: >-
+        docker inspect -f {{ '"{{.State.Running}}"' }}
+        {{ vlan40_nginx_container_name }}
+      register: docker_container_running
+      changed_when: false
+      failed_when: docker_container_running.stdout != "true"
 
     - name: Install USB mount filesystem packages
       ansible.builtin.apt:

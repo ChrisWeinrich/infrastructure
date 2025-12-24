@@ -29,3 +29,26 @@ site:
               protocol: "ssh"
               port: 22
           clients: {}
+    vlan40:
+      name: "atlas-services"
+      vlan_id: 40
+      subnet: "192.168.40.0/24"
+      gateway: "192.168.40.1"
+      uplink: "br-lan"
+      router:
+        name: "hermes-gateway"
+        role: "router"
+        management_address: "192.168.8.1"
+        notes: "VLAN gateway for isolated services"
+      server:
+        name: "atlas-host"
+        interface: "vlan40"
+        address: "192.168.40.2"
+      notes: "Isolated service network trunked to atlas-host"
+  services:
+    hello_world_nginx:
+      description: "Hello world service on VLAN 40"
+      hostname: "nginx-vlan40"
+      address: "192.168.40.10"
+      port: 80
+      network: "vlan40"

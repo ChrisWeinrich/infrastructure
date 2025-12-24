@@ -1,0 +1,12 @@
+# Docker
+node_modules/
+.git/
+Dockerfile*
+.dockerignore
+*.log*
+.env*
+coverage/
+
+# Common build artifacts
+dist/
+build/

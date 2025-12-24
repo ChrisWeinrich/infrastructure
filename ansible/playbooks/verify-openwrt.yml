@@ -5,6 +5,7 @@
   vars:
     # Verify only the configured UCI files.
     uci_files: "{{ openwrt_uci_files | default([]) }}"
+    network_config_path: "{{ playbook_dir }}/../configs/network.yml"
   tasks:
     # Confirm basic SSH access before any other checks.
     - name: Verify SSH connectivity
@@ -36,6 +37,52 @@
     # Validate the central network configuration before deeper checks.
     - name: Validate central network configuration
       ansible.builtin.include_tasks: tasks/validate-network.yml
+
+    - name: Load central network configuration
+      ansible.builtin.include_vars:
+        file: "{{ network_config_path }}"
+        name: network_config
+
+    - name: Select VLAN 40 and service configuration
+      ansible.builtin.set_fact:
+        vlan40_config: "{{ network_config.site.networks.vlan40 }}"
+        vlan40_service: "{{ network_config.site.services.hello_world_nginx }}"
+
+    - name: Verify VLAN 40 interface configuration
+      ansible.builtin.raw: "uci -q get network.vlan40.ipaddr"
+      register: vlan40_ipaddr
+      changed_when: false
+
+    - name: Gate on VLAN 40 interface configuration
+      ansible.builtin.assert:
+        that:
+          - vlan40_ipaddr.stdout | trim == vlan40_config.gateway
+        fail_msg: "VLAN 40 interface is missing or has the wrong IP."
+
+    - name: Verify firewall zone for VLAN 40
+      ansible.builtin.raw: "uci -q get firewall.vlan40.name"
+      register: vlan40_zone
+      changed_when: false
+
+    - name: Gate on firewall zone for VLAN 40
+      ansible.builtin.assert:
+        that:
+          - vlan40_zone.stdout | trim == "vlan40"
+        fail_msg: "Firewall zone vlan40 is missing or misconfigured."
+
+    - name: Verify DNS host entry for VLAN service
+      ansible.builtin.raw: >-
+        uci -q show dhcp
+        | grep -F ".name='{{ vlan40_service.hostname }}'"
+      register: vlan40_dns
+      changed_when: false
+      failed_when: false
+
+    - name: Gate on DNS host entry for VLAN service
+      ansible.builtin.assert:
+        that:
+          - vlan40_dns.rc == 0
+        fail_msg: "DNS host entry for nginx-vlan40 is missing."
 
     # Validate DNS resolution from the router.
     - name: Verify DNS resolution from the router
@@ -114,3 +161,9 @@
           {{ tailscale_primary_routes }}
           Allowed IPs:
           {{ tailscale_allowed_ips }}
+
+    - name: Gate on Tailscale route for VLAN 40
+      ansible.builtin.assert:
+        that:
+          - "'192.168.40.0/24' in tailscale_advertised_routes"
+        fail_msg: "Tailscale route for VLAN 40 is not advertised."
