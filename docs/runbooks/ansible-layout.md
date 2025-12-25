@@ -29,6 +29,14 @@ assets into the canonical `ansible/` layout.
 - Confirm no automation assets remain outside `ansible/`.
 - Run lint gates (ansible-lint, yamllint) from the repository root.
 
+## Migration Verification Record
+
+Migration performed for the canonical layout transition:
+
+- Inventories consolidated into `ansible/inventories/home/hosts.yml`.
+- OpenWrt group vars moved to `ansible/inventories/home/group_vars/gateways.yml`.
+- Tailscale reset script moved to `ansible/scripts/reset-tailscale.sh`.
+
 ## Rollback
 
 - Revert moved files to their original locations using the migration record.

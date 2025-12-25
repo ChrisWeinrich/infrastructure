@@ -5,7 +5,7 @@ and server hosts (including Atlas).
 
 ## Structure
 
-- `inventory/`: Inventory definitions for target hosts.
+- `inventories/`: Inventory definitions for target hosts.
 - `playbooks/`: OpenWrt playbooks (apply, snapshot, verify).
 - `roles/`: Reusable roles for common configuration tasks.
 - `scripts/`: Standard entry points for running automation.
@@ -16,6 +16,12 @@ and server hosts (including Atlas).
 This repository standardizes on the canonical Ansible layout documented in
 `/specs/001-ansible-layout/` and mirrored under `ansible/`. All automation
 assets should live beneath this directory and follow the layout contract.
+
+## Container Run Scripts
+
+For each container definition in
+`ansible/roles/atlas_host/containers/<name>.yml`, create a matching run script
+named `ansible/scripts/run_container_<name>.sh`.
 
 ## Notes
 
@@ -30,17 +36,18 @@ assets should live beneath this directory and follow the layout contract.
 
 ```bash
 # Apply server configuration to Atlas
-ansible-playbook -i ansible/inventory ansible/playbooks/apply-server.yml
+ansible-playbook -i ansible/inventories/home/hosts.yml \
+  ansible/playbooks/apply-server.yml
 
 # Hello-world connectivity check
 ansible-playbook ansible/playbooks/verify-openwrt.yml \
-  -i ansible/inventory/openwrt/hosts.yml
+  -i ansible/inventories/home/hosts.yml
 
 # Snapshot is only needed once at the beginning
 ansible-playbook ansible/playbooks/snapshot-openwrt.yml \
-  -i ansible/inventory/openwrt/hosts.yml
+  -i ansible/inventories/home/hosts.yml
 
 # Apply automatically captures a snapshot before changes
 ansible-playbook ansible/playbooks/apply-openwrt.yml \
-  -i ansible/inventory/openwrt/hosts.yml
+  -i ansible/inventories/home/hosts.yml
 ```

@@ -6,7 +6,8 @@ continuous integration. It will expand as runbooks and automation are added.
 ## Contents
 
 - Repository standards for linting and documentation.
-- Ansible automation structure and conventions.
+- Ansible automation structure and conventions (canonical layout under
+  `ansible/`).
 - CI guidance for safe, reproducible changes.
 - OpenWrt runbooks:
   - `docs/runbooks/openwrt-secrets.md`

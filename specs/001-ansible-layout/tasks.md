@@ -56,13 +56,13 @@ automation files remain outside `ansible/`.
 
 ### Implementation for User Story 1
 
-- [ ] T006 [US1] Enforce canonical inventories at
+- [X] T006 [US1] Enforce canonical inventories at
   `ansible/inventories/home/`
-- [ ] T007 [US1] Enforce canonical roles under `ansible/roles/`
-- [ ] T008 [US1] Enforce canonical playbooks under `ansible/playbooks/`
-- [ ] T009 [US1] Enforce canonical scripts under `ansible/scripts/`
-- [ ] T010 [US1] Enforce shared vars at `ansible/vars/constants.yml`
-- [ ] T011 [US1] Ensure `ansible/ansible.cfg` and `ansible/requirements.yml`
+- [X] T007 [US1] Enforce canonical roles under `ansible/roles/`
+- [X] T008 [US1] Enforce canonical playbooks under `ansible/playbooks/`
+- [X] T009 [US1] Enforce canonical scripts under `ansible/scripts/`
+- [X] T010 [US1] Enforce shared vars at `ansible/vars/constants.yml`
+- [X] T011 [US1] Ensure `ansible/ansible.cfg` and `ansible/requirements.yml`
   exist as placeholders if missing
 
 **Checkpoint**: User Story 1 fully functional and independently testable
@@ -79,12 +79,12 @@ remain outside `ansible/`.
 
 ### Implementation for User Story 2
 
-- [ ] T012 [US2] Migrate inventories into `ansible/inventories/home/`
-- [ ] T013 [US2] Migrate role content into `ansible/roles/`
-- [ ] T014 [US2] Migrate playbooks into `ansible/playbooks/`
-- [ ] T015 [US2] Migrate scripts into `ansible/scripts/`
-- [ ] T016 [US2] Migrate shared vars into `ansible/vars/constants.yml`
-- [ ] T017 [US2] Record migration verification in
+- [X] T012 [US2] Migrate inventories into `ansible/inventories/home/`
+- [X] T013 [US2] Migrate role content into `ansible/roles/`
+- [X] T014 [US2] Migrate playbooks into `ansible/playbooks/`
+- [X] T015 [US2] Migrate scripts into `ansible/scripts/`
+- [X] T016 [US2] Migrate shared vars into `ansible/vars/constants.yml`
+- [X] T017 [US2] Record migration verification in
   `docs/runbooks/ansible-layout.md`
 
 **Checkpoint**: User Story 2 fully functional and independently testable
@@ -100,12 +100,12 @@ has a matching `run_container_<name>.sh` script.
 
 ### Implementation for User Story 3
 
-- [ ] T018 [US3] Ensure standard entry scripts exist in `ansible/scripts/`:
+- [X] T018 [US3] Ensure standard entry scripts exist in `ansible/scripts/`:
   `run_site.sh`, `run_gateway.sh`, `run_atlas.sh`, `run_tag.sh`
-- [ ] T019 [US3] Create container run scripts named
+- [X] T019 [US3] Create container run scripts named
   `ansible/scripts/run_container_<name>.sh` for each container definition in
   `ansible/roles/atlas_host/containers/*.yml`
-- [ ] T020 [US3] Document container script naming in
+- [X] T020 [US3] Document container script naming in
   `ansible/roles/atlas_host/containers/README.md`
 
 **Checkpoint**: All user stories should now be independently functional
@@ -116,10 +116,10 @@ has a matching `run_container_<name>.sh` script.
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T021 [P] Update `docs/index.md` with the canonical layout location
-- [ ] T022 [P] Update `README.md` with the canonical layout and entry points
-- [ ] T023 [P] Update `ansible/README.md` with container script conventions
-- [ ] T024 Ensure comments explain each step in updated YAML and scripts
+- [X] T021 [P] Update `docs/index.md` with the canonical layout location
+- [X] T022 [P] Update `README.md` with the canonical layout and entry points
+- [X] T023 [P] Update `ansible/README.md` with container script conventions
+- [X] T024 Ensure comments explain each step in updated YAML and scripts
 
 ---
 

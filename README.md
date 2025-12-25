@@ -3,6 +3,12 @@
 Repository foundation for infrastructure automation, linting, and
 documentation.
 
+## Ansible Layout
+
+- Canonical automation assets live under `ansible/`.
+- Standard entry points live under `ansible/scripts/`.
+- Inventory lives at `ansible/inventories/home/hosts.yml`.
+
 ## Local checks
 
 1. Install pre-commit and enable hooks:
