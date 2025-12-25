@@ -46,7 +46,8 @@
   https://github.com/gekmihesg/ansible-openwrt
 - Management access endpoints and methods are documented (IP/hostname,
   protocol, authentication, location).
-- Changes that affect behavior or usage update `docs/` and any README.md.
+- Changes that affect behavior or usage update `docs/`, README.md, and
+  `ansible/README.md` for automation layout or entry point updates.
 - Code, scripts, configs, and YAML files are commented in English so each
   step, function, class, or block is immediately understandable; Markdown
   prose hard-wraps at 80 characters.
