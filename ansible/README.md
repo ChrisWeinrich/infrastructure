@@ -8,6 +8,14 @@ and server hosts (including Atlas).
 - `inventory/`: Inventory definitions for target hosts.
 - `playbooks/`: OpenWrt playbooks (apply, snapshot, verify).
 - `roles/`: Reusable roles for common configuration tasks.
+- `scripts/`: Standard entry points for running automation.
+- `vars/`: Shared variables and constants.
+
+## Canonical Layout
+
+This repository standardizes on the canonical Ansible layout documented in
+`/specs/001-ansible-layout/` and mirrored under `ansible/`. All automation
+assets should live beneath this directory and follow the layout contract.
 
 ## Notes
 

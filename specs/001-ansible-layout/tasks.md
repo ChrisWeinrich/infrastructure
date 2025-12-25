@@ -24,8 +24,8 @@ implementation and testing of each story.
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Create canonical directory tree and placeholders under `ansible/`
-- [ ] T002 [P] Add layout reference in `ansible/README.md`
+- [X] T001 Create canonical directory tree and placeholders under `ansible/`
+- [X] T002 [P] Add layout reference in `ansible/README.md`
 
 ---
 
@@ -36,10 +36,10 @@ can be implemented
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 Create migration runbook in `docs/runbooks/ansible-layout.md`
-- [ ] T004 Document rollback and validation steps in
+- [X] T003 Create migration runbook in `docs/runbooks/ansible-layout.md`
+- [X] T004 Document rollback and validation steps in
   `docs/runbooks/ansible-layout.md`
-- [ ] T005 [P] Add migration checklist to `docs/runbooks/ansible-layout.md`
+- [X] T005 [P] Add migration checklist to `docs/runbooks/ansible-layout.md`
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in
 parallel
