@@ -112,7 +112,8 @@
   https://github.com/gekmihesg/ansible-openwrt
 - Document management access endpoints and methods (IP/hostname, protocol,
   authentication, location).
-- Changes affecting behavior or usage must update `docs/` and any README.md.
+- Changes affecting behavior or usage must update `docs/`, README.md, and
+  `ansible/README.md` for automation layout or entry point updates.
 - Code, scripts, configs, and YAML files must be commented in English so each
   step, function, class, or block is immediately understandable.
 

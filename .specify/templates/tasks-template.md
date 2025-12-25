@@ -155,7 +155,8 @@ Examples of foundational tasks (adjust based on your project):
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] TXXX [P] Documentation updates in docs/ and README.md (when present)
+- [ ] TXXX [P] Documentation updates in docs/, README.md, and
+  ansible/README.md (when layout or entry points change)
 - [ ] TXXX Code cleanup and refactoring
 - [ ] TXXX Ensure code/config comments explain each step, function, class, or
   block (English-only)

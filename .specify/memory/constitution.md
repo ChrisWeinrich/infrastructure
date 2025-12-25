@@ -1,8 +1,8 @@
 <!--
 Sync Impact Report:
-- Version change: 1.1.0 -> 1.2.0
-- Modified principles: V. English Code Comments -> V. Commented Code &
-  Configurations
+- Version change: 1.2.0 -> 1.2.1
+- Modified principles: VIII. Documentation & README Sync (clarified required
+  reference to ansible/README.md)
 - Added sections: None
 - Removed sections: None
 - Templates requiring updates:
@@ -58,6 +58,8 @@ Rationale: Consistent wrapping improves diffs and readability.
 ### VIII. Documentation & README Sync
 - Changes that affect behavior, operation, or usage MUST update relevant files
   under `docs/` and any existing README.md in the repository.
+- Changes to automation layout, entry points, or role structure MUST update
+  `ansible/README.md`.
 Rationale: Users rely on docs and READMEs to operate and validate changes.
 
 ## Operational Standards
@@ -78,6 +80,8 @@ Rationale: Users rely on docs and READMEs to operate and validate changes.
 - Idempotency and drift detection MUST be validated as part of change delivery.
 - Changes affecting behavior or usage MUST update `docs/` and README.md when
   present.
+- Changes affecting Ansible layout or entry points MUST update
+  `ansible/README.md`.
 
 ## Review & Change Control
 
@@ -98,4 +102,4 @@ Rationale: Users rely on docs and READMEs to operate and validate changes.
 - Compliance is mandatory: reviewers MUST verify adherence in plans, specs,
   tasks, and code review; exceptions require written approval and risk notes.
 
-**Version**: 1.2.0 | **Ratified**: 2025-12-20 | **Last Amended**: 2025-12-24
+**Version**: 1.2.1 | **Ratified**: 2025-12-20 | **Last Amended**: 2025-12-25
