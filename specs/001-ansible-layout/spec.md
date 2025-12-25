@@ -5,6 +5,12 @@
 **Status**: Draft  
 **Input**: User description: "You are responsible for generating and maintaining the Ansible repository layout. All automation code MUST exist inside: ./ansible/. The structure below is the canonical reference and must be created exactly. All existing files must be migrated into this structure. No file, playbook, inventory, role or script may exist outside ./ansible. Legacy structure must be refactored accordingly. Folders must exist even if empty. Files listed must exist at least as placeholders. Comments define purpose and MUST be followed. It is allowed and expected to split tasks further or add new task files when it is logically meaningful — modularity and clean separation of concerns is REQUIRED. Container deployments may grow inside the containers folder. The goal is maintainability and scalability over time."
 
+## Clarifications
+
+### Session 2025-12-25
+
+- Q: What naming convention should container run scripts use? → A: `run_container_<name>.sh` in `ansible/scripts/`.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Canonical Layout Enforcement (Priority: P1)
@@ -68,6 +74,7 @@ As a maintainer, I want standard entry point scripts and playbooks in predictabl
 - **FR-006**: The canonical layout MUST allow adding new task files and container deployment files within the designated containers area without breaking the structure.
 - **FR-007**: The migration MUST preserve the logical separation of concerns across inventories, roles, playbooks, scripts, and variables.
 - **FR-008**: Each container deployment MUST have a corresponding run script under the canonical scripts area.
+- **FR-009**: Container run scripts MUST follow the naming pattern `run_container_<name>.sh` under `ansible/scripts/`.
 
 ### Functional Requirements Acceptance Criteria
 
@@ -79,6 +86,7 @@ As a maintainer, I want standard entry point scripts and playbooks in predictabl
 - **FR-006**: Adding a new container deployment file within the containers area requires no new top-level directories.
 - **FR-007**: Inventories, roles, playbooks, scripts, and variables are separated into their canonical folders with no cross-category mixing.
 - **FR-008**: Each container deployment has a run script present in the canonical scripts directory.
+- **FR-009**: Container run scripts match the required naming convention and live under `ansible/scripts/`.
 
 ### Key Entities *(include if feature involves data)*
 
