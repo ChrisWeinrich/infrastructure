@@ -1,5 +1,4 @@
 ---
-
 description: "Task list for Playbook Role Refactor"
 ---
 
@@ -26,8 +25,8 @@ implementation and testing of each story.
 **Purpose**: Establish working artifacts to guide the refactor
 
 - [ ] T001 Create inventory workspace in
-  `/Users/christianweinrich/Source/infrastructure/specs/001-ansible-playbook-roles/inventory.md`
-  with tables for scripts, playbooks, roles, and containers
+      `/Users/christianweinrich/Source/infrastructure/specs/001-ansible-playbook-roles/inventory.md`
+      with tables for scripts, playbooks, roles, and containers
 
 ---
 
@@ -38,9 +37,9 @@ implementation and testing of each story.
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
 - [ ] T002 Populate
-  `/Users/christianweinrich/Source/infrastructure/specs/001-ansible-playbook-roles/inventory.md`
-  with current Atlas host and Hermes gateway scripts, playbooks, roles, and
-  container definitions
+      `/Users/christianweinrich/Source/infrastructure/specs/001-ansible-playbook-roles/inventory.md`
+      with current Atlas host and Hermes gateway scripts, playbooks, roles, and
+      container definitions
 
 **Checkpoint**: Foundation ready - user story implementation can begin
 
@@ -57,25 +56,25 @@ and script header identify the target playbook and intended usage.
 ### Implementation for User Story 1
 
 - [ ] T003 [US1] Create the script-to-playbook mapping table in
-  `/Users/christianweinrich/Source/infrastructure/docs/ansible/automation-map.md`
-  using the inventory as the source of truth
+      `/Users/christianweinrich/Source/infrastructure/docs/ansible/automation-map.md`
+      using the inventory as the source of truth
 - [ ] T004 [P] [US1] Update header comments in
-  `/Users/christianweinrich/Source/infrastructure/ansible/scripts/run_gateway.sh`
-  to name the target playbook, inventory, and safe usage notes
+      `/Users/christianweinrich/Source/infrastructure/ansible/scripts/run_gateway.sh`
+      to name the target playbook, inventory, and safe usage notes
 - [ ] T005 [P] [US1] Update header comments in
-  `/Users/christianweinrich/Source/infrastructure/ansible/scripts/run_atlas.sh`
-  to name the target playbook, inventory, and safe usage notes
+      `/Users/christianweinrich/Source/infrastructure/ansible/scripts/run_atlas.sh`
+      to name the target playbook, inventory, and safe usage notes
 - [ ] T006 [P] [US1] Update header comments in
-  `/Users/christianweinrich/Source/infrastructure/ansible/scripts/run_site.sh`
-  to name the target playbook, inventory, and safe usage notes
+      `/Users/christianweinrich/Source/infrastructure/ansible/scripts/run_site.sh`
+      to name the target playbook, inventory, and safe usage notes
 - [ ] T007 [P] [US1] Update header comments in
-  `/Users/christianweinrich/Source/infrastructure/ansible/scripts/run_tag.sh`
-  to name the target playbook, inventory, and safe usage notes
+      `/Users/christianweinrich/Source/infrastructure/ansible/scripts/run_tag.sh`
+      to name the target playbook, inventory, and safe usage notes
 - [ ] T008 [P] [US1] For each container definition under
-  `/Users/christianweinrich/Source/infrastructure/ansible/roles/atlas_host/containers/`,
-  add or update the matching run script in
-  `/Users/christianweinrich/Source/infrastructure/ansible/scripts/`
-  as `run_container_<name>.sh` with documented playbook linkage
+      `/Users/christianweinrich/Source/infrastructure/ansible/roles/atlas_host/containers/`,
+      add or update the matching run script in
+      `/Users/christianweinrich/Source/infrastructure/ansible/scripts/`
+      as `run_container_<name>.sh` with documented playbook linkage
 
 **Checkpoint**: Script usage is traceable end-to-end for Atlas host and Hermes
 gateway.
@@ -93,26 +92,26 @@ includes and orchestration logic, with tasks located under role task files.
 ### Implementation for User Story 2
 
 - [ ] T009 [US2] Refactor
-  `/Users/christianweinrich/Source/infrastructure/ansible/playbooks/gateway.yml`
-  to include roles only and move inline tasks into
-  `/Users/christianweinrich/Source/infrastructure/ansible/roles/hermes-gateway/tasks/`
+      `/Users/christianweinrich/Source/infrastructure/ansible/playbooks/gateway.yml`
+      to include roles only and move inline tasks into
+      `/Users/christianweinrich/Source/infrastructure/ansible/roles/hermes-gateway/tasks/`
 - [ ] T010 [US2] Split Hermes gateway tasks by concern in
-  `/Users/christianweinrich/Source/infrastructure/ansible/roles/hermes-gateway/tasks/`
-  (`main.yml`, `packages.yml`, `networking.yml`, `dhcp.yml`, `hardware.yml`)
+      `/Users/christianweinrich/Source/infrastructure/ansible/roles/hermes-gateway/tasks/`
+      (`main.yml`, `packages.yml`, `networking.yml`, `dhcp.yml`, `hardware.yml`)
 - [ ] T011 [US2] Refactor
-  `/Users/christianweinrich/Source/infrastructure/ansible/playbooks/atlas.yml`
-  to include roles only and move inline tasks into
-  `/Users/christianweinrich/Source/infrastructure/ansible/roles/atlas_host/tasks/`
+      `/Users/christianweinrich/Source/infrastructure/ansible/playbooks/atlas.yml`
+      to include roles only and move inline tasks into
+      `/Users/christianweinrich/Source/infrastructure/ansible/roles/atlas_host/tasks/`
 - [ ] T012 [US2] Split Atlas host tasks by concern in
-  `/Users/christianweinrich/Source/infrastructure/ansible/roles/atlas_host/tasks/`
-  (`main.yml`, `packages.yml`, `docker_config.yml`, `hardware.yml`,
-  `services.yml`, `containers.yml`)
+      `/Users/christianweinrich/Source/infrastructure/ansible/roles/atlas_host/tasks/`
+      (`main.yml`, `packages.yml`, `docker_config.yml`, `hardware.yml`,
+      `services.yml`, `containers.yml`)
 - [ ] T013 [US2] Refactor
-  `/Users/christianweinrich/Source/infrastructure/ansible/playbooks/site.yml`
-  to orchestrate the base, Atlas host, and Hermes gateway roles only
+      `/Users/christianweinrich/Source/infrastructure/ansible/playbooks/site.yml`
+      to orchestrate the base, Atlas host, and Hermes gateway roles only
 - [ ] T014 [P] [US2] Add clear English responsibility comments in
-  `/Users/christianweinrich/Source/infrastructure/ansible/roles/hermes-gateway/tasks/main.yml`
-  and `/Users/christianweinrich/Source/infrastructure/ansible/roles/atlas_host/tasks/main.yml`
+      `/Users/christianweinrich/Source/infrastructure/ansible/roles/hermes-gateway/tasks/main.yml`
+      and `/Users/christianweinrich/Source/infrastructure/ansible/roles/atlas_host/tasks/main.yml`
 
 **Checkpoint**: Roles own the task logic and playbooks act only as orchestration
 entry points.
@@ -130,14 +129,14 @@ identify prerequisites, run order, expected outcomes, and rollback steps.
 ### Implementation for User Story 3
 
 - [ ] T015 [US3] Document prerequisites, run order, expected outcomes,
-  validation, and rollback in
-  `/Users/christianweinrich/Source/infrastructure/docs/ansible/atlas-hermes-runbook.md`
+      validation, and rollback in
+      `/Users/christianweinrich/Source/infrastructure/docs/ansible/atlas-hermes-runbook.md`
 - [ ] T016 [US3] Update
-  `/Users/christianweinrich/Source/infrastructure/ansible/README.md` to reflect
-  the SOC task split, entry playbooks, and the script mapping reference
+      `/Users/christianweinrich/Source/infrastructure/ansible/README.md` to reflect
+      the SOC task split, entry playbooks, and the script mapping reference
 - [ ] T017 [US3] Update
-  `/Users/christianweinrich/Source/infrastructure/README.md` to link to the
-  Atlas host and Hermes gateway automation docs in `docs/ansible/`
+      `/Users/christianweinrich/Source/infrastructure/README.md` to link to the
+      Atlas host and Hermes gateway automation docs in `docs/ansible/`
 
 **Checkpoint**: Documentation clearly explains safe usage and reflects the
 current automation layout.
@@ -149,12 +148,12 @@ current automation layout.
 **Purpose**: Quality, safety, and consistency across all stories
 
 - [ ] T018 [P] Ensure English comments are present and clear in all touched
-  automation files under `/Users/christianweinrich/Source/infrastructure/ansible/`
+      automation files under `/Users/christianweinrich/Source/infrastructure/ansible/`
 - [ ] T019 Run `ansible-lint` and `yamllint` against
-  `/Users/christianweinrich/Source/infrastructure/ansible/` and fix findings
+      `/Users/christianweinrich/Source/infrastructure/ansible/` and fix findings
 - [ ] T020 Update
-  `/Users/christianweinrich/Source/infrastructure/specs/001-ansible-playbook-roles/inventory.md`
-  with completion notes and any remaining follow-ups
+      `/Users/christianweinrich/Source/infrastructure/specs/001-ansible-playbook-roles/inventory.md`
+      with completion notes and any remaining follow-ups
 
 ---
 
