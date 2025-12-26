@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: User description: "bitte verkn\u00a8pfe die scripte mit den playbooks. Bitte zerlege die playoboks in tasks und packe sie in die passenden roles. mache sie richtig SOC und dokumentiere gut"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Traceable Script Usage (Priority: P1)
 
@@ -59,7 +59,7 @@ As an infrastructure maintainer, I can follow documentation that explains what e
 - What happens if two roles appear to own the same responsibility?
 - How does documentation stay accurate if automation changes frequently?
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -69,25 +69,27 @@ As an infrastructure maintainer, I can follow documentation that explains what e
 - **FR-004**: Playbooks MUST focus on orchestration and include roles rather than embedding task logic.
 - **FR-005**: Documentation MUST explain the purpose, prerequisites, and safe usage of each playbook and role.
 - **FR-006**: Documentation updates MUST accompany any change that affects automation behavior or usage.
+- **FR-007**: The automation structure MUST align with `ansible/README.md`, including the canonical layout and the Atlas host and Hermes gateway entry points.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Script**: An executable automation component with a defined purpose and usage context.
 - **Playbook**: An orchestration entry point that sequences roles and defines execution intent.
 - **Role**: A cohesive group of tasks responsible for a single domain concern.
 - **Documentation Artifact**: Written guidance describing linkage, purpose, prerequisites, and expected outcomes.
 
-## Assumptions & Sources *(mandatory)*
+## Assumptions & Sources _(mandatory)_
 
 - The repository already contains playbooks, scripts, and roles for Atlas host and Hermes gateway that need to be aligned and documented.
 - Scope includes all playbooks, roles, and scripts for Atlas host and Hermes gateway tracked in this repository; external automation outside this repository is out of scope.
+- Canonical structure and naming are defined by `/Users/christianweinrich/Source/infrastructure/ansible/README.md` and are the source of truth for this work.
 - Router-specific behavior or constraints will follow the primary router reference first: https://github.com/gl-inet/docs4.x/blob/master/docs/user_guide/gl-mt6000/index.md
 - Core guidance for Ansible and OpenWrt usage will follow: https://github.com/gekmihesg/ansible-openwrt
 - Management access endpoints and methods (IP/hostname, protocol, authentication, location) are documented or will be documented as part of this work.
 - Changes affecting behavior or usage will update `docs/` and any `README.md`.
 - Code, scripts, configs, and YAML files will include clear English comments for non-obvious steps or blocks.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 
