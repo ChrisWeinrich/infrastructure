@@ -21,11 +21,13 @@
       ansible.builtin.include_role:
         name: openwrt/tailscale
 
-    # Restart core services to apply configuration changes.
+  handlers:
+    # Restart core services only when configuration changes.
     - name: Restart dnsmasq
       ansible.builtin.raw: "/etc/init.d/dnsmasq restart"
       changed_when: true
 
+    # Restart firewall on config changes.
     - name: Restart firewall
       ansible.builtin.raw: "/etc/init.d/firewall restart"
       changed_when: true
@@ -34,10 +36,7 @@
     # - Fire-and-forget network restart via nohup
     # - Expect SSH to drop
     # - Next playbook run verifies state
-
-    - name: Restart network (detached, SSH may drop)
+    - name: Restart network
       ansible.builtin.raw: "nohup sh -c '/etc/init.d/network restart' >/tmp/net-restart.log 2>&1 &"
       changed_when: true
       failed_when: false
-
-  handlers: []

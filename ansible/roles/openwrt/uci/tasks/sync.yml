@@ -73,6 +73,10 @@
   loop: "{{ uci_repo_present }}"
   register: uci_apply_results
   changed_when: "'changed' in uci_apply_results.stdout"
+  notify:
+    - Restart dnsmasq
+    - Restart firewall
+    - Restart network
 
 - name: Determine whether apply changed router state
   # Track changes so we can prune snapshots when nothing changed.
