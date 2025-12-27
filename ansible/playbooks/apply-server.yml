@@ -1,10 +1,22 @@
 ---
+# Apply server hostname configuration
 - name: Apply server hostname configuration
   hosts: servers
-  gather_facts: false
+  gather_facts: true
   become: true
   vars:
     server_hostname: atlas-host
+    network_config_path: "{{ playbook_dir }}/../configs/network.yml"
+    docker_packages_primary:
+      - docker.io
+      - docker-compose-plugin
+    docker_packages_fallback:
+      - docker.io
+      - docker-compose
+    vlan40_parent_interface_override: ""
+    vlan40_docker_network: "vlan40_macvlan"
+    vlan40_nginx_container_name: "vlan40-hello-nginx"
+    vlan40_nginx_image: "nginx:alpine"
     # Atlas USB mounts: set UUIDs and mount paths before running.
     # Install required filesystem tooling (adjust package names per distro).
     usb_mount_packages:
@@ -23,6 +35,7 @@
     apfs_fuse_bin: "/usr/local/bin/apfs-fuse"
     apfs_fuse_mount_helper: "/sbin/mount.fuse.apfs"
     usb_partitions:
+      # usb_disk_1
       - name: usb_disk_1
         uuid: "a2396b3d-0c08-484c-960c-01250af9ca8e"
         mount_path: "/mnt/usb_disk_1"
@@ -30,6 +43,7 @@
         fstype: "fuse.apfs"
         options: "ro,allow_other"
         writable: false
+      # usb_disk_2
       - name: usb_disk_2
         uuid: "677A-E7A9"
         mount_path: "/mnt/usb_disk_2"
@@ -42,16 +56,167 @@
       ansible.builtin.hostname:
         name: "{{ server_hostname }}"
 
+    # Load network configuration
+    - name: Load network configuration
+      ansible.builtin.include_vars:
+        file: "{{ network_config_path }}"
+        name: network_config
+
+    # Select VLAN 40 and service configuration
+    - name: Select VLAN 40 and service configuration
+      ansible.builtin.set_fact:
+        vlan40_config: "{{ network_config.site.networks.vlan40 }}"
+        vlan40_service: "{{ network_config.site.services.hello_world_nginx }}"
+
+    # Resolve VLAN parent interface
+    - name: Resolve VLAN parent interface
+      ansible.builtin.set_fact:
+        vlan40_parent_interface: >-
+          {{ vlan40_parent_interface_override
+          | default(ansible_default_ipv4.interface, true) }}
+
+    # Validate operator-provided values before applying VLAN and Docker tasks.
+    - name: Validate VLAN 40 configuration
+      ansible.builtin.assert:
+        that:
+          - vlan40_config.vlan_id is defined
+          - vlan40_config.subnet is string
+          - vlan40_config.gateway is string
+          - vlan40_config.server.address is defined
+          - vlan40_config.server.interface is defined
+          - vlan40_parent_interface is string
+          - vlan40_parent_interface | length > 0
+          - vlan40_service.address is defined
+          - vlan40_service.hostname is defined
+        fail_msg: "VLAN 40 configuration is incomplete in network.yml."
+        success_msg: "VLAN 40 configuration is present."
+
+    # Check for Docker Compose plugin package
+    - name: Check for Docker Compose plugin package
+      ansible.builtin.command: apt-cache show docker-compose-plugin
+      register: docker_compose_plugin_check
+      changed_when: false
+      failed_when: false
+
+    # Select Docker packages based on availability
+    - name: Select Docker packages based on availability
+      ansible.builtin.set_fact:
+        docker_packages_selected: >-
+          {{ docker_packages_primary
+          if docker_compose_plugin_check.rc == 0
+          else docker_packages_fallback }}
+
+    # Install Docker Engine and Compose package
+    - name: Install Docker Engine and Compose package
+      ansible.builtin.apt:
+        name: "{{ docker_packages_selected }}"
+        state: present
+        update_cache: true
+
+    # Ensure Docker service is enabled and running
+    - name: Ensure Docker service is enabled and running
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    # Force a single network stack so VLAN provisioning is deterministic.
+    - name: Install netplan
+      ansible.builtin.apt:
+        name: netplan.io
+        state: present
+        update_cache: true
+
+    # Netplan expects configs under /etc/netplan.
+    - name: Ensure netplan configuration directory exists
+      ansible.builtin.file:
+        path: /etc/netplan
+        state: directory
+        mode: "0755"
+
+    # Render VLAN interface on the host (for Docker macvlan parent).
+    - name: Render netplan VLAN 40 config
+      ansible.builtin.copy:
+        dest: /etc/netplan/99-ansible-vlan40.yaml
+        mode: "0600"
+        content: |-
+          network:
+            version: 2
+            ethernets:
+              {{ vlan40_parent_interface }}:
+                dhcp4: true
+            vlans:
+              {{ vlan40_config.server.interface }}:
+                id: {{ vlan40_config.vlan_id }}
+                link: {{ vlan40_parent_interface }}
+                addresses:
+                  - {{ vlan40_config.server.address }}/24
+      notify: Apply netplan changes
+
+    # Check VLAN 40 interface state
+    - name: Check VLAN 40 interface state
+      ansible.builtin.command: "ip -o link show {{ vlan40_config.server.interface }}"
+      changed_when: false
+
+    # Check Docker macvlan network
+    - name: Check Docker macvlan network
+      ansible.builtin.command: "docker network inspect {{ vlan40_docker_network }}"
+      register: docker_network_check
+      changed_when: false
+      failed_when: false
+
+    # Create Docker macvlan network
+    - name: Create Docker macvlan network
+      ansible.builtin.command: >-
+        docker network create -d macvlan
+        --subnet {{ vlan40_config.subnet }}
+        --gateway {{ vlan40_config.gateway }}
+        -o parent={{ vlan40_config.server.interface }}
+        {{ vlan40_docker_network }}
+      changed_when: true
+      when: docker_network_check.rc != 0
+
+    # Check nginx container
+    - name: Check nginx container
+      ansible.builtin.command: "docker inspect {{ vlan40_nginx_container_name }}"
+      register: docker_container_check
+      changed_when: false
+      failed_when: false
+
+    # Run hello world nginx container
+    - name: Run hello world nginx container
+      ansible.builtin.command: >-
+        docker run -d
+        --name {{ vlan40_nginx_container_name }}
+        --network {{ vlan40_docker_network }}
+        --ip {{ vlan40_service.address }}
+        --restart unless-stopped
+        {{ vlan40_nginx_image }}
+      changed_when: true
+      when: docker_container_check.rc != 0
+
+    # Ensure nginx container is running
+    - name: Ensure nginx container is running
+      ansible.builtin.command: >-
+        docker inspect -f {{ '"{{.State.Running}}"' }}
+        {{ vlan40_nginx_container_name }}
+      register: docker_container_running
+      changed_when: false
+      failed_when: docker_container_running.stdout != "true"
+
+    # Install USB mount filesystem packages
     - name: Install USB mount filesystem packages
       ansible.builtin.apt:
         name: "{{ usb_mount_packages }}"
         state: present
         update_cache: true
 
+    # Detect whether apfs-fuse is required
     - name: Detect whether apfs-fuse is required
       ansible.builtin.set_fact:
         needs_apfs_fuse: "{{ usb_partitions | selectattr('fstype', 'equalto', 'fuse.apfs') | list | length > 0 }}"
 
+    # Allow FUSE allow_other option
     - name: Allow FUSE allow_other option
       ansible.builtin.lineinfile:
         path: /etc/fuse.conf
@@ -60,6 +225,7 @@
         mode: "0644"
       when: needs_apfs_fuse
 
+    # Clone apfs-fuse sources
     - name: Clone apfs-fuse sources
       ansible.builtin.git:
         repo: "{{ apfs_fuse_repo }}"
@@ -69,6 +235,7 @@
         recursive: true
       when: needs_apfs_fuse
 
+    # Ensure apfs-fuse build directory exists
     - name: Ensure apfs-fuse build directory exists
       ansible.builtin.file:
         path: "{{ apfs_fuse_dest }}/build"
@@ -76,6 +243,7 @@
         mode: "0755"
       when: needs_apfs_fuse
 
+    # Configure apfs-fuse build
     - name: Configure apfs-fuse build
       ansible.builtin.command: cmake ..
       args:
@@ -83,6 +251,7 @@
         creates: "{{ apfs_fuse_dest }}/build/Makefile"
       when: needs_apfs_fuse
 
+    # Build apfs-fuse
     - name: Build apfs-fuse
       ansible.builtin.command: make
       args:
@@ -90,6 +259,7 @@
         creates: "{{ apfs_fuse_dest }}/build/apfs-fuse"
       when: needs_apfs_fuse
 
+    # Install apfs-fuse binary
     - name: Install apfs-fuse binary
       ansible.builtin.copy:
         src: "{{ apfs_fuse_dest }}/build/apfs-fuse"
@@ -98,6 +268,7 @@
         remote_src: true
       when: needs_apfs_fuse
 
+    # Install apfs-fuse mount helper
     - name: Install apfs-fuse mount helper
       ansible.builtin.file:
         src: "{{ apfs_fuse_bin }}"
@@ -120,6 +291,7 @@
         success_msg: "USB mount variables are set for {{ item.name }}."
       loop: "{{ usb_partitions }}"
 
+    # Ensure mount paths exist
     - name: Ensure mount paths exist
       ansible.builtin.file:
         path: "{{ item.mount_path }}"
@@ -129,12 +301,14 @@
         mode: "0755"
       loop: "{{ usb_partitions }}"
 
+    # Check USB partitions by UUID
     - name: Check USB partitions by UUID
       ansible.builtin.stat:
         path: "/dev/disk/by-uuid/{{ item.uuid }}"
       register: usb_uuid_stats
       loop: "{{ usb_partitions }}"
 
+    # Report missing USB partitions
     - name: Report missing USB partitions
       ansible.builtin.debug:
         msg: >-
@@ -156,6 +330,7 @@
         index_var: usb_index
       when: usb_uuid_stats.results[usb_index].stat.exists
 
+    # Check mount availability
     - name: Check mount availability
       ansible.builtin.command: "mountpoint -q {{ item.mount_path }}"
       register: mountpoint_results
@@ -163,6 +338,7 @@
       failed_when: false
       loop: "{{ usb_partitions }}"
 
+    # Report mount availability
     - name: Report mount availability
       ansible.builtin.debug:
         msg: >-
@@ -170,6 +346,7 @@
           {{ 'available' if item.rc == 0 else 'unavailable' }}.
       loop: "{{ mountpoint_results.results }}"
 
+    # Verify read access on mounts
     - name: Verify read access on mounts
       ansible.builtin.command: "ls -1 {{ item.0.mount_path }}"
       changed_when: false
@@ -177,12 +354,14 @@
       loop: "{{ usb_partitions | zip(mountpoint_results.results) | list }}"
       when: item.1.rc == 0
 
+    # Report read-only mounts
     - name: Report read-only mounts
       ansible.builtin.debug:
         msg: "Mount {{ item.0.mount_path }} is read-only; write test skipped."
       loop: "{{ usb_partitions | zip(mountpoint_results.results) | list }}"
       when: item.1.rc == 0 and not (item.0.writable | default(true))
 
+    # Verify write access on writable mounts
     - name: Verify write access on writable mounts
       ansible.builtin.shell: >-
         testfile="{{ item.0.mount_path }}/.ansible_mount_test";
@@ -194,3 +373,8 @@
       failed_when: item.1.rc != 0
       loop: "{{ usb_partitions | zip(mountpoint_results.results) | list }}"
       when: item.1.rc == 0 and (item.0.writable | default(true))
+
+  handlers:
+    - name: Apply netplan changes
+      ansible.builtin.command: netplan apply
+      changed_when: true

@@ -71,7 +71,9 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] T010 Define rollback runbook and out-of-band access validation for
   network changes (if applicable), including documented management access
   endpoints and methods
-- [ ] T011 [P] Add idempotency and drift checks for automation changes (if
+- [ ] T011 Ensure router configuration changes are applied via repo-managed
+  config files only; avoid UCI write changes in automation
+- [ ] T012 [P] Add idempotency and drift checks for automation changes (if
   applicable)
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel

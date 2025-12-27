@@ -1,0 +1,76 @@
+# /etc/config/network
+# Minimal baseline for GL-MT6000 + VLAN 40 on br-lan.
+# Notes:
+# - br-lan bridges LAN ports.
+# - WAN uses eth1 via DHCP.
+# - VLAN 40 is created on br-lan as br-lan.40.
+# - VLAN membership:
+#   - VLAN 1: untagged on all LAN ports (lan1..lan5), tagged on CPU (*).
+#   - VLAN 40: tagged on lan5 and CPU (*). This makes lan5 a trunk port.
+#     Untagged traffic on lan5 stays on VLAN 1, so normal clients still work.
+
+config interface 'loopback'
+	option device 'lo'
+	option proto 'static'
+	option ipaddr '127.0.0.1'
+	option netmask '255.0.0.0'
+
+config globals 'globals'
+	option ula_prefix 'fd47:f9d3:da38::/48'
+
+config device
+	option name 'br-lan'
+	option type 'bridge'
+	list ports 'lan1'
+	list ports 'lan2'
+	list ports 'lan3'
+	list ports 'lan4'
+	list ports 'lan5'
+
+config interface 'lan'
+	option device 'br-lan.1'
+	option proto 'static'
+	option ipaddr '192.168.8.1'
+	option netmask '255.255.255.0'
+	option ip6assign '60'
+
+config device
+	option name 'eth1'
+	# Keep your original WAN MAC if you rely on ISP DHCP bindings.
+	# option macaddr '94:83:c4:c3:b9:a5'
+
+config interface 'wan'
+	option device 'eth1'
+	option proto 'dhcp'
+	option metric '10'
+
+config interface 'wan6'
+	option device '@wan'
+	option proto 'dhcpv6'
+	option disabled '1'
+
+config interface 'wwan'
+	option proto 'dhcp'
+	option metric '20'
+
+# DSA bridge VLAN table
+config bridge-vlan
+	option device 'br-lan'
+	option vlan '1'
+	list ports 'lan1:u*'
+	list ports 'lan2:u*'
+	list ports 'lan3:u*'
+	list ports 'lan4:u*'
+	list ports 'lan5:u*'
+
+config bridge-vlan
+	option device 'br-lan'
+	option vlan '40'
+	list ports 'lan5:t'
+	list ports '*:t'
+
+config interface 'vlan40'
+	option device 'br-lan.40'
+	option proto 'static'
+	option ipaddr '192.168.40.1'
+	option netmask '255.255.255.0'

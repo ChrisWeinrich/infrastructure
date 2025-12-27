@@ -4,6 +4,9 @@ Auto-generated from all feature plans. Last updated: 2025-12-20
 
 ## Active Technologies
 
+- YAML (Ansible playbooks) + Ansible control node, Docker Engine, Docker Compose (001-docker-vlan-nginx)
+- Repo-managed YAML configs and OpenWrt UCI snapshots (001-docker-vlan-nginx)
+
 - YAML (Ansible playbooks) + Ansible (control node), Linux mount tooling on Atlas (001-usb-disk-mount)
 - USB disk partitions mounted on Atlas (001-usb-disk-mount)
 
@@ -36,14 +39,19 @@ N/A (repo-level tooling): Follow standard conventions
 
 ## Recent Changes
 
+- 001-docker-vlan-nginx: Added YAML (Ansible playbooks) + Ansible control node, Docker Engine, Docker Compose
+
 - 001-usb-disk-mount: Added YAML (Ansible playbooks) + Ansible (control node), Linux mount tooling on Atlas
 
 - 001-static-ip-hostnames: Added YAML (Ansible playbooks), OpenWrt UCI syntax + Ansible, gekmihesg.openwrt role, pre-commit,
 
-- 003-tailscale-router-access: Added YAML (Ansible playbooks), OpenWrt UCI syntax + Ansible, gekmihesg.openwrt role, Tailscale package
   `gekmihesg.openwrt` role, OpenWrt UCI management
 
   ansible-lint,
 
 <!-- MANUAL ADDITIONS START -->
+
+- OpenWrt router configuration MUST be applied via repo-managed config files;
+do not mix config sync with UCI write changes in automation (UCI is read-only
+for verification or emergency recovery).
 <!-- MANUAL ADDITIONS END -->

@@ -1,8 +1,7 @@
 <!--
 Sync Impact Report:
-- Version change: 1.1.0 -> 1.2.0
-- Modified principles: V. English Code Comments -> V. Commented Code &
-  Configurations
+- Version change: 1.2.0 -> 1.2.1
+- Modified principles: I. Infrastructure-as-Code First -> I. Infrastructure-as-Code First
 - Added sections: None
 - Removed sections: None
 - Templates requiring updates:
@@ -17,7 +16,10 @@ Sync Impact Report:
 
 ### I. Infrastructure-as-Code First
 - All router and network configuration MUST be expressed in Ansible and/or
-  OpenWrt configurations committed to version control.
+  OpenWrt configuration files committed to version control.
+- Router configuration MUST be applied from those configuration files; do not
+  mix config sync with ad-hoc UCI write commands in automation. UCI is for
+  read-only verification or emergency recovery only.
 - Manual changes are emergency-only, logged, and MUST be codified in IaC within
   the next change window.
 Rationale: IaC enables repeatable, reviewable changes and reliable recovery.
@@ -64,6 +66,8 @@ Rationale: Users rely on docs and READMEs to operate and validate changes.
 
 - Infrastructure changes MUST be made through Ansible/OpenWrt configurations
   and kept under version control with clear change history.
+- Router configuration MUST be applied via repo-managed config files; avoid
+  mixing config sync with UCI write changes in automation.
 - Change proposals MUST include a safety plan, rollback steps, and validation
   criteria before and after applying changes.
 - Assumptions and device-specific behavior MUST be documented with sources.
@@ -98,4 +102,4 @@ Rationale: Users rely on docs and READMEs to operate and validate changes.
 - Compliance is mandatory: reviewers MUST verify adherence in plans, specs,
   tasks, and code review; exceptions require written approval and risk notes.
 
-**Version**: 1.2.0 | **Ratified**: 2025-12-20 | **Last Amended**: 2025-12-24
+**Version**: 1.2.1 | **Ratified**: 2025-12-20 | **Last Amended**: 2025-12-27

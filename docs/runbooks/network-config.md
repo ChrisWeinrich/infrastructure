@@ -27,6 +27,25 @@ Management endpoints are defined in each device block under
 `management_address`. Update the endpoint details whenever device addressing
 changes.
 
+## VLAN 40 Validation and Rollback
+
+Validation steps before and after applying VLAN 40 updates:
+
+1. Confirm VLAN 40 values in `ansible/configs/network.yml` match the intended
+   subnet, gateway, and hostname data.
+2. After applying playbooks, verify the VLAN interface exists on atlas-host and
+   can reach the VLAN gateway (for example, ping `192.168.40.1` from atlas-host).
+
+Rollback steps if VLAN 40 changes need to be reverted:
+
+1. Remove the VLAN 40 network and service hostname entries from
+   `ansible/configs/network.yml`.
+2. Re-run the relevant playbooks to remove or disable the VLAN configuration.
+3. If OpenWrt changes were applied, restore the last known-good snapshot using
+   the OpenWrt recovery runbook.
+4. Remove the Docker macvlan network and hello world container if they were
+   created, then re-run `ansible/playbooks/apply-server.yml` to reconcile.
+
 ## Update Checklist
 
 1. Add or update device details under the correct network and router.

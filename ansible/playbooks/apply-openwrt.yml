@@ -114,4 +114,23 @@
       delegate_to: localhost
       run_once: true
 
+    # Restart core services to apply configuration changes.
+    - name: Restart dnsmasq
+      ansible.builtin.raw: "/etc/init.d/dnsmasq restart"
+      changed_when: true
+
+    - name: Restart firewall
+      ansible.builtin.raw: "/etc/init.d/firewall restart"
+      changed_when: true
+
+    # Best practice for OpenWrt without Python:
+    # - Fire-and-forget network restart via nohup
+    # - Expect SSH to drop
+    # - Next playbook run verifies state
+
+    - name: Restart network (detached, SSH may drop)
+      ansible.builtin.raw: "nohup sh -c '/etc/init.d/network restart' >/tmp/net-restart.log 2>&1 &"
+      changed_when: true
+      failed_when: false
+
   handlers: []

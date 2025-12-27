@@ -9,7 +9,17 @@
 # Refresh package metadata before install/upgrade.
 - name: Update package lists
   ansible.builtin.raw: "opkg update"
+  register: opkg_update
   changed_when: false
+  failed_when: false
+
+- name: Gate on package list update when install is required
+  ansible.builtin.assert:
+    that:
+      - tailscale_binary.rc == 0 or opkg_update.rc == 0
+    fail_msg: >-
+      opkg update failed and Tailscale is not installed. Check router
+      connectivity to package feeds before retrying.
 
 # Install tailscale if missing, otherwise upgrade it.
 - name: Install or upgrade Tailscale
@@ -23,6 +33,7 @@
     fi
   register: tailscale_install
   changed_when: "'changed' in tailscale_install.stdout"
+  when: tailscale_binary.rc == 0 or opkg_update.rc == 0
 
 # Ensure the tailscale service is enabled and running.
 - name: Enable and start Tailscale service

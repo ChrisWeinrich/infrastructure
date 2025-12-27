@@ -58,6 +58,36 @@ ping 192.168.8.134
 ssh <user>@192.168.8.134
 ```
 
+## Hostname Access for VLAN Services
+
+When VLAN services are added (for example, the hello world nginx service on
+VLAN 40), ensure the router provides the DNS record and clients query it:
+
+- DNS record: map `nginx-vlan40` to `192.168.40.10` in OpenWrt dnsmasq.
+- LAN clients should already use the router as DNS (`192.168.8.1`).
+- Tailscale clients should resolve via the router DNS (set in tailnet DNS or
+  via client configuration).
+
+Example validation:
+
+```bash
+curl http://nginx-vlan40
+```
+
+LAN validation (from a LAN client):
+
+```bash
+nslookup nginx-vlan40 192.168.8.1
+curl http://nginx-vlan40
+```
+
+Tailscale validation (from a Tailscale client with subnet routes enabled):
+
+```bash
+nslookup nginx-vlan40 192.168.8.1
+curl http://nginx-vlan40
+```
+
 The router management endpoints remain:
 
 - SSH: `root@192.168.8.1:22`
