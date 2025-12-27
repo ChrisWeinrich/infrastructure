@@ -138,10 +138,13 @@
     - name: Render netplan VLAN 40 config
       ansible.builtin.copy:
         dest: /etc/netplan/99-ansible-vlan40.yaml
-        mode: "0644"
+        mode: "0600"
         content: |-
           network:
             version: 2
+            ethernets:
+              {{ vlan40_parent_interface }}:
+                dhcp4: true
             vlans:
               {{ vlan40_config.server.interface }}:
                 id: {{ vlan40_config.vlan_id }}

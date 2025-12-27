@@ -125,7 +125,7 @@ config zone
 
 config forwarding
 	option src 'tailscale'
-	option dest 'lan'
+	option dest 'vlan40'
 
 # Block router management from Tailscale.
 config rule
