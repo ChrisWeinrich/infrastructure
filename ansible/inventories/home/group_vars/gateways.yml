@@ -2,7 +2,9 @@
 # Gateway defaults for OpenWrt automation.
 openwrt_router_name: mt6000
 openwrt_config_dir: /etc/config
-openwrt_config_repo_dir: ansible/configs/openwrt
+openwrt_config_repo_dir: ansible/roles/openwrt/uci/files/openwrt
+openwrt_config_extra_dirs:
+  - ansible/roles/openwrt/tailscale/files/openwrt
 openwrt_snapshot_root: snapshots
 # Desired router hostname on the LAN.
 openwrt_hostname: hermes-gateway
