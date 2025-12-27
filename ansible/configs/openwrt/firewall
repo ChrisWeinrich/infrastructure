@@ -1,13 +1,111 @@
-# Tailscale firewall additions (managed by Ansible).
+# /etc/config/firewall
+# Minimal firewall:
+# - LAN -> WAN forwarding allowed
+# - VLAN40 -> WAN forwarding allowed
+# - No VLAN40 <-> LAN forwarding (isolation)
+# - DHCP/DNS allowed to the router on LAN and VLAN40
+# - Keep your existing Tailscale zone and forwarding tailscale -> lan
+
+config defaults
+	option input 'REJECT'
+	option output 'ACCEPT'
+	option forward 'REJECT'
+	option synflood_protect '1'
+	option drop_invalid '1'
+
 config zone
-  option name 'tailscale'
-  option input 'ACCEPT'
-  option output 'ACCEPT'
-  option forward 'ACCEPT'
-  option masq '0'
-  option mtu_fix '1'
-  option device 'tailscale0'
+	option name 'lan'
+	list network 'lan'
+	option input 'ACCEPT'
+	option output 'ACCEPT'
+	option forward 'REJECT'
+
+config zone
+	option name 'vlan40'
+	list network 'vlan40'
+	option input 'REJECT'
+	option output 'ACCEPT'
+	option forward 'REJECT'
+
+config zone
+	option name 'wan'
+	list network 'wan'
+	list network 'wwan'
+	list network 'wan6'
+	option input 'REJECT'
+	option output 'ACCEPT'
+	option forward 'REJECT'
+	option masq '1'
+	option mtu_fix '1'
 
 config forwarding
-  option src 'tailscale'
-  option dest 'lan'
+	option src 'lan'
+	option dest 'wan'
+
+config forwarding
+	option src 'vlan40'
+	option dest 'wan'
+
+# Allow DHCP (IPv4) from LAN to router
+config rule
+	option name 'Allow-DHCP-LAN'
+	option src 'lan'
+	option proto 'udp'
+	option dest_port '67-68'
+	option target 'ACCEPT'
+
+# Allow DNS from LAN to router
+config rule
+	option name 'Allow-DNS-LAN'
+	option src 'lan'
+	option proto 'tcp udp'
+	option dest_port '53'
+	option target 'ACCEPT'
+
+# Block DNS leaks from LAN clients to the WAN uplink.
+config rule
+	option name 'Block-DNS-LAN-WAN'
+	option src 'lan'
+	option dest 'wan'
+	option proto 'tcp udp'
+	option dest_port '53'
+	option target 'REJECT'
+
+# Allow DHCP (IPv4) from VLAN40 to router
+config rule
+	option name 'Allow-DHCP-VLAN40'
+	option src 'vlan40'
+	option proto 'udp'
+	option dest_port '67-68'
+	option target 'ACCEPT'
+
+# Allow DNS from VLAN40 to router
+config rule
+	option name 'Allow-DNS-VLAN40'
+	option src 'vlan40'
+	option proto 'tcp udp'
+	option dest_port '53'
+	option target 'ACCEPT'
+
+# Block DNS leaks from VLAN40 clients to the WAN uplink.
+config rule
+	option name 'Block-DNS-VLAN40-WAN'
+	option src 'vlan40'
+	option dest 'wan'
+	option proto 'tcp udp'
+	option dest_port '53'
+	option target 'REJECT'
+
+# Tailscale (kept from your file)
+config zone
+	option name 'tailscale'
+	option input 'ACCEPT'
+	option output 'ACCEPT'
+	option forward 'ACCEPT'
+	option masq '0'
+	option mtu_fix '1'
+	option device 'tailscale0'
+
+config forwarding
+	option src 'tailscale'
+	option dest 'lan'

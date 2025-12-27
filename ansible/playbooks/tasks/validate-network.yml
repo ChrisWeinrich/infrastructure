@@ -18,17 +18,28 @@
   delegate_to: localhost
   run_once: true
 
-- name: Initialize device collection
+- name: Initialize device collections
   ansible.builtin.set_fact:
-    network_devices: []
+    router_devices: []
+    attached_devices: []
   delegate_to: localhost
   run_once: true
 
-- name: Collect routers and attached devices
+- name: Collect routers
   ansible.builtin.set_fact:
-    network_devices: >-
-      {{ network_devices
-         + [network_item.value.router]
+    router_devices: >-
+      {{ router_devices + [network_item.value.router] }}
+  loop: "{{ network_config.site.networks | dict2items }}"
+  loop_control:
+    loop_var: network_item
+  when: network_item.value.router is defined
+  delegate_to: localhost
+  run_once: true
+
+- name: Collect attached devices
+  ansible.builtin.set_fact:
+    attached_devices: >-
+      {{ attached_devices
          + (network_item.value.router.attached_devices | default({})
             | dict2items
             | map(attribute='value')
@@ -37,6 +48,31 @@
   loop_control:
     loop_var: network_item
   when: network_item.value.router is defined
+  delegate_to: localhost
+  run_once: true
+
+- name: Group routers by name
+  ansible.builtin.set_fact:
+    router_name_groups: "{{ router_devices | groupby('name') }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: Ensure router name maps to a single management address
+  ansible.builtin.assert:
+    that:
+      - (router_group.1 | map(attribute='management_address') | unique | length) == 1
+    fail_msg: >-
+      Router {{ router_group.0 }} maps to multiple management addresses.
+  loop: "{{ router_name_groups }}"
+  loop_control:
+    loop_var: router_group
+  delegate_to: localhost
+  run_once: true
+
+- name: Combine routers and attached devices
+  ansible.builtin.set_fact:
+    network_devices: >-
+      {{ (router_devices | unique(attribute='name')) + attached_devices }}
   delegate_to: localhost
   run_once: true
 

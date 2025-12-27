@@ -10,7 +10,6 @@
     openwrt_apply_full: false
     # Reserved for staged apply extensions.
     openwrt_apply_pause: true
-    network_config_path: "{{ playbook_dir }}/../configs/network.yml"
   tasks:
     # Resolve the snapshot root directory on the control host.
     - name: Set snapshot root
@@ -89,113 +88,6 @@
     - name: Apply repository UCI configuration files
       ansible.builtin.include_tasks: tasks/apply-openwrt-uci.yml
 
-    - name: Load central network configuration
-      ansible.builtin.include_vars:
-        file: "{{ network_config_path }}"
-        name: network_config
-
-    - name: Select VLAN 40 and service configuration
-      ansible.builtin.set_fact:
-        vlan40_config: "{{ network_config.site.networks.vlan40 }}"
-        vlan40_service: "{{ network_config.site.services.hello_world_nginx }}"
-        vlan40_device_name: >-
-          {{ network_config.site.networks.vlan40.uplink }}
-          .{{ network_config.site.networks.vlan40.vlan_id }}
-
-    - name: Validate VLAN 40 configuration values
-      ansible.builtin.assert:
-        that:
-          - vlan40_config.vlan_id is defined
-          - vlan40_config.gateway is string
-          - vlan40_config.subnet is string
-          - vlan40_config.uplink is string
-          - vlan40_service.address is defined
-          - vlan40_service.hostname is defined
-        fail_msg: "VLAN 40 configuration is incomplete in network.yml."
-        success_msg: "VLAN 40 configuration is present."
-
-    - name: Configure VLAN 40 interface on OpenWrt
-      ansible.builtin.raw: |
-        uci -q batch <<'EOF'
-        set network.vlan40_dev=device
-        set network.vlan40_dev.type='8021q'
-        set network.vlan40_dev.ifname='{{ vlan40_config.uplink }}'
-        set network.vlan40_dev.vid='{{ vlan40_config.vlan_id }}'
-        set network.vlan40=interface
-        set network.vlan40.device='{{ vlan40_device_name }}'
-        set network.vlan40.proto='static'
-        set network.vlan40.ipaddr='{{ vlan40_config.gateway }}'
-        set network.vlan40.netmask='255.255.255.0'
-        commit network
-        EOF
-
-    - name: Reload network for VLAN 40
-      ansible.builtin.raw: "/etc/init.d/network reload"
-      changed_when: false
-
-    - name: Configure firewall zone for VLAN 40
-      ansible.builtin.raw: |
-        uci -q batch <<'EOF'
-        delete firewall.vlan40
-        set firewall.vlan40=zone
-        set firewall.vlan40.name='vlan40'
-        set firewall.vlan40.input='ACCEPT'
-        set firewall.vlan40.output='ACCEPT'
-        set firewall.vlan40.forward='REJECT'
-        set firewall.vlan40.network='vlan40'
-        commit firewall
-        EOF
-
-    - name: Configure firewall forwarding from LAN to VLAN 40
-      ansible.builtin.raw: |
-        src='lan'
-        dest='vlan40'
-        rule_exists="$(uci -q show firewall | grep -F "forwarding" | grep -F "src='${src}'" | grep -F "dest='${dest}'" | head -n1)"
-        if [ -z "${rule_exists}" ]; then
-          section="$(uci add firewall forwarding)"
-          uci set firewall.${section}.src="${src}"
-          uci set firewall.${section}.dest="${dest}"
-          uci commit firewall
-          echo changed
-        fi
-      register: vlan40_forward_lan
-      changed_when: "'changed' in vlan40_forward_lan.stdout"
-
-    - name: Configure firewall forwarding from Tailscale to VLAN 40
-      ansible.builtin.raw: |
-        src='tailscale'
-        dest='vlan40'
-        rule_exists="$(uci -q show firewall | grep -F "forwarding" | grep -F "src='${src}'" | grep -F "dest='${dest}'" | head -n1)"
-        if [ -z "${rule_exists}" ]; then
-          section="$(uci add firewall forwarding)"
-          uci set firewall.${section}.src="${src}"
-          uci set firewall.${section}.dest="${dest}"
-          uci commit firewall
-          echo changed
-        fi
-      register: vlan40_forward_tailscale
-      changed_when: "'changed' in vlan40_forward_tailscale.stdout"
-
-    - name: Reload firewall after VLAN 40 changes
-      ansible.builtin.raw: "/etc/init.d/firewall reload"
-      changed_when: false
-
-    - name: Configure DNS hostname for VLAN service
-      ansible.builtin.raw: |
-        hostname="{{ vlan40_service.hostname }}"
-        address="{{ vlan40_service.address }}"
-        section="$(uci -q show dhcp | grep -F ".name='${hostname}'" | head -n1 | cut -d'.' -f2)"
-        if [ -z "${section}" ]; then
-          section="$(uci add dhcp host)"
-        fi
-        uci set dhcp.${section}.name="${hostname}"
-        uci set dhcp.${section}.ip="${address}"
-        uci commit dhcp
-
-    - name: Restart dnsmasq after hostname updates
-      ansible.builtin.raw: "/etc/init.d/dnsmasq restart"
-      changed_when: false
-
     # Ensure the Tailscale package is installed and running.
     - name: Install Tailscale
       ansible.builtin.include_tasks: tasks/install-tailscale.yml
@@ -221,5 +113,24 @@
         - hostvars['localhost'].snapshot_dir is defined
       delegate_to: localhost
       run_once: true
+
+    # Restart core services to apply configuration changes.
+    - name: Restart dnsmasq
+      ansible.builtin.raw: "/etc/init.d/dnsmasq restart"
+      changed_when: true
+
+    - name: Restart firewall
+      ansible.builtin.raw: "/etc/init.d/firewall restart"
+      changed_when: true
+
+    # Best practice for OpenWrt without Python:
+    # - Fire-and-forget network restart via nohup
+    # - Expect SSH to drop
+    # - Next playbook run verifies state
+
+    - name: Restart network (detached, SSH may drop)
+      ansible.builtin.raw: "nohup sh -c '/etc/init.d/network restart' >/tmp/net-restart.log 2>&1 &"
+      changed_when: true
+      failed_when: false
 
   handlers: []

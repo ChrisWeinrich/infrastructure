@@ -33,7 +33,7 @@
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
 - IaC only: router/network changes expressed in Ansible/OpenWrt configs and
-  committed to version control.
+  committed to version control; do not mix config sync with UCI write commands.
 - Safety-first: rollback steps, pre/post validation, and safe access path are
   defined for network changes.
 - Idempotency & drift: automation is idempotent and includes drift detection

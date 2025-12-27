@@ -148,14 +148,7 @@
                 link: {{ vlan40_parent_interface }}
                 addresses:
                   - {{ vlan40_config.server.address }}/24
-      register: netplan_vlan40
-
-    # Apply only when the rendered netplan file changes.
-    - name: Apply netplan changes
-      ansible.builtin.command: netplan apply
-      changed_when: true
-      when:
-        - netplan_vlan40 is changed
+      notify: Apply netplan changes
 
     # Check VLAN 40 interface state
     - name: Check VLAN 40 interface state
@@ -177,6 +170,7 @@
         --gateway {{ vlan40_config.gateway }}
         -o parent={{ vlan40_config.server.interface }}
         {{ vlan40_docker_network }}
+      changed_when: true
       when: docker_network_check.rc != 0
 
     # Check nginx container
@@ -195,6 +189,7 @@
         --ip {{ vlan40_service.address }}
         --restart unless-stopped
         {{ vlan40_nginx_image }}
+      changed_when: true
       when: docker_container_check.rc != 0
 
     # Ensure nginx container is running
@@ -375,3 +370,8 @@
       failed_when: item.1.rc != 0
       loop: "{{ usb_partitions | zip(mountpoint_results.results) | list }}"
       when: item.1.rc == 0 and (item.0.writable | default(true))
+
+  handlers:
+    - name: Apply netplan changes
+      ansible.builtin.command: netplan apply
+      changed_when: true

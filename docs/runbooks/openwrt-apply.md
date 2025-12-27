@@ -6,7 +6,8 @@ verification gate fails.
 ## First Small Declarative Change
 
 The first change is intentionally low risk: set the system hostname to
-`mt6000` using UCI. This change is idempotent and safe to re-run.
+`mt6000` via the repo-managed config files in `ansible/configs/openwrt/`.
+Avoid mixing config sync with ad-hoc UCI write commands.
 
 ## Staged Apply Sequence
 

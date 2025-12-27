@@ -3,6 +3,7 @@
 Auto-generated from all feature plans. Last updated: 2025-12-20
 
 ## Active Technologies
+
 - YAML (Ansible playbooks) + Ansible control node, Docker Engine, Docker Compose (001-docker-vlan-nginx)
 - Repo-managed YAML configs and OpenWrt UCI snapshots (001-docker-vlan-nginx)
 
@@ -37,6 +38,7 @@ tests/
 N/A (repo-level tooling): Follow standard conventions
 
 ## Recent Changes
+
 - 001-docker-vlan-nginx: Added YAML (Ansible playbooks) + Ansible control node, Docker Engine, Docker Compose
 
 - 001-usb-disk-mount: Added YAML (Ansible playbooks) + Ansible (control node), Linux mount tooling on Atlas
@@ -48,4 +50,8 @@ N/A (repo-level tooling): Follow standard conventions
   ansible-lint,
 
 <!-- MANUAL ADDITIONS START -->
+
+- OpenWrt router configuration MUST be applied via repo-managed config files;
+do not mix config sync with UCI write changes in automation (UCI is read-only
+for verification or emergency recovery).
 <!-- MANUAL ADDITIONS END -->
