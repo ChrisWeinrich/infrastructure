@@ -4,3 +4,6 @@
 
 - name: Sync repository UCI configuration
   ansible.builtin.include_tasks: sync.yml
+
+- name: Verify UCI configuration
+  ansible.builtin.include_tasks: verify.yml

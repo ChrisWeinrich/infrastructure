@@ -8,17 +8,19 @@
   run_once: true
 
 - name: Build UCI config search paths
-  # Include base repo config path plus any role-provided additions.
+  # Discover all OpenWrt role config directories so the UCI sync can include them.
   ansible.builtin.set_fact:
     uci_config_search_paths: >-
-      {{ [openwrt_config_repo_dir] + (openwrt_config_extra_dirs | default([])) }}
+      {{ ([role_path ~ '/files/openwrt']
+          + (lookup('fileglob', repo_root ~ '/ansible/roles/openwrt/*/files/openwrt', wantlist=True) | list))
+         | unique }}
   delegate_to: localhost
   run_once: true
 
 - name: Check which UCI files exist in the repo
   # Probe each config file across all search paths.
   ansible.builtin.stat:
-    path: "{{ repo_root }}/{{ item.1 }}/{{ item.0 }}"
+    path: "{{ item.1 }}/{{ item.0 }}"
   loop: "{{ (uci_files | default([])) | product(uci_config_search_paths) | list }}"
   register: uci_repo_files
   delegate_to: localhost
@@ -60,7 +62,7 @@
     tmp_path="/tmp/uci_{{ item }}"
     dest_path="{{ openwrt_config_dir }}/{{ item }}"
     cat <<'UCI_EOF_{{ item | upper | regex_replace('[^A-Z0-9]', '_') }}' > "${tmp_path}"
-    {{ lookup('file', repo_root ~ '/' ~ uci_repo_sources[item] ~ '/' ~ item) }}
+    {{ lookup('file', uci_repo_sources[item] ~ '/' ~ item) }}
     UCI_EOF_{{ item | upper | regex_replace('[^A-Z0-9]', '_') }}
     if [ -f "${dest_path}" ] && cmp -s "${tmp_path}" "${dest_path}"; then
       rm -f "${tmp_path}"

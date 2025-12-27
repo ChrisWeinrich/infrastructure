@@ -1,0 +1,59 @@
+---
+- name: Verify Tailscale binary is available
+  # Ensure the Tailscale binary is present.
+  ansible.builtin.raw: "command -v tailscale"
+  register: tailscale_binary
+  changed_when: false
+
+- name: Gate on Tailscale availability
+  # Stop if the Tailscale binary is missing.
+  ansible.builtin.assert:
+    that:
+      - tailscale_binary.rc == 0
+    fail_msg: "Tailscale binary not found on the router."
+
+- name: Capture Tailscale status
+  # Capture Tailscale status for route validation.
+  ansible.builtin.raw: "tailscale status --json"
+  register: tailscale_status
+  changed_when: false
+
+- name: Gate on Tailscale status
+  # Stop if Tailscale status failed.
+  ansible.builtin.assert:
+    that:
+      - tailscale_status.rc == 0
+    fail_msg: "Tailscale status check failed."
+
+- name: Parse Tailscale status JSON
+  # Parse the status output into structured data.
+  ansible.builtin.set_fact:
+    tailscale_status_json: "{{ tailscale_status.stdout | from_json }}"
+
+- name: Collect Tailscale route data
+  # Extract advertised and allowed route data.
+  ansible.builtin.set_fact:
+    tailscale_advertised_routes: >-
+      {{ tailscale_status_json.Self.AdvertisedRoutes | default([]) }}
+    tailscale_primary_routes: >-
+      {{ tailscale_status_json.Self.PrimaryRoutes | default([]) }}
+    tailscale_allowed_ips: >-
+      {{ tailscale_status_json.Self.AllowedIPs | default([]) }}
+
+- name: Record advertised routes
+  # Log route data for verification output.
+  ansible.builtin.debug:
+    msg: >-
+      Advertised routes:
+      {{ tailscale_advertised_routes }}
+      Primary routes:
+      {{ tailscale_primary_routes }}
+      Allowed IPs:
+      {{ tailscale_allowed_ips }}
+
+- name: Gate on Tailscale route for VLAN 40
+  # Ensure VLAN 40 route is advertised.
+  ansible.builtin.assert:
+    that:
+      - "'192.168.40.0/24' in tailscale_advertised_routes"
+    fail_msg: "Tailscale route for VLAN 40 is not advertised."

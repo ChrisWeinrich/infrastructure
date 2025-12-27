@@ -1,0 +1,111 @@
+---
+- name: Verify SSH connectivity
+  # Confirm basic SSH access before any other checks.
+  ansible.builtin.raw: "echo ok"
+  register: ssh_check
+  changed_when: false
+
+- name: Gate on SSH connectivity
+  # Fail fast if SSH is unavailable.
+  ansible.builtin.assert:
+    that:
+      - ssh_check.rc == 0
+    fail_msg: "SSH connectivity check failed. Stop and recover access."
+
+- name: Read UCI configuration files
+  # Read each UCI config to confirm router accessibility.
+  ansible.builtin.raw: "uci show {{ item }}"
+  loop: "{{ uci_files }}"
+  register: uci_reads
+  changed_when: false
+
+- name: Gate on UCI reads
+  # Stop if any UCI read failed.
+  ansible.builtin.assert:
+    that:
+      - uci_reads.results | map(attribute='rc') | list | max == 0
+    fail_msg: "One or more UCI read checks failed."
+
+- name: Validate central network configuration
+  # Validate the central network configuration before deeper checks.
+  ansible.builtin.include_tasks: tasks/validate-network.yml
+
+- name: Load central network configuration
+  # Load the central config used for VLAN validation.
+  ansible.builtin.include_vars:
+    file: "{{ network_config_path }}"
+    name: network_config
+
+- name: Select VLAN 40 and service configuration
+  # Extract the VLAN and service configuration for validation.
+  ansible.builtin.set_fact:
+    vlan40_config: "{{ network_config.site.networks.vlan40 }}"
+    vlan40_service: "{{ network_config.site.services.hello_world_nginx }}"
+
+- name: Verify VLAN 40 interface configuration
+  # Ensure the VLAN interface is configured with the expected gateway.
+  ansible.builtin.raw: "uci -q get network.vlan40.ipaddr"
+  register: vlan40_ipaddr
+  changed_when: false
+
+- name: Gate on VLAN 40 interface configuration
+  # Fail if VLAN 40 is missing or has the wrong IP.
+  ansible.builtin.assert:
+    that:
+      - vlan40_ipaddr.stdout | trim == vlan40_config.gateway
+    fail_msg: "VLAN 40 interface is missing or has the wrong IP."
+
+- name: Verify firewall zone for VLAN 40
+  # Confirm VLAN 40 firewall zone exists.
+  ansible.builtin.raw: "uci -q get firewall.vlan40.name"
+  register: vlan40_zone
+  changed_when: false
+
+- name: Gate on firewall zone for VLAN 40
+  # Fail if the VLAN 40 firewall zone is missing.
+  ansible.builtin.assert:
+    that:
+      - vlan40_zone.stdout | trim == "vlan40"
+    fail_msg: "Firewall zone vlan40 is missing or misconfigured."
+
+- name: Verify DNS host entry for VLAN service
+  # Validate the VLAN service DNS entry exists in DHCP config.
+  ansible.builtin.raw: >-
+    uci -q show dhcp
+    | grep -F ".name='{{ vlan40_service.hostname }}'"
+  register: vlan40_dns
+  changed_when: false
+  failed_when: false
+
+- name: Gate on DNS host entry for VLAN service
+  # Fail if the VLAN service DNS entry is missing.
+  ansible.builtin.assert:
+    that:
+      - vlan40_dns.rc == 0
+    fail_msg: "DNS host entry for nginx-vlan40 is missing."
+
+- name: Verify DNS resolution from the router
+  # Validate DNS resolution from the router.
+  ansible.builtin.raw: "nslookup {{ openwrt_verify_dns_domain }}"
+  register: dns_check
+  changed_when: false
+
+- name: Gate on DNS resolution
+  # Stop if DNS resolution failed.
+  ansible.builtin.assert:
+    that:
+      - dns_check.rc == 0
+    fail_msg: "DNS resolution failed on the router."
+
+- name: Verify HTTP reachability from the router
+  # Validate HTTP reachability from the router.
+  ansible.builtin.raw: "wget -q --spider {{ openwrt_verify_http_url }}"
+  register: http_check
+  changed_when: false
+
+- name: Gate on HTTP reachability
+  # Stop if HTTP reachability failed.
+  ansible.builtin.assert:
+    that:
+      - http_check.rc == 0
+    fail_msg: "HTTP reachability failed on the router."
