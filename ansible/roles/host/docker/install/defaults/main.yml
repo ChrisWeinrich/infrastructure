@@ -1,9 +1,9 @@
 ---
 # Defaults for Docker installation.
-docker_packages_primary:
+install_docker_packages_primary:
   - docker.io
   - docker-compose-plugin
 
-docker_packages_fallback:
+install_docker_packages_fallback:
   - docker.io
   - docker-compose

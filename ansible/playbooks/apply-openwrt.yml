@@ -14,12 +14,12 @@
     # Sync repository UCI files to the router before enabling services.
     - name: Apply repository UCI configuration files
       ansible.builtin.include_role:
-        name: openwrt/uci
+        name: uci
 
     # Ensure Tailscale is installed and configured.
     - name: Apply Tailscale role
       ansible.builtin.include_role:
-        name: openwrt/tailscale
+        name: tailscale
 
   handlers:
     # Restart core services only when configuration changes.

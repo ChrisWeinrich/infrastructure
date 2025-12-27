@@ -1,11 +1,11 @@
 services:
   nginx:
-    image: {{ nginx_container_image }}
-    container_name: {{ nginx_container_name }}
+    image: {{ compose_container_image }}
+    container_name: {{ compose_container_name }}
     restart: unless-stopped
     networks:
       {{ compose_network_name }}:
-        ipv4_address: {{ nginx_container_ip }}
+        ipv4_address: {{ compose_container_ip }}
 
 networks:
   {{ compose_network_name }}:

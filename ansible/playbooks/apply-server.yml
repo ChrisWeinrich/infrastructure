@@ -7,8 +7,8 @@
   vars:
     server_hostname: atlas-host
     network_config_path: "{{ playbook_dir }}/../configs/network.yml"
-    host_vlan_parent_interface_override: ""
-    docker_vlan_network_name: "vlan40_macvlan"
+    vlan_parent_interface_override: ""
+    macvlan_network_name: "vlan40_macvlan"
     nginx_container_name: "vlan40-hello-nginx"
     nginx_container_image: "nginx:alpine"
     alpine_container_name: "vlan40-alpine"
@@ -23,70 +23,75 @@
     # Apply host VLAN configuration (non-Docker).
     - name: Apply host VLAN role
       ansible.builtin.include_role:
-        name: host/network/vlan
+        name: vlan
       vars:
-        host_vlan_key: vlan40
-        host_vlan_service_key: hello_world_nginx
+        vlan_key: vlan40
+        vlan_service_key: hello_world_nginx
+
+    # Apply host hardware setup (USB disks).
+    - name: Apply host USB drives role
+      ansible.builtin.include_role:
+        name: usb-drives
 
     # Apply Docker install and basic setup.
     - name: Apply Docker install role
       ansible.builtin.include_role:
-        name: host/docker/install
+        name: install
 
     # Apply Docker VLAN setup for the selected VLAN/service.
-    - name: Apply Docker VLAN role
+    - name: Apply Docker macvlan role
       ansible.builtin.include_role:
-        name: host/docker/vlan
+        name: macvlan
       vars:
-        docker_vlan_subnet: "{{ host_vlan_config.subnet }}"
-        docker_vlan_gateway: "{{ host_vlan_config.gateway }}"
-        docker_vlan_parent_interface: "{{ host_vlan_config.server.interface }}"
+        macvlan_subnet: "{{ vlan_config.subnet }}"
+        macvlan_gateway: "{{ vlan_config.gateway }}"
+        macvlan_parent_interface: "{{ vlan_config.server.interface }}"
+        macvlan_network_name: "{{ macvlan_network_name }}"
 
     # Run pre-configuration IaC for nginx (before Compose).
     - name: Apply nginx app IaC (pre)
       ansible.builtin.include_role:
-        name: apps/nginx
+        name: nginx
         tasks_from: pre.yml
 
     # Start nginx via Docker Compose on the VLAN network.
     - name: Run nginx via Compose
       ansible.builtin.include_role:
-        name: host/docker/compose
+        name: compose
       vars:
         compose_project_name: nginx
         compose_template: "{{ playbook_dir }}/../roles/apps/nginx/templates/compose.yml.j2"
-        compose_network_name: "{{ docker_vlan_network_name }}"
-        nginx_container_ip: "{{ host_vlan_service.address }}"
+        compose_network_name: "{{ macvlan_network_name }}"
+        compose_container_name: "{{ nginx_container_name }}"
+        compose_container_image: "{{ nginx_container_image }}"
+        compose_container_ip: "{{ vlan_service.address }}"
 
     # Run post-configuration IaC for nginx (after Compose).
     - name: Apply nginx app IaC (post)
       ansible.builtin.include_role:
-        name: apps/nginx
+        name: nginx
         tasks_from: post.yml
 
     # Run pre-configuration IaC for alpine (before Compose).
     - name: Apply alpine app IaC (pre)
       ansible.builtin.include_role:
-        name: apps/alpine
+        name: alpine
         tasks_from: pre.yml
 
     # Start alpine via Docker Compose on the VLAN network.
     - name: Run alpine via Compose
       ansible.builtin.include_role:
-        name: host/docker/compose
+        name: compose
       vars:
         compose_project_name: alpine
         compose_template: "{{ playbook_dir }}/../roles/apps/alpine/templates/compose.yml.j2"
-        compose_network_name: "{{ docker_vlan_network_name }}"
-        alpine_container_ip: "{{ network_config.site.services[alpine_service_key].address }}"
+        compose_network_name: "{{ macvlan_network_name }}"
+        compose_container_name: "{{ alpine_container_name }}"
+        compose_container_image: "{{ alpine_container_image }}"
+        compose_container_ip: "{{ network_config.site.services[alpine_service_key].address }}"
 
     # Run post-configuration IaC for alpine (after Compose).
     - name: Apply alpine app IaC (post)
       ansible.builtin.include_role:
-        name: apps/alpine
+        name: alpine
         tasks_from: post.yml
-
-    # Apply host hardware setup (USB disks).
-    - name: Apply host USB drives role
-      ansible.builtin.include_role:
-        name: host/hardware/usb-drives

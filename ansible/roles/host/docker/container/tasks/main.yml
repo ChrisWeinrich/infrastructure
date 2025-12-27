@@ -5,20 +5,20 @@
   # Ensure required Docker container variables are set.
   ansible.builtin.assert:
     that:
-      - docker_container_name is string
-      - docker_container_name | length > 0
-      - docker_container_image is string
-      - docker_container_image | length > 0
-      - docker_container_network is string
-      - docker_container_network | length > 0
-      - docker_container_ip is string
-      - docker_container_ip | length > 0
+      - container_name is string
+      - container_name | length > 0
+      - container_image is string
+      - container_image | length > 0
+      - container_network is string
+      - container_network | length > 0
+      - container_ip is string
+      - container_ip | length > 0
     fail_msg: "Docker container configuration is incomplete."
 
 - name: Check Docker container
   # Verify the container is already created.
-  ansible.builtin.command: "docker inspect {{ docker_container_name }}"
-  register: docker_container_check
+  ansible.builtin.command: "docker inspect {{ container_name }}"
+  register: container_check
   changed_when: false
   failed_when: false
 
@@ -26,19 +26,19 @@
   # Start the container on the specified network when missing.
   ansible.builtin.command: >-
     docker run -d
-    --name {{ docker_container_name }}
-    --network {{ docker_container_network }}
-    --ip {{ docker_container_ip }}
+    --name {{ container_name }}
+    --network {{ container_network }}
+    --ip {{ container_ip }}
     --restart unless-stopped
-    {{ docker_container_image }}
+    {{ container_image }}
   changed_when: true
-  when: docker_container_check.rc != 0
+  when: container_check.rc != 0
 
 - name: Ensure Docker container is running
   # Confirm the container is running.
   ansible.builtin.command: >-
     docker inspect -f {{ '"{{.State.Running}}"' }}
-    {{ docker_container_name }}
-  register: docker_container_running
+    {{ container_name }}
+  register: container_running
   changed_when: false
-  failed_when: docker_container_running.stdout != "true"
+  failed_when: container_running.stdout != "true"

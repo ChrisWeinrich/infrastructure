@@ -2,7 +2,7 @@
 - name: Set snapshot root
   # Resolve the snapshot root on the control host.
   ansible.builtin.set_fact:
-    snapshot_root: >-
+    uci_snapshot_root: >-
       {{ lookup('pipe', 'cd ' + playbook_dir + '/../.. && pwd')
          ~ '/' ~ (openwrt_snapshot_root | default('snapshots')) }}
   delegate_to: localhost
@@ -11,21 +11,21 @@
 - name: Set snapshot timestamp
   # Use UTC timestamp so snapshots are sortable and unambiguous.
   ansible.builtin.set_fact:
-    snapshot_ts: "{{ lookup('pipe', 'date -u +%Y%m%dT%H%M%SZ') }}"
+    uci_snapshot_ts: "{{ lookup('pipe', 'date -u +%Y%m%dT%H%M%SZ') }}"
   delegate_to: localhost
   run_once: true
 
 - name: Set snapshot directory
   # Compose the router-specific snapshot path.
   ansible.builtin.set_fact:
-    snapshot_dir: "{{ snapshot_root }}/{{ openwrt_router_name }}/{{ snapshot_ts }}"
+    uci_snapshot_dir: "{{ uci_snapshot_root }}/{{ openwrt_router_name }}/{{ uci_snapshot_ts }}"
   delegate_to: localhost
   run_once: true
 
 - name: Ensure snapshot directory exists
   # Create the snapshot directory before writing files.
   ansible.builtin.file:
-    path: "{{ snapshot_dir }}"
+    path: "{{ uci_snapshot_dir }}"
     state: directory
     mode: "0750"
   delegate_to: localhost
@@ -35,19 +35,19 @@
   # Pull current config content from the router for snapshotting.
   ansible.builtin.raw: "cat {{ openwrt_config_dir }}/{{ item }}"
   loop: "{{ uci_files }}"
-  register: openwrt_configs
+  register: uci_configs
   changed_when: false
 
 - name: Write snapshot files
   # Persist snapshots locally and strip wireless keys for safety.
   ansible.builtin.copy:
-    dest: "{{ snapshot_dir }}/{{ item.item }}"
+    dest: "{{ uci_snapshot_dir }}/{{ item.item }}"
     content: >-
       {{ (item.stdout
       | replace("\r", "")
       | regex_replace("(?m)^[[:space:]]*option[[:space:]]+key.*\\n?", ""))
       if item.item == 'wireless' else (item.stdout | replace("\r", "")) }}
     mode: "0440"
-  loop: "{{ openwrt_configs.results }}"
+  loop: "{{ uci_configs.results }}"
   delegate_to: localhost
   run_once: true

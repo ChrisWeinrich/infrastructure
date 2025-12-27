@@ -2,7 +2,7 @@
 # Minimal firewall:
 # - LAN -> WAN forwarding allowed
 # - VLAN40 -> WAN forwarding allowed
-# - No VLAN40 <-> LAN forwarding (isolation)
+# - LAN -> VLAN40 forwarding allowed
 # - DHCP/DNS allowed to the router on LAN and VLAN40
 # - Keep your existing Tailscale zone and forwarding tailscale -> lan
 
@@ -41,6 +41,10 @@ config zone
 config forwarding
 	option src 'lan'
 	option dest 'wan'
+
+config forwarding
+	option src 'lan'
+	option dest 'vlan40'
 
 config forwarding
 	option src 'vlan40'

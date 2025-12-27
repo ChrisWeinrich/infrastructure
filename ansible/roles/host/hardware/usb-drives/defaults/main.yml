@@ -1,6 +1,6 @@
 ---
 # Defaults for host USB disk setup.
-usb_mount_packages:
+usb_drives_mount_packages:
   - fuse
   - libfuse3-dev
   - bzip2
@@ -11,13 +11,13 @@ usb_mount_packages:
   - libattr1-dev
   - zlib1g-dev
 
-apfs_fuse_repo: "https://github.com/sgan81/apfs-fuse.git"
-apfs_fuse_version: "66b86bd525e8cb90f9012543be89b1f092b75cf3"
-apfs_fuse_dest: "/usr/local/src/apfs-fuse"
-apfs_fuse_bin: "/usr/local/bin/apfs-fuse"
-apfs_fuse_mount_helper: "/sbin/mount.fuse.apfs"
+usb_drives_apfs_fuse_repo: "https://github.com/sgan81/apfs-fuse.git"
+usb_drives_apfs_fuse_version: "66b86bd525e8cb90f9012543be89b1f092b75cf3"
+usb_drives_apfs_fuse_dest: "/usr/local/src/apfs-fuse"
+usb_drives_apfs_fuse_bin: "/usr/local/bin/apfs-fuse"
+usb_drives_apfs_fuse_mount_helper: "/sbin/mount.fuse.apfs"
 
-usb_partitions:
+usb_drives_partitions:
   - name: usb_disk_1
     uuid: "a2396b3d-0c08-484c-960c-01250af9ca8e"
     mount_path: "/mnt/usb_disk_1"

@@ -2,7 +2,7 @@
 - name: Resolve repository root for config paths
   # Resolve repo root so we can read managed UCI files on the control host.
   ansible.builtin.set_fact:
-    repo_root: >-
+    uci_repo_root: >-
       {{ lookup('pipe', 'cd ' + playbook_dir + '/../.. && pwd') }}
   delegate_to: localhost
   run_once: true
@@ -12,7 +12,7 @@
   ansible.builtin.set_fact:
     uci_config_search_paths: >-
       {{ ([role_path ~ '/files/openwrt']
-          + (lookup('fileglob', repo_root ~ '/ansible/roles/openwrt/*/files/openwrt', wantlist=True) | list))
+          + (lookup('fileglob', uci_repo_root ~ '/ansible/roles/openwrt/*/files/openwrt', wantlist=True) | list))
          | unique }}
   delegate_to: localhost
   run_once: true
@@ -83,18 +83,18 @@
 - name: Determine whether apply changed router state
   # Track changes so we can prune snapshots when nothing changed.
   ansible.builtin.set_fact:
-    apply_changed: >-
+    uci_apply_changed: >-
       {{ uci_apply_results is defined and
       (uci_apply_results.results | selectattr('changed') | list | length > 0) }}
 
 - name: Remove snapshot if no changes were applied
   # Avoid keeping snapshots when nothing changed.
   ansible.builtin.file:
-    path: "{{ hostvars['localhost'].snapshot_dir }}"
+    path: "{{ hostvars['localhost'].uci_snapshot_dir }}"
     state: absent
   when:
-    - not apply_changed
-    - hostvars['localhost'].snapshot_dir is defined
+    - not uci_apply_changed
+    - hostvars['localhost'].uci_snapshot_dir is defined
   delegate_to: localhost
   run_once: true
 
