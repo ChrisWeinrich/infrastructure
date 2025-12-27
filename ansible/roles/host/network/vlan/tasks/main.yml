@@ -23,7 +23,7 @@
   ansible.builtin.set_fact:
     host_vlan_parent_interface: >-
       {{ host_vlan_parent_interface_override
-      | default(ansible_default_ipv4.interface, true) }}
+      | default(ansible_facts['default_ipv4']['interface'], true) }}
 
 - name: Validate VLAN configuration
   # Validate operator-provided values before applying VLAN config.

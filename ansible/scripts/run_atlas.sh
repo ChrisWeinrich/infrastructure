@@ -7,10 +7,10 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/../.." && pwd)"
 
 # Load the sudo password from Dashlane via dcli.
-export ANSIBLE_BECOME_PASSWORD
-ANSIBLE_BECOME_PASSWORD="$(
+ANSIBLE_BECOME_PASS="$(
   dcli p --output console title=atlas-host/root
 )"
+export ANSIBLE_BECOME_PASS
 
 ansible-playbook \
   -i "${repo_root}/ansible/inventories/home/hosts.yml" \
