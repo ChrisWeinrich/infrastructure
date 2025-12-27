@@ -56,7 +56,7 @@ ansible/
 │   │   ├── tasks/
 │   │   ├── defaults/
 │   │   └── vars/
-│   ├── hermes-gateway/
+│   ├── hermes_gateway/
 │   │   ├── tasks/
 │   │   │   ├── main.yml
 │   │   │   ├── packages.yml

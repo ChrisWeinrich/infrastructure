@@ -1,14 +1,34 @@
-# DHCP and static lease configuration for OpenWrt.
+# /etc/config/dhcp
+# Baseline DHCP + static leases + VLAN40 DHCP.
+# Notes:
+# - Dynamic pool starts at .150 to avoid collisions with your static .50/.100.
+# - VLAN40 has its own pool and does not overlap with LAN.
 
 config dnsmasq
-  option domainneeded '1'
-  option boguspriv '1'
-  option authoritative '1'
-  option readethers '1'
-  option localservice '1'
+	option domainneeded '1'
+	option boguspriv '1'
+	option authoritative '1'
+	option readethers '1'
+	option localservice '1'
 
-# Static lease for atlas-host on the LAN.
+config dhcp 'lan'
+	option interface 'lan'
+	option start '150'
+	option limit '50'
+	option leasetime '12h'
+
+config dhcp 'vlan40'
+	option interface 'vlan40'
+	option start '150'
+	option limit '50'
+	option leasetime '12h'
+
 config host
-  option name 'atlas-host'
-  option mac '18:31:bf:dd:1b:c0'
-  option ip '192.168.8.134'
+	option name 'atlas-host'
+	option mac '18:31:bf:dd:1b:c0'
+	option ip '192.168.8.100'
+
+config host
+	option name 'achilles'
+	option mac '0C:37:96:09:34:DA'
+	option ip '192.168.8.50'

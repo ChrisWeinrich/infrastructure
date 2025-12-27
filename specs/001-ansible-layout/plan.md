@@ -28,7 +28,7 @@ matching run script. Produce a layout contract and migration plan artifacts
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - IaC only: router/network changes expressed in Ansible/OpenWrt configs and
   committed to version control.
@@ -86,7 +86,7 @@ ansible/
 │   │   ├── tasks/
 │   │   ├── defaults/
 │   │   └── vars/
-│   └── hermes-gateway/
+│   └── hermes_gateway/
 │       ├── tasks/
 │       │   ├── main.yml
 │       │   ├── packages.yml
@@ -154,4 +154,4 @@ principles, documentation requirements, and cited sources.
 > **Fill ONLY if Constitution Check has violations that must be justified**
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
+| --------- | ---------- | ------------------------------------ |

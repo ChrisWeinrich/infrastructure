@@ -7,6 +7,7 @@
 **Purpose**: Defines the required filesystem contract for all automation assets.
 
 **Attributes**:
+
 - `root_path`: `./ansible/`
 - `required_paths`: List of required directories and files
 - `placeholder_files`: Files that must exist even when empty
@@ -14,6 +15,7 @@
   automation
 
 **Relationships**:
+
 - Owns many `LayoutNode` entries.
 - Governs placement of all `AutomationAsset` entries.
 
@@ -22,6 +24,7 @@
 **Purpose**: Represents a directory or file in the canonical structure.
 
 **Attributes**:
+
 - `path`: Repository-relative path
 - `node_type`: Directory or file
 - `is_required`: Boolean
@@ -29,6 +32,7 @@
 - `category`: inventories, roles, playbooks, scripts, vars, config
 
 **Relationships**:
+
 - Belongs to `CanonicalLayout`.
 - Parent-child relationship with other `LayoutNode` entries.
 
@@ -37,12 +41,14 @@
 **Purpose**: Any automation content managed by the repository.
 
 **Attributes**:
+
 - `path`: Current repository-relative path
 - `asset_type`: playbook, inventory, role task, template, file, script, vars
 - `source_path`: Original location (for migration tracking)
 - `content_hash`: Used to verify migration fidelity
 
 **Relationships**:
+
 - Must map to a `LayoutNode` under `CanonicalLayout`.
 
 ### MigrationRecord
@@ -50,6 +56,7 @@
 **Purpose**: Tracks migration progress and validation checks.
 
 **Attributes**:
+
 - `asset_path`: Source path moved
 - `destination_path`: Canonical path after migration
 - `status`: pending, migrated, validated
@@ -57,6 +64,7 @@
 - `notes`: Migration notes or exceptions
 
 **Relationships**:
+
 - References one `AutomationAsset`.
 
 ## Validation Rules
@@ -94,7 +102,7 @@ ansible/
 │   │   ├── tasks/
 │   │   ├── defaults/
 │   │   └── vars/
-│   └── hermes-gateway/
+│   └── hermes_gateway/
 │       ├── tasks/
 │       │   ├── main.yml
 │       │   ├── packages.yml

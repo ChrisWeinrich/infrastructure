@@ -94,9 +94,9 @@ includes and orchestration logic, with tasks located under role task files.
 - [ ] T009 [US2] Refactor
       `/Users/christianweinrich/Source/infrastructure/ansible/playbooks/gateway.yml`
       to include roles only and move inline tasks into
-      `/Users/christianweinrich/Source/infrastructure/ansible/roles/hermes-gateway/tasks/`
+      `/Users/christianweinrich/Source/infrastructure/ansible/roles/hermes_gateway/tasks/`
 - [ ] T010 [US2] Split Hermes gateway tasks by concern in
-      `/Users/christianweinrich/Source/infrastructure/ansible/roles/hermes-gateway/tasks/`
+      `/Users/christianweinrich/Source/infrastructure/ansible/roles/hermes_gateway/tasks/`
       (`main.yml`, `packages.yml`, `networking.yml`, `dhcp.yml`, `hardware.yml`)
 - [ ] T011 [US2] Refactor
       `/Users/christianweinrich/Source/infrastructure/ansible/playbooks/atlas.yml`
@@ -110,7 +110,7 @@ includes and orchestration logic, with tasks located under role task files.
       `/Users/christianweinrich/Source/infrastructure/ansible/playbooks/site.yml`
       to orchestrate the base, Atlas host, and Hermes gateway roles only
 - [ ] T014 [P] [US2] Add clear English responsibility comments in
-      `/Users/christianweinrich/Source/infrastructure/ansible/roles/hermes-gateway/tasks/main.yml`
+      `/Users/christianweinrich/Source/infrastructure/ansible/roles/hermes_gateway/tasks/main.yml`
       and `/Users/christianweinrich/Source/infrastructure/ansible/roles/atlas_host/tasks/main.yml`
 
 **Checkpoint**: Roles own the task logic and playbooks act only as orchestration

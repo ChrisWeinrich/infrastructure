@@ -45,6 +45,7 @@ N/A (repo-level tooling): Follow standard conventions
 
 - 001-ansible-playbook-roles: Added Ansible playbooks (YAML) and shell scripts (POSIX sh/bash) + Ansible, ansible-lint, yamllint, pre-commi
 - 001-ansible-layout: Added YAML (Ansible playbooks), shell scripts (POSIX sh/bash) + Ansible, OpenWrt UCI tooling, gekmihesg.openwrt role, pre-commit, ansible-lint, yamllin
+
 - 001-docker-vlan-nginx: Added YAML (Ansible playbooks) + Ansible control node, Docker Engine, Docker Compose
 
   `gekmihesg.openwrt` role, OpenWrt UCI management
@@ -52,4 +53,8 @@ N/A (repo-level tooling): Follow standard conventions
   ansible-lint,
 
 <!-- MANUAL ADDITIONS START -->
+
+- OpenWrt router configuration MUST be applied via repo-managed config files;
+do not mix config sync with UCI write changes in automation (UCI is read-only
+for verification or emergency recovery).
 <!-- MANUAL ADDITIONS END -->

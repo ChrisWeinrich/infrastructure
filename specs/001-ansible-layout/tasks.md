@@ -1,5 +1,4 @@
 ---
-
 description: "Task list template for feature implementation"
 ---
 
@@ -24,8 +23,8 @@ implementation and testing of each story.
 
 **Purpose**: Project initialization and basic structure
 
-- [X] T001 Create canonical directory tree and placeholders under `ansible/`
-- [X] T002 [P] Add layout reference in `ansible/README.md`
+- [x] T001 Create canonical directory tree and placeholders under `ansible/`
+- [x] T002 [P] Add layout reference in `ansible/README.md`
 
 ---
 
@@ -36,10 +35,10 @@ can be implemented
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [X] T003 Create migration runbook in `docs/runbooks/ansible-layout.md`
-- [X] T004 Document rollback and validation steps in
-  `docs/runbooks/ansible-layout.md`
-- [X] T005 [P] Add migration checklist to `docs/runbooks/ansible-layout.md`
+- [x] T003 Create migration runbook in `docs/runbooks/ansible-layout.md`
+- [x] T004 Document rollback and validation steps in
+      `docs/runbooks/ansible-layout.md`
+- [x] T005 [P] Add migration checklist to `docs/runbooks/ansible-layout.md`
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in
 parallel
@@ -56,14 +55,14 @@ automation files remain outside `ansible/`.
 
 ### Implementation for User Story 1
 
-- [X] T006 [US1] Enforce canonical inventories at
-  `ansible/inventories/home/`
-- [X] T007 [US1] Enforce canonical roles under `ansible/roles/`
-- [X] T008 [US1] Enforce canonical playbooks under `ansible/playbooks/`
-- [X] T009 [US1] Enforce canonical scripts under `ansible/scripts/`
-- [X] T010 [US1] Enforce shared vars at `ansible/vars/constants.yml`
-- [X] T011 [US1] Ensure `ansible/ansible.cfg` and `ansible/requirements.yml`
-  exist as placeholders if missing
+- [x] T006 [US1] Enforce canonical inventories at
+      `ansible/inventories/home/`
+- [x] T007 [US1] Enforce canonical roles under `ansible/roles/`
+- [x] T008 [US1] Enforce canonical playbooks under `ansible/playbooks/`
+- [x] T009 [US1] Enforce canonical scripts under `ansible/scripts/`
+- [x] T010 [US1] Enforce shared vars at `ansible/vars/constants.yml`
+- [x] T011 [US1] Ensure `ansible/ansible.cfg` and `ansible/requirements.yml`
+      exist as placeholders if missing
 
 **Checkpoint**: User Story 1 fully functional and independently testable
 
@@ -79,13 +78,13 @@ remain outside `ansible/`.
 
 ### Implementation for User Story 2
 
-- [X] T012 [US2] Migrate inventories into `ansible/inventories/home/`
-- [X] T013 [US2] Migrate role content into `ansible/roles/`
-- [X] T014 [US2] Migrate playbooks into `ansible/playbooks/`
-- [X] T015 [US2] Migrate scripts into `ansible/scripts/`
-- [X] T016 [US2] Migrate shared vars into `ansible/vars/constants.yml`
-- [X] T017 [US2] Record migration verification in
-  `docs/runbooks/ansible-layout.md`
+- [x] T012 [US2] Migrate inventories into `ansible/inventories/home/`
+- [x] T013 [US2] Migrate role content into `ansible/roles/`
+- [x] T014 [US2] Migrate playbooks into `ansible/playbooks/`
+- [x] T015 [US2] Migrate scripts into `ansible/scripts/`
+- [x] T016 [US2] Migrate shared vars into `ansible/vars/constants.yml`
+- [x] T017 [US2] Record migration verification in
+      `docs/runbooks/ansible-layout.md`
 
 **Checkpoint**: User Story 2 fully functional and independently testable
 
@@ -100,13 +99,13 @@ has a matching `run_container_<name>.sh` script.
 
 ### Implementation for User Story 3
 
-- [X] T018 [US3] Ensure standard entry scripts exist in `ansible/scripts/`:
-  `run_site.sh`, `run_gateway.sh`, `run_atlas.sh`, `run_tag.sh`
-- [X] T019 [US3] Create container run scripts named
-  `ansible/scripts/run_container_<name>.sh` for each container definition in
-  `ansible/roles/atlas_host/containers/*.yml`
-- [X] T020 [US3] Document container script naming in
-  `ansible/roles/atlas_host/containers/README.md`
+- [x] T018 [US3] Ensure standard entry scripts exist in `ansible/scripts/`:
+      `run_site.sh`, `run_gateway.sh`, `run_atlas.sh`, `run_tag.sh`
+- [x] T019 [US3] Create container run scripts named
+      `ansible/scripts/run_container_<name>.sh` for each container definition in
+      `ansible/roles/atlas_host/containers/*.yml`
+- [x] T020 [US3] Document container script naming in
+      `ansible/roles/atlas_host/containers/README.md`
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -116,10 +115,10 @@ has a matching `run_container_<name>.sh` script.
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [X] T021 [P] Update `docs/index.md` with the canonical layout location
-- [X] T022 [P] Update `README.md` with the canonical layout and entry points
-- [X] T023 [P] Update `ansible/README.md` with container script conventions
-- [X] T024 Ensure comments explain each step in updated YAML and scripts
+- [x] T021 [P] Update `docs/index.md` with the canonical layout location
+- [x] T022 [P] Update `README.md` with the canonical layout and entry points
+- [x] T023 [P] Update `ansible/README.md` with container script conventions
+- [x] T024 Ensure comments explain each step in updated YAML and scripts
 
 ---
 

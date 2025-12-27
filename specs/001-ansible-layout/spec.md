@@ -11,7 +11,7 @@
 
 - Q: What naming convention should container run scripts use? → A: `run_container_<name>.sh` in `ansible/scripts/`.
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Canonical Layout Enforcement (Priority: P1)
 
@@ -62,7 +62,7 @@ As a maintainer, I want standard entry point scripts and playbooks in predictabl
 - What happens when a legacy file name conflicts with a required placeholder file?
 - How does the system handle automation files that do not clearly map to a canonical location?
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -88,14 +88,14 @@ As a maintainer, I want standard entry point scripts and playbooks in predictabl
 - **FR-008**: Each container deployment has a run script present in the canonical scripts directory.
 - **FR-009**: Container run scripts match the required naming convention and live under `ansible/scripts/`.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Canonical Layout**: The defined directory and file structure under `./ansible/` that all automation assets must follow.
 - **Automation Asset**: Any playbook, inventory, role, script, template, file, or variable file used to operate the infrastructure.
 - **Entry Point Script**: A standard script used to execute a common automation task from the canonical structure.
 - **Container Deployment**: A collection of task files and related assets placed under the containers area of the layout.
 
-## Assumptions & Sources *(mandatory)*
+## Assumptions & Sources _(mandatory)_
 
 - Router/OpenWrt behavior and constraints will be aligned with the GL-MT6000 reference: https://github.com/gl-inet/docs4.x/blob/master/docs/user_guide/gl-mt6000/index.md
 - OpenWrt automation conventions will follow the ansible-openwrt role reference: https://github.com/gekmihesg/ansible-openwrt
@@ -103,7 +103,7 @@ As a maintainer, I want standard entry point scripts and playbooks in predictabl
 - Any changes that affect usage or behavior will update `docs/` and any relevant README.md in the repository.
 - All code, scripts, configs, and YAML files will include English comments explaining non-obvious steps or blocks.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

@@ -41,6 +41,8 @@
     tailscale up
     --authkey {{ openwrt_tailscale_authkey }}
     --advertise-routes={{ openwrt_tailscale_routes | join(',') }}
+    --accept-dns={{ 'true' if (openwrt_tailscale_accept_dns | default(false)) else 'false' }}
+    {{ '--accept-routes' if (openwrt_tailscale_accept_routes | default(true)) else '--accept-routes=false' }}
   when: tailscale_needs_up | bool
   register: tailscale_up
   changed_when: true
