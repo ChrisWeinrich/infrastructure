@@ -20,3 +20,5 @@ continuous integration. It will expand as runbooks and automation are added.
     and recovery runbooks above.
 - VLAN service access notes are documented in
   `docs/runbooks/openwrt-tailscale.md`.
+- Jellyfin deployment and access control:
+  `docs/runbooks/jellyfin.md`.

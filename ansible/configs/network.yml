@@ -46,11 +46,11 @@ site:
         address: "192.168.40.2"
       notes: "Isolated service network trunked to atlas-host"
   services:
-    hello_world_nginx:
-      description: "Hello world service on VLAN 40"
-      hostname: "nginx-vlan40"
-      address: "192.168.40.10"
-      port: 80
+    jellyfin_service:
+      description: "Jellyfin media server on VLAN 40"
+      hostname: "jellyfin-vlan40"
+      address: "192.168.40.3"
+      port: 8096
       network: "vlan40"
     alpine_service:
       description: "Alpine test container on VLAN 40"

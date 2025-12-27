@@ -66,6 +66,23 @@ config rule
 	option dest_port '53'
 	option target 'ACCEPT'
 
+# Allow Jellyfin access only from Achilles (LAN -> VLAN40).
+config rule
+	option name 'Allow-Jellyfin-From-Achilles'
+	option src 'lan'
+	option dest 'vlan40'
+	option src_mac '0C:37:96:09:34:DA'
+	option dest_ip '192.168.40.3'
+	option target 'ACCEPT'
+
+# Block Jellyfin access from other LAN clients.
+config rule
+	option name 'Block-Jellyfin-From-LAN'
+	option src 'lan'
+	option dest 'vlan40'
+	option dest_ip '192.168.40.3'
+	option target 'REJECT'
+
 # Allow router management only from Achilles (LAN).
 config rule
 	option name 'Allow-Mgmt-From-Achilles'

@@ -7,3 +7,8 @@ install_docker_packages_primary:
 install_docker_packages_fallback:
   - docker.io
   - docker-compose
+
+# Base path for container volumes (metadata and persistent data).
+install_container_volumes_base_path: "/srv/containers/volumes"
+# Jellyfin metadata path (defaults under the install base path).
+install_jellyfin_metadata_path: "{{ install_container_volumes_base_path }}/jellyfin"
