@@ -1,0 +1,13 @@
+services:
+  alpine:
+    image: {{ compose_container_image }}
+    container_name: {{ compose_container_name }}
+    command: ["sleep", "infinity"]
+    restart: unless-stopped
+    networks:
+      {{ compose_network_name }}:
+        ipv4_address: {{ compose_container_ip }}
+
+networks:
+  {{ compose_network_name }}:
+    external: true

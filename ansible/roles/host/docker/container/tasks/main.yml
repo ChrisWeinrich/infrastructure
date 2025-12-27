@@ -1,0 +1,44 @@
+---
+# Run a Docker container on a specified network.
+
+- name: Validate Docker container variables
+  # Ensure required Docker container variables are set.
+  ansible.builtin.assert:
+    that:
+      - container_name is string
+      - container_name | length > 0
+      - container_image is string
+      - container_image | length > 0
+      - container_network is string
+      - container_network | length > 0
+      - container_ip is string
+      - container_ip | length > 0
+    fail_msg: "Docker container configuration is incomplete."
+
+- name: Check Docker container
+  # Verify the container is already created.
+  ansible.builtin.command: "docker inspect {{ container_name }}"
+  register: container_check
+  changed_when: false
+  failed_when: false
+
+- name: Run Docker container
+  # Start the container on the specified network when missing.
+  ansible.builtin.command: >-
+    docker run -d
+    --name {{ container_name }}
+    --network {{ container_network }}
+    --ip {{ container_ip }}
+    --restart unless-stopped
+    {{ container_image }}
+  changed_when: true
+  when: container_check.rc != 0
+
+- name: Ensure Docker container is running
+  # Confirm the container is running.
+  ansible.builtin.command: >-
+    docker inspect -f {{ '"{{.State.Running}}"' }}
+    {{ container_name }}
+  register: container_running
+  changed_when: false
+  failed_when: container_running.stdout != "true"

@@ -1,0 +1,106 @@
+---
+- name: Resolve repository root for config paths
+  # Resolve repo root so we can read managed UCI files on the control host.
+  ansible.builtin.set_fact:
+    uci_repo_root: >-
+      {{ lookup('pipe', 'cd ' + playbook_dir + '/../.. && pwd') }}
+  delegate_to: localhost
+  run_once: true
+
+- name: Build UCI config search paths
+  # Discover all OpenWrt role config directories so the UCI sync can include them.
+  ansible.builtin.set_fact:
+    uci_config_search_paths: >-
+      {{ ([role_path ~ '/files/openwrt']
+          + (lookup('fileglob', uci_repo_root ~ '/ansible/roles/openwrt/*/files/openwrt', wantlist=True) | list))
+         | unique }}
+  delegate_to: localhost
+  run_once: true
+
+- name: Check which UCI files exist in the repo
+  # Probe each config file across all search paths.
+  ansible.builtin.stat:
+    path: "{{ item.1 }}/{{ item.0 }}"
+  loop: "{{ (uci_files | default([])) | product(uci_config_search_paths) | list }}"
+  register: uci_repo_files
+  delegate_to: localhost
+  run_once: true
+
+- name: Map UCI files to source directories
+  # Prefer the first matching config path per UCI file.
+  ansible.builtin.set_fact:
+    uci_repo_sources: >-
+      {{ uci_repo_sources | default({}) | combine({ item.item.0: item.item.1 }) }}
+  when:
+    - item.stat.exists
+    - uci_repo_sources is not defined or (item.item.0 not in uci_repo_sources)
+  loop: "{{ uci_repo_files.results }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: Collect present UCI files
+  # Produce the final list of UCI files to apply.
+  ansible.builtin.set_fact:
+    uci_repo_present: "{{ (uci_repo_sources | default({})).keys() | list }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: Fail if no UCI files are available to apply
+  # Stop early when no managed config files exist.
+  ansible.builtin.assert:
+    that:
+      - uci_repo_present | length > 0
+    fail_msg: >-
+      No UCI config files found in {{ uci_config_search_paths | join(', ') }}.
+      Populate the repo config directories before running apply.
+  delegate_to: localhost
+  run_once: true
+
+- name: Copy UCI config files to the router using raw shell
+  # Write config files idempotently via raw shell (OpenWrt has no Python).
+  ansible.builtin.raw: |
+    tmp_path="/tmp/uci_{{ item }}"
+    dest_path="{{ openwrt_config_dir }}/{{ item }}"
+    cat <<'UCI_EOF_{{ item | upper | regex_replace('[^A-Z0-9]', '_') }}' > "${tmp_path}"
+    {{ lookup('file', uci_repo_sources[item] ~ '/' ~ item) }}
+    UCI_EOF_{{ item | upper | regex_replace('[^A-Z0-9]', '_') }}
+    if [ -f "${dest_path}" ] && cmp -s "${tmp_path}" "${dest_path}"; then
+      rm -f "${tmp_path}"
+      echo unchanged
+    else
+      mv "${tmp_path}" "${dest_path}"
+      chmod 0644 "${dest_path}"
+      echo changed
+    fi
+  loop: "{{ uci_repo_present }}"
+  register: uci_apply_results
+  changed_when: "'changed' in uci_apply_results.stdout"
+  notify:
+    - Restart dnsmasq
+    - Restart firewall
+    - Restart network
+
+- name: Determine whether apply changed router state
+  # Track changes so we can prune snapshots when nothing changed.
+  ansible.builtin.set_fact:
+    uci_apply_changed: >-
+      {{ uci_apply_results is defined and
+      (uci_apply_results.results | selectattr('changed') | list | length > 0) }}
+
+- name: Remove snapshot if no changes were applied
+  # Avoid keeping snapshots when nothing changed.
+  ansible.builtin.file:
+    path: "{{ hostvars['localhost'].uci_snapshot_dir }}"
+    state: absent
+  when:
+    - not uci_apply_changed
+    - hostvars['localhost'].uci_snapshot_dir is defined
+  delegate_to: localhost
+  run_once: true
+
+- name: Commit UCI files after sync
+  # Commit all applied UCI configs once copied.
+  ansible.builtin.raw: "uci commit {{ item }}"
+  loop: "{{ uci_repo_present }}"
+  register: uci_commit_results
+  changed_when: false

@@ -1,0 +1,55 @@
+---
+# Deploy a Docker Compose project.
+
+- name: Validate Docker Compose variables
+  # Ensure required Docker Compose variables are set.
+  ansible.builtin.assert:
+    that:
+      - compose_project_name is string
+      - compose_project_name | length > 0
+      - compose_template is string
+      - compose_template | length > 0
+      - compose_root is string
+      - compose_root | length > 0
+    fail_msg: "Docker Compose configuration is incomplete."
+
+- name: Set Compose project directory
+  # Derive the Compose project directory.
+  ansible.builtin.set_fact:
+    compose_project_dir: "{{ compose_root }}/{{ compose_project_name }}"
+
+- name: Ensure Compose project directory exists
+  # Create the project directory for Compose files.
+  ansible.builtin.file:
+    path: "{{ compose_project_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Render Compose file
+  # Render the Compose file from the provided template.
+  ansible.builtin.template:
+    src: "{{ compose_template }}"
+    dest: "{{ compose_project_dir }}/compose.yml"
+    mode: "0644"
+
+- name: Render Compose env file
+  # Write environment variables for Compose when provided.
+  ansible.builtin.copy:
+    dest: "{{ compose_project_dir }}/.env"
+    mode: "0640"
+    content: |-
+      {% for item in compose_env | dict2items %}
+      {{ item.key }}={{ item.value }}
+      {% endfor %}
+  when: compose_env | length > 0
+
+- name: Apply Compose project
+  # Apply the Compose project with docker compose.
+  ansible.builtin.command: >-
+    docker compose
+    --project-name {{ compose_project_name }}
+    --file {{ compose_project_dir }}/compose.yml
+    up -d
+  args:
+    chdir: "{{ compose_project_dir }}"
+  changed_when: true

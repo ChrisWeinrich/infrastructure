@@ -1,0 +1,176 @@
+---
+# USB disk setup for host hardware.
+
+- name: Install USB mount filesystem packages
+  # Install required filesystem tooling (adjust package names per distro).
+  ansible.builtin.apt:
+    name: "{{ usb_drives_mount_packages }}"
+    state: present
+    update_cache: true
+
+- name: Detect whether apfs-fuse is required
+  # Detect whether APFS volumes are configured.
+  ansible.builtin.set_fact:
+    usb_drives_apfs_fuse_needed: >-
+      {{ usb_drives_partitions
+         | selectattr('fstype', 'equalto', 'fuse.apfs')
+         | list
+         | length > 0 }}
+
+- name: Allow FUSE allow_other option
+  # Enable allow_other for FUSE mounts.
+  ansible.builtin.lineinfile:
+    path: /etc/fuse.conf
+    line: "user_allow_other"
+    create: true
+    mode: "0644"
+  when: usb_drives_apfs_fuse_needed
+
+- name: Clone apfs-fuse sources
+  # Fetch apfs-fuse sources when needed.
+  ansible.builtin.git:
+    repo: "{{ usb_drives_apfs_fuse_repo }}"
+    dest: "{{ usb_drives_apfs_fuse_dest }}"
+    version: "{{ usb_drives_apfs_fuse_version }}"
+    update: true
+    recursive: true
+  when: usb_drives_apfs_fuse_needed
+
+- name: Ensure apfs-fuse build directory exists
+  # Create build directory for apfs-fuse.
+  ansible.builtin.file:
+    path: "{{ usb_drives_apfs_fuse_dest }}/build"
+    state: directory
+    mode: "0755"
+  when: usb_drives_apfs_fuse_needed
+
+- name: Configure apfs-fuse build
+  # Configure apfs-fuse build once.
+  ansible.builtin.command: cmake ..
+  args:
+    chdir: "{{ usb_drives_apfs_fuse_dest }}/build"
+    creates: "{{ usb_drives_apfs_fuse_dest }}/build/Makefile"
+  when: usb_drives_apfs_fuse_needed
+
+- name: Build apfs-fuse
+  # Compile apfs-fuse.
+  ansible.builtin.command: make
+  args:
+    chdir: "{{ usb_drives_apfs_fuse_dest }}/build"
+    creates: "{{ usb_drives_apfs_fuse_dest }}/build/apfs-fuse"
+  when: usb_drives_apfs_fuse_needed
+
+- name: Install apfs-fuse binary
+  # Install apfs-fuse binary.
+  ansible.builtin.copy:
+    src: "{{ usb_drives_apfs_fuse_dest }}/build/apfs-fuse"
+    dest: "{{ usb_drives_apfs_fuse_bin }}"
+    mode: "0755"
+    remote_src: true
+  when: usb_drives_apfs_fuse_needed
+
+- name: Install apfs-fuse mount helper
+  # Link mount helper for apfs-fuse.
+  ansible.builtin.file:
+    src: "{{ usb_drives_apfs_fuse_bin }}"
+    dest: "{{ usb_drives_apfs_fuse_mount_helper }}"
+    state: link
+  when: usb_drives_apfs_fuse_needed
+
+- name: Validate USB mount variables are set
+  # Ensure operator-provided mount variables are set.
+  ansible.builtin.assert:
+    that:
+      - item.uuid is string
+      - item.uuid | length > 0
+      - item.uuid is not match('CHANGEME')
+      - item.mount_path is string
+      - item.mount_path | length > 0
+    fail_msg: >-
+      USB mount variables must be set for {{ item.name }} before applying
+      mounts.
+    success_msg: "USB mount variables are set for {{ item.name }}."
+  loop: "{{ usb_drives_partitions }}"
+
+- name: Ensure mount paths exist
+  # Create mount paths before mounting.
+  ansible.builtin.file:
+    path: "{{ item.mount_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop: "{{ usb_drives_partitions }}"
+
+- name: Check USB partitions by UUID
+  # Verify USB partitions exist by UUID.
+  ansible.builtin.stat:
+    path: "/dev/disk/by-uuid/{{ item.uuid }}"
+  register: usb_drives_uuid_stats
+  loop: "{{ usb_drives_partitions }}"
+
+- name: Report missing USB partitions
+  # Report partitions that are missing.
+  ansible.builtin.debug:
+    msg: >-
+      USB partition {{ item.item.name }} (UUID {{ item.item.uuid }}) is not
+      present; mount skipped.
+  loop: "{{ usb_drives_uuid_stats.results }}"
+  when: not item.stat.exists
+
+- name: Mount USB partitions by UUID
+  # Mount partitions by UUID when present.
+  ansible.posix.mount:
+    path: "{{ item.mount_path }}"
+    src: "{{ '/dev/disk/by-uuid/' + item.uuid if item.fstype == 'fuse.apfs' else 'UUID=' + item.uuid }}"
+    fstype: "{{ item.fstype | default('auto') }}"
+    opts: "{{ item.options | default('defaults') }}"
+    state: mounted
+  loop: "{{ usb_drives_partitions }}"
+  loop_control:
+    index_var: usb_index
+  when: usb_drives_uuid_stats.results[usb_index].stat.exists
+
+- name: Check mount availability
+  # Confirm mounts are available.
+  ansible.builtin.command: "mountpoint -q {{ item.mount_path }}"
+  register: usb_drives_mountpoint_results
+  changed_when: false
+  failed_when: false
+  loop: "{{ usb_drives_partitions }}"
+
+- name: Report mount availability
+  # Report mount availability status.
+  ansible.builtin.debug:
+    msg: >-
+      Mount {{ item.item.mount_path }} is
+      {{ 'available' if item.rc == 0 else 'unavailable' }}.
+  loop: "{{ usb_drives_mountpoint_results.results }}"
+
+- name: Verify read access on mounts
+  # Confirm readable mounts.
+  ansible.builtin.command: "ls -1 {{ item.0.mount_path }}"
+  changed_when: false
+  failed_when: item.1.rc != 0
+  loop: "{{ usb_drives_partitions | zip(usb_drives_mountpoint_results.results) | list }}"
+  when: item.1.rc == 0
+
+- name: Report read-only mounts
+  # Report read-only mounts.
+  ansible.builtin.debug:
+    msg: "Mount {{ item.0.mount_path }} is read-only; write test skipped."
+  loop: "{{ usb_drives_partitions | zip(usb_drives_mountpoint_results.results) | list }}"
+  when: item.1.rc == 0 and not (item.0.writable | default(true))
+
+- name: Verify write access on writable mounts
+  # Validate write access for writable mounts.
+  ansible.builtin.shell: >-
+    testfile="{{ item.0.mount_path }}/.ansible_mount_test";
+    echo "ok" > "${testfile}";
+    rm -f "${testfile}"
+  args:
+    executable: /bin/sh
+  changed_when: false
+  failed_when: item.1.rc != 0
+  loop: "{{ usb_drives_partitions | zip(usb_drives_mountpoint_results.results) | list }}"
+  when: item.1.rc == 0 and (item.0.writable | default(true))

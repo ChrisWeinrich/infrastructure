@@ -52,3 +52,8 @@ site:
       address: "192.168.40.10"
       port: 80
       network: "vlan40"
+    alpine_service:
+      description: "Alpine test container on VLAN 40"
+      hostname: "alpine-vlan40"
+      address: "192.168.40.60"
+      network: "vlan40"

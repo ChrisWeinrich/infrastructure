@@ -1,0 +1,6 @@
+---
+- name: Snapshot UCI configuration
+  ansible.builtin.include_tasks: snapshot.yml
+
+- name: Sync repository UCI configuration
+  ansible.builtin.include_tasks: sync.yml

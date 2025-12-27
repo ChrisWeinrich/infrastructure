@@ -1,0 +1,9 @@
+---
+# Post-configuration tasks for nginx app.
+
+- name: Ensure nginx app directory exists
+  # Reserve app directory for nginx configs.
+  ansible.builtin.file:
+    path: "/opt/apps/nginx"
+    state: directory
+    mode: "0755"

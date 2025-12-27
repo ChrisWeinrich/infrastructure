@@ -1,0 +1,32 @@
+---
+# Configure Docker macvlan network.
+
+- name: Validate Docker macvlan variables
+  # Ensure required Docker macvlan variables are set.
+  ansible.builtin.assert:
+    that:
+      - macvlan_subnet is string
+      - macvlan_subnet | length > 0
+      - macvlan_gateway is string
+      - macvlan_gateway | length > 0
+      - macvlan_parent_interface is string
+      - macvlan_parent_interface | length > 0
+    fail_msg: "Docker VLAN configuration is incomplete."
+
+- name: Check Docker macvlan network
+  # Check if the Docker macvlan network already exists.
+  ansible.builtin.command: "docker network inspect {{ macvlan_network_name }}"
+  register: macvlan_network_check
+  changed_when: false
+  failed_when: false
+
+- name: Create Docker macvlan network
+  # Create the Docker macvlan network when missing.
+  ansible.builtin.command: >-
+    docker network create -d macvlan
+    --subnet {{ macvlan_subnet }}
+    --gateway {{ macvlan_gateway }}
+    -o parent={{ macvlan_parent_interface }}
+    {{ macvlan_network_name }}
+  changed_when: true
+  when: macvlan_network_check.rc != 0
