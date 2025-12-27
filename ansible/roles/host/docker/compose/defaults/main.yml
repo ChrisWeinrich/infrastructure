@@ -1,0 +1,4 @@
+---
+# Defaults for Docker Compose deployments.
+compose_root: "/opt/compose"
+compose_env: {}

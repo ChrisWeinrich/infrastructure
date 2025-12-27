@@ -1,0 +1,3 @@
+---
+# Defaults for Docker macvlan configuration.
+docker_vlan_network_name: "vlan40_macvlan"

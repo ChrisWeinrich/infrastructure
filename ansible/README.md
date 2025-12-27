@@ -67,7 +67,7 @@ ansible/
 │   │   ├── files/
 │   │   ├── defaults/
 │   │   └── vars/
-│   └── atlas_host/
+│   └── host/
 │       ├── tasks/
 │       │   ├── main.yml
 │       │   ├── packages.yml
@@ -99,14 +99,14 @@ ansible/
 
 ## Application-Level Layout (Atlas Host)
 
-Application-specific configuration under the Atlas host role should be nested
-under `ansible/roles/atlas_host/roles/` so it is clear what belongs to a
+Application-specific configuration under the host role should be nested
+under `ansible/roles/host/roles/` so it is clear what belongs to a
 single application.
 
 ```text
 ansible/
 └── roles/
-    └── atlas_host/
+    └── host/
         └── roles/
             └── open_webui/
                 ├── tasks/
@@ -123,7 +123,7 @@ ansible/
 ## Container Run Scripts
 
 For each container definition in
-`ansible/roles/atlas_host/containers/<name>.yml`, create a matching run script
+`ansible/roles/host/containers/<name>.yml`, create a matching run script
 named `ansible/scripts/run_container_<name>.sh`.
 
 ## Notes

@@ -1,0 +1,31 @@
+---
+# Install Docker engine and compose tooling.
+
+- name: Check for Docker Compose plugin package
+  # Detect whether the compose plugin package is available.
+  ansible.builtin.command: apt-cache show docker-compose-plugin
+  register: docker_compose_plugin_check
+  changed_when: false
+  failed_when: false
+
+- name: Select Docker packages based on availability
+  # Prefer compose plugin if available, otherwise fallback package.
+  ansible.builtin.set_fact:
+    docker_packages_selected: >-
+      {{ docker_packages_primary
+      if docker_compose_plugin_check.rc == 0
+      else docker_packages_fallback }}
+
+- name: Install Docker Engine and Compose package
+  # Install Docker engine and compose tooling.
+  ansible.builtin.apt:
+    name: "{{ docker_packages_selected }}"
+    state: present
+    update_cache: true
+
+- name: Ensure Docker service is enabled and running
+  # Start and enable Docker service.
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true

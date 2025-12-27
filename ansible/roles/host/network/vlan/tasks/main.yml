@@ -1,0 +1,80 @@
+---
+# Host VLAN configuration (non-Docker).
+
+- name: Load network configuration
+  # Load network configuration from repo-managed config.
+  ansible.builtin.include_vars:
+    file: "{{ network_config_path }}"
+    name: network_config
+
+- name: Select VLAN and service configuration
+  # Capture VLAN and service settings for later validation.
+  ansible.builtin.set_fact:
+    host_vlan_config: "{{ network_config.site.networks[host_vlan_key] }}"
+    host_vlan_service: "{{ network_config.site.services[host_vlan_service_key] }}"
+
+- name: Select VLAN label
+  # Provide a label for filenames and logs.
+  ansible.builtin.set_fact:
+    host_vlan_label: "{{ host_vlan_label | default(host_vlan_key) }}"
+
+- name: Resolve VLAN parent interface
+  # Resolve the parent interface for the VLAN.
+  ansible.builtin.set_fact:
+    host_vlan_parent_interface: >-
+      {{ host_vlan_parent_interface_override
+      | default(ansible_default_ipv4.interface, true) }}
+
+- name: Validate VLAN configuration
+  # Validate operator-provided values before applying VLAN config.
+  ansible.builtin.assert:
+    that:
+      - host_vlan_config.vlan_id is defined
+      - host_vlan_config.subnet is string
+      - host_vlan_config.gateway is string
+      - host_vlan_config.server.address is defined
+      - host_vlan_config.server.interface is defined
+      - host_vlan_parent_interface is string
+      - host_vlan_parent_interface | length > 0
+      - host_vlan_service.address is defined
+      - host_vlan_service.hostname is defined
+    fail_msg: "VLAN configuration is incomplete in network.yml."
+    success_msg: "VLAN configuration is present."
+
+- name: Install netplan
+  # Force a single network stack so VLAN provisioning is deterministic.
+  ansible.builtin.apt:
+    name: netplan.io
+    state: present
+    update_cache: true
+
+- name: Ensure netplan configuration directory exists
+  # Netplan expects configs under /etc/netplan.
+  ansible.builtin.file:
+    path: /etc/netplan
+    state: directory
+    mode: "0755"
+
+- name: Render netplan VLAN config
+  # Render VLAN interface on the host (for Docker macvlan parent).
+  ansible.builtin.copy:
+    dest: "/etc/netplan/99-ansible-{{ host_vlan_label }}.yaml"
+    mode: "0600"
+    content: |-
+      network:
+        version: 2
+        ethernets:
+          {{ host_vlan_parent_interface }}:
+            dhcp4: true
+        vlans:
+          {{ host_vlan_config.server.interface }}:
+            id: {{ host_vlan_config.vlan_id }}
+            link: {{ host_vlan_parent_interface }}
+            addresses:
+              - {{ host_vlan_config.server.address }}/24
+  notify: Apply netplan changes
+
+- name: Check VLAN interface state
+  # Confirm the VLAN interface is present.
+  ansible.builtin.command: "ip -o link show {{ host_vlan_config.server.interface }}"
+  changed_when: false

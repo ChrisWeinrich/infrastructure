@@ -1,0 +1,9 @@
+---
+# Post-configuration tasks for alpine app.
+
+- name: Ensure alpine app directory exists
+  # Reserve app directory for alpine configs.
+  ansible.builtin.file:
+    path: "/opt/apps/alpine"
+    state: directory
+    mode: "0755"
