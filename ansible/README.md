@@ -6,7 +6,7 @@ and server hosts (including Atlas).
 ## Structure
 
 - `inventories/`: Inventory definitions for target hosts.
-- `playbooks/`: OpenWrt playbooks (apply, snapshot, verify).
+- `playbooks/`: OpenWrt and host playbooks (apply, verify).
 - `roles/`: Reusable roles for common configuration tasks.
 - `scripts/`: Standard entry points for running automation.
 - `vars/`: Shared variables and constants.
@@ -21,8 +21,8 @@ assets should live beneath this directory and follow the layout contract.
 
 - `ansible/inventories/`: Inventory sources only (hosts, groups, host vars).
   Do not store playbooks, roles, or scripts here.
-- `ansible/playbooks/`: Entry playbooks only (`site.yml`, `gateway.yml`,
-  `atlas.yml`). Keep reusable tasks inside roles instead of new playbooks.
+- `ansible/playbooks/`: Entry playbooks only (apply/verify). Keep reusable
+  tasks inside roles instead of new playbooks.
 - `ansible/roles/`: All reusable automation logic lives here. Role-specific
   assets stay under each role (`tasks/`, `templates/`, `files/`, `defaults/`,
   `vars/`).
@@ -41,90 +41,68 @@ assets should live beneath this directory and follow the layout contract.
 
 ```text
 ansible/
+├── configs/
+│   └── network.yml
 ├── inventories/
 │   └── home/
 │       ├── hosts.yml
 │       ├── group_vars/
 │       │   ├── all.yml
-│       │   ├── gateways.yml
-│       │   └── hosts.yml
+│       │   └── openwrt.yml
 │       └── host_vars/
-│           ├── hermes-gateway.yml
 │           └── atlas-host.yml
 ├── roles/
-│   ├── base/
-│   │   ├── tasks/
-│   │   ├── defaults/
-│   │   └── vars/
-│   ├── hermes_gateway/
-│   │   ├── tasks/
-│   │   │   ├── main.yml
-│   │   │   ├── packages.yml
-│   │   │   ├── networking.yml
-│   │   │   ├── dhcp.yml
-│   │   │   └── hardware.yml
-│   │   ├── templates/
-│   │   ├── files/
-│   │   ├── defaults/
-│   │   └── vars/
-│   └── host/
-│       ├── tasks/
-│       │   ├── main.yml
-│       │   ├── packages.yml
-│       │   ├── docker_config.yml
-│       │   ├── hardware.yml
-│       │   ├── services.yml
-│       │   └── containers.yml
-│       ├── containers/
-│       │   ├── *.yml
-│       │   └── README.md
-│       ├── templates/
-│       ├── files/
-│       ├── defaults/
-│       └── vars/
-├── vars/
-│   └── constants.yml
+│   ├── openwrt/
+│   │   ├── tailscale/
+│   │   └── uci/
+│   ├── host/
+│   │   ├── docker/
+│   │   │   ├── compose/
+│   │   │   ├── container/
+│   │   │   ├── install/
+│   │   │   └── vlan/
+│   │   ├── hardware/
+│   │   │   └── usb-drives/
+│   │   └── network/
+│   │       └── vlan/
+│   └── apps/
+│       ├── alpine/
+│       └── nginx/
 ├── playbooks/
-│   ├── site.yml
-│   ├── gateway.yml
-│   └── atlas.yml
+│   ├── apply-openwrt.yml
+│   ├── apply-server.yml
+│   └── verify-openwrt.yml
 ├── scripts/
-│   ├── run_site.sh
 │   ├── run_atlas.sh
-│   ├── run_gateway.sh
-│   └── run_tag.sh
+│   └── run_gateway.sh
 ├── ansible.cfg
 └── requirements.yml
 ```
 
 ## Application-Level Layout (Atlas Host)
 
-Application-specific configuration under the host role should be nested
-under `ansible/roles/host/roles/` so it is clear what belongs to a
-single application.
+Application-specific configuration should live under `ansible/roles/apps/`
+so IaC (config/model files) is separated from runtime (docker/compose).
 
 ```text
 ansible/
 └── roles/
-    └── host/
-        └── roles/
-            └── open_webui/
-                ├── tasks/
-                │   ├── main.yml
-                │   ├── config.yml
-                │   ├── prompts.yml
-                │   └── mcp.yml
-                ├── templates/
-                ├── files/
-                ├── defaults/
-                └── vars/
+    └── apps/
+        └── open_webui/
+            ├── tasks/
+            │   ├── pre.yml
+            │   └── post.yml
+            ├── templates/
+            ├── files/
+            ├── defaults/
+            └── vars/
 ```
 
 ## Container Run Scripts
 
-For each container definition in
-`ansible/roles/host/containers/<name>.yml`, create a matching run script
-named `ansible/scripts/run_container_<name>.sh`.
+Compose templates live with each app under
+`ansible/roles/apps/<app>/templates/compose.yml.j2` and are applied via the
+`host/docker/compose` role.
 
 ## Notes
 
@@ -142,15 +120,11 @@ named `ansible/scripts/run_container_<name>.sh`.
 ansible-playbook -i ansible/inventories/home/hosts.yml \
   ansible/playbooks/apply-server.yml
 
-# Hello-world connectivity check
+# Verify OpenWrt connectivity
 ansible-playbook ansible/playbooks/verify-openwrt.yml \
   -i ansible/inventories/home/hosts.yml
 
-# Snapshot is only needed once at the beginning
-ansible-playbook ansible/playbooks/snapshot-openwrt.yml \
-  -i ansible/inventories/home/hosts.yml
-
-# Apply automatically captures a snapshot before changes
+# Apply OpenWrt changes (includes snapshot + verify steps)
 ansible-playbook ansible/playbooks/apply-openwrt.yml \
   -i ansible/inventories/home/hosts.yml
 ```
