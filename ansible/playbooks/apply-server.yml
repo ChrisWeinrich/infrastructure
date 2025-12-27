@@ -4,16 +4,22 @@
   hosts: servers
   gather_facts: true
   become: true
+  vars_files:
+    # Shared constants for container persistence paths.
+    - "{{ playbook_dir }}/../vars/constants.yml"
   vars:
     server_hostname: atlas-host
     network_config_path: "{{ playbook_dir }}/../configs/network.yml"
     vlan_parent_interface_override: ""
     macvlan_network_name: "vlan40_macvlan"
-    nginx_container_name: "vlan40-hello-nginx"
-    nginx_container_image: "nginx:alpine"
     alpine_container_name: "vlan40-alpine"
     alpine_container_image: "alpine:latest"
     alpine_service_key: alpine_service
+    jellyfin_container_name: "vlan40-jellyfin"
+    jellyfin_container_image: "jellyfin/jellyfin:latest"
+    jellyfin_service_key: jellyfin_service
+    install_container_volumes_base_path: "{{ container_volumes_base_path }}"
+    install_jellyfin_metadata_path: "{{ jellyfin_metadata_path }}"
   tasks:
     # Ensure the server hostname matches the inventory name.
     - name: Set server hostname
@@ -26,7 +32,7 @@
         name: vlan
       vars:
         vlan_key: vlan40
-        vlan_service_key: hello_world_nginx
+        vlan_service_key: "{{ jellyfin_service_key }}"
 
     # Apply host hardware setup (USB disks).
     - name: Apply host USB drives role
@@ -46,30 +52,35 @@
         macvlan_subnet: "{{ vlan_config.subnet }}"
         macvlan_gateway: "{{ vlan_config.gateway }}"
         macvlan_parent_interface: "{{ vlan_config.server.interface }}"
-        macvlan_network_name: "{{ macvlan_network_name }}"
 
-    # Run pre-configuration IaC for nginx (before Compose).
-    - name: Apply nginx app IaC (pre)
+    # Run pre-configuration IaC for Jellyfin (before Compose).
+    - name: Apply Jellyfin app IaC (pre)
       ansible.builtin.include_role:
-        name: nginx
+        name: jellyfin
         tasks_from: pre.yml
 
-    # Start nginx via Docker Compose on the VLAN network.
-    - name: Run nginx via Compose
+    # Validate Jellyfin configuration values.
+    - name: Validate Jellyfin app configuration
+      ansible.builtin.include_role:
+        name: jellyfin
+        tasks_from: main.yml
+
+    # Start Jellyfin via Docker Compose on the VLAN network.
+    - name: Run Jellyfin via Compose
       ansible.builtin.include_role:
         name: compose
       vars:
-        compose_project_name: nginx
-        compose_template: "{{ playbook_dir }}/../roles/apps/nginx/templates/compose.yml.j2"
+        compose_project_name: jellyfin
+        compose_template: "{{ playbook_dir }}/../roles/apps/jellyfin/templates/compose.yml.j2"
         compose_network_name: "{{ macvlan_network_name }}"
-        compose_container_name: "{{ nginx_container_name }}"
-        compose_container_image: "{{ nginx_container_image }}"
+        compose_container_name: "{{ jellyfin_container_name }}"
+        compose_container_image: "{{ jellyfin_container_image }}"
         compose_container_ip: "{{ vlan_service.address }}"
 
-    # Run post-configuration IaC for nginx (after Compose).
-    - name: Apply nginx app IaC (post)
+    # Run post-configuration IaC for Jellyfin (after Compose).
+    - name: Apply Jellyfin app IaC (post)
       ansible.builtin.include_role:
-        name: nginx
+        name: jellyfin
         tasks_from: post.yml
 
     # Run pre-configuration IaC for alpine (before Compose).

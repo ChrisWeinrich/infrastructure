@@ -1,2 +1,6 @@
 ---
 # Placeholder constants for shared Ansible vars.
+container_volumes_base_path: "/srv/containers/volumes"
+jellyfin_media_path_1: "/mnt/usb_disk_1"
+jellyfin_media_path_2: "/mnt/usb_disk_2"
+jellyfin_metadata_path: "{{ container_volumes_base_path }}/jellyfin"

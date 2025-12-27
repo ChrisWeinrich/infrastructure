@@ -32,6 +32,8 @@ documentation.
   `docs/runbooks/`.
 - Central network configuration layout:
   `docs/runbooks/network-config.md`
+- Jellyfin deployment and access control:
+  `docs/runbooks/jellyfin.md`
 
 ## OpenWrt Remote Access
 

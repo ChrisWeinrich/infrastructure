@@ -1,0 +1,9 @@
+---
+# Post-configuration tasks for Jellyfin app.
+
+- name: Ensure Jellyfin app directory exists
+  # Reserve app directory for Jellyfin configs.
+  ansible.builtin.file:
+    path: "/opt/apps/jellyfin"
+    state: directory
+    mode: "0755"

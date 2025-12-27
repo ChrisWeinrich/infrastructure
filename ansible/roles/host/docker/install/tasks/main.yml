@@ -29,3 +29,17 @@
     name: docker
     state: started
     enabled: true
+
+- name: Ensure container volumes base path exists
+  # Create a single persistence root for container volumes.
+  ansible.builtin.file:
+    path: "{{ install_container_volumes_base_path }}"
+    state: directory
+    mode: "0755"
+
+- name: Ensure Jellyfin metadata directory exists
+  # Prepare persistent metadata storage for Jellyfin.
+  ansible.builtin.file:
+    path: "{{ install_jellyfin_metadata_path }}"
+    state: directory
+    mode: "0755"
