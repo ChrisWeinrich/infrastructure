@@ -20,6 +20,8 @@ openwrt_verify_http_url: https://example.com
 openwrt_tailscale_authkey_dcli_path: openwrt/mt6000/tailscale/auth_key
 openwrt_tailscale_authkey: >-
   {{ lookup('pipe', 'dcli p --output console title=' + openwrt_tailscale_authkey_dcli_path) }}
+openwrt_tailscale_accept_dns: false
+openwrt_tailscale_accept_routes: true
 openwrt_tailscale_routes:
   - 192.168.8.0/24
   - 192.168.40.0/24

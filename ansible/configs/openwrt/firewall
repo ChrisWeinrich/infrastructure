@@ -62,6 +62,23 @@ config rule
 	option dest_port '53'
 	option target 'ACCEPT'
 
+# Allow router management only from Achilles (LAN).
+config rule
+	option name 'Allow-Mgmt-From-Achilles'
+	option src 'lan'
+	option src_ip '192.168.8.50'
+	option proto 'tcp'
+	option dest_port '22 80 443'
+	option target 'ACCEPT'
+
+# Block router management from other LAN clients.
+config rule
+	option name 'Block-Mgmt-From-LAN'
+	option src 'lan'
+	option proto 'tcp'
+	option dest_port '22 80 443'
+	option target 'REJECT'
+
 # Block DNS leaks from LAN clients to the WAN uplink.
 config rule
 	option name 'Block-DNS-LAN-WAN'
@@ -109,3 +126,11 @@ config zone
 config forwarding
 	option src 'tailscale'
 	option dest 'lan'
+
+# Block router management from Tailscale.
+config rule
+	option name 'Block-Mgmt-From-Tailscale'
+	option src 'tailscale'
+	option proto 'tcp'
+	option dest_port '22 80 443'
+	option target 'REJECT'
