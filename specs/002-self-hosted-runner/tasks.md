@@ -59,24 +59,6 @@ description: "Task list for Self-hosted GitHub Runner MVP"
 
 ---
 
-## Phase 4: User Story 2 - Deploy container workloads into the VLAN (Priority: P2)
-
-**Goal**: Enable multi-target deployments driven by runtime variables within the pipeline.
-
-**Independent Test**: Trigger a pipeline with multi-target variables and verify each selected VLAN target receives a deployment result.
-
-### Implementation for User Story 2
-
-- [ ] T012 [US2] Define GitHub.com workflow variables for multi-target deploy selection in `.github/workflows/<workflow>.yml` (document target list + selection rules)
-- [ ] T013 [P] [US2] Add deployment helper script in `ansible/roles/apps/github-runner/files/deploy-to-vlan.sh`
-- [ ] T014 [P] [US2] Add target selection template in `ansible/roles/apps/github-runner/templates/deploy-targets.env.j2`
-- [ ] T015 [US2] Install deployment helper and target env in `ansible/roles/apps/github-runner/tasks/deploy.yml`
-- [ ] T016 [US2] Update role wiring in `ansible/roles/apps/github-runner/tasks/main.yml` to include deploy setup
-
-**Checkpoint**: User Story 2 is independently functional with multi-target deployment support
-
----
-
 ## Phase 5: User Story 3 - Check runner health and access (Priority: P3)
 
 **Goal**: Provide basic status visibility for runner availability and recent job state.
@@ -116,7 +98,6 @@ description: "Task list for Self-hosted GitHub Runner MVP"
 ### User Story Dependencies
 
 - **User Story 1 (P1)**: Can start after Foundational (Phase 2)
-- **User Story 2 (P2)**: Can start after Foundational (Phase 2)
 - **User Story 3 (P3)**: Can start after Foundational (Phase 2)
 
 ### Parallel Opportunities
@@ -124,18 +105,8 @@ description: "Task list for Self-hosted GitHub Runner MVP"
 - Setup tasks T001 and T002 can run in parallel
 - Foundational tasks T003 and T004 can run in parallel
 - Within US1: T006, T007, T008, T009 can run in parallel
-- Within US2: T013 and T014 can run in parallel
 - Within US3: T017 can run in parallel with other story work
 - Documentation updates T020-T022 can run in parallel
-
----
-
-## Parallel Example: User Story 2
-
-```bash
-Task: "Add deployment helper script in ansible/roles/apps/github-runner/files/deploy-to-vlan.sh"
-Task: "Add target selection template in ansible/roles/apps/github-runner/templates/deploy-targets.env.j2"
-```
 
 ---
 
@@ -152,6 +123,5 @@ Task: "Add target selection template in ansible/roles/apps/github-runner/templat
 
 1. Setup + Foundational → Foundation ready
 2. User Story 1 → Validate build jobs
-3. User Story 2 → Validate multi-target deploys
-4. User Story 3 → Validate status visibility
-5. Polish phase → Docs and quality gates
+3. User Story 3 → Validate status visibility
+4. Polish phase → Docs and quality gates

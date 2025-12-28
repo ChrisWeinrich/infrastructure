@@ -7,7 +7,7 @@
 
 ## Summary
 
-Deliver an MVP self-hosted GitHub Actions runner on the internal server that can execute build jobs and deploy container workloads into the VLAN, including multi-target deployments selected via runtime variables, using existing Ansible automation patterns for install, configuration, and runbook documentation.
+Deliver an MVP self-hosted GitHub Actions runner on the internal server that can execute build jobs using existing Ansible automation patterns for install, configuration, and runbook documentation.
 
 ## Technical Context
 
@@ -53,7 +53,7 @@ ansible/
 │   └── apply-server.yml
 ├── roles/
 │   ├── apps/
-│   │   └── github-runner/        # New role for runner install/config + target selection
+│   │   └── github-runner/        # New role for runner install/config
 │   └── host/
 │       └── docker/
 ├── inventories/
