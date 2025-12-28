@@ -1,0 +1,23 @@
+---
+# Validate runner container registration settings.
+
+- name: Validate required runner registration settings
+  # Prevent configuring the runner with missing registration values.
+  ansible.builtin.assert:
+    that:
+      - github_runner_url is string
+      - github_runner_url | length > 0
+      - github_runner_url is not match('CHANGEME')
+      - github_runner_registration_token is string
+      - github_runner_registration_token | length > 0
+      - github_runner_name is string
+      - github_runner_name | length > 0
+    fail_msg: >-
+      github_runner_url, github_runner_registration_token, and github_runner_name
+      must be set before registering the runner.
+    success_msg: "Runner registration values are set."
+
+- name: Confirm runner registration settings
+  # Runner registers at container start; verify required values first.
+  ansible.builtin.debug:
+    msg: "Runner registration settings validated; container handles registration."

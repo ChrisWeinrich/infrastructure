@@ -1,0 +1,9 @@
+---
+# Post-configuration tasks for GitHub runner app.
+
+- name: Ensure GitHub runner app directory exists
+  # Reserve app directory for runner configs.
+  ansible.builtin.file:
+    path: "/opt/apps/github-runner"
+    state: directory
+    mode: "0755"

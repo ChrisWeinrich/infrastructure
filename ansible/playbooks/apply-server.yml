@@ -44,6 +44,31 @@
       ansible.builtin.include_role:
         name: install
 
+    # Run pre-configuration IaC for GitHub runner (before Compose).
+    - name: Apply GitHub runner app IaC (pre)
+      ansible.builtin.include_role:
+        name: github-runner
+        tasks_from: pre.yml
+
+    # Apply GitHub Actions runner setup.
+    - name: Apply GitHub runner app role
+      ansible.builtin.include_role:
+        name: github-runner
+
+    # Start GitHub runner via Docker Compose.
+    - name: Run GitHub runner via Compose
+      ansible.builtin.include_role:
+        name: compose
+      vars:
+        compose_project_name: "{{ github_runner_compose_project_name }}"
+        compose_template: "{{ playbook_dir }}/../roles/apps/github-runner/templates/compose.yml.j2"
+
+    # Run post-configuration IaC for GitHub runner (after Compose).
+    - name: Apply GitHub runner app IaC (post)
+      ansible.builtin.include_role:
+        name: github-runner
+        tasks_from: post.yml
+
     # Apply Docker VLAN setup for the selected VLAN/service.
     - name: Apply Docker macvlan role
       ansible.builtin.include_role:

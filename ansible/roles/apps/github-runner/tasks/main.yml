@@ -1,0 +1,30 @@
+---
+# GitHub Actions runner app entrypoint.
+
+- name: Load GitHub runner configuration
+  # Pull shared runner settings from the central config file.
+  ansible.builtin.include_vars:
+    file: "{{ github_runner_config_path }}"
+    name: github_runner_config
+
+- name: Resolve GitHub runner settings
+  # Allow inventory overrides while defaulting to config values.
+  ansible.builtin.set_fact:
+    github_runner_name: >-
+      {{ github_runner_name
+      | default(github_runner_config.github_runner.name, true) }}
+    github_runner_labels: >-
+      {{ github_runner_labels
+      | default(github_runner_config.github_runner.labels, true) }}
+    github_runner_workdir: >-
+      {{ github_runner_workdir
+      | default(github_runner_config.github_runner.workdir, true) }}
+    github_runner_approved_targets: >-
+      {{ github_runner_approved_targets
+      | default(github_runner_config.github_runner.approved_targets, true) }}
+
+- name: Install GitHub runner host prerequisites
+  ansible.builtin.include_tasks: install.yml
+
+- name: Validate GitHub runner registration settings
+  ansible.builtin.include_tasks: register.yml

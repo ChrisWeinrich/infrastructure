@@ -1,0 +1,18 @@
+---
+# Shared runner configuration for server hosts.
+github_runner_config_path: "{{ inventory_dir }}/../../configs/github-runner.yml"
+
+# GitHub.com repository or org URL for runner registration.
+github_runner_url: "https://github.com/ChrisWeinrich"
+
+# Secret lookup path for the GitHub runner registration token.
+github_runner_registration_token_dcli_path: github-runner/atlas-host/registration_token
+# Resolve the runner registration token from dcli on the control host.
+github_runner_registration_token: >-
+  {{ lookup('pipe', 'dcli p --output console title=' + github_runner_registration_token_dcli_path) }}
+
+# Secret lookup path for deployment credentials used by runner workflows.
+github_runner_deploy_credentials_dcli_path: github-runner/deploy/vlan40/credentials
+# Resolve deployment credentials from dcli on the control host.
+github_runner_deploy_credentials: >-
+  {{ lookup('pipe', 'dcli p --output console title=' + github_runner_deploy_credentials_dcli_path) }}

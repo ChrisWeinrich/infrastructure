@@ -48,6 +48,8 @@
 - Inventory and host-specific settings live under `ansible/inventories/` and `ansible/configs/`; avoid hardcoding secrets in playbooks.
 
 ## Active Technologies
+- Ansible (YAML), Bash (POSIX shell) + Ansible, GitHub Actions runner, Docker engine, Tailscale (network reachability) (002-self-hosted-runner)
+- Host filesystem for runner state, logs, and job artifacts (002-self-hosted-runner)
 
 - Ansible (YAML), Bash (POSIX shell) + Ansible, OpenWrt UCI, Docker/Container runtime on hos (001-jellyfin-container)
 - Host filesystem paths for USB mounts and persistent metadata (001-jellyfin-container)

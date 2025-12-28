@@ -1,0 +1,15 @@
+---
+# Central GitHub Actions runner configuration and approved deployment targets.
+github_runner:
+  name: "atlas-runner"
+  labels:
+    - "self-hosted"
+    - "linux"
+    - "x64"
+    - "atlas"
+    - "docker"
+  workdir: "/opt/actions-runner/_work"
+  approved_targets:
+    - name: "vlan40-services"
+      address: "192.168.40.0/24"
+      description: "Primary VLAN 40 services subnet"

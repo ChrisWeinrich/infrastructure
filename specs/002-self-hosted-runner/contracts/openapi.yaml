@@ -1,0 +1,135 @@
+openapi: 3.0.3
+info:
+  title: Runner Control API
+  version: 0.1.0
+  description: Minimal control surface for runner status, target approvals, and job audit.
+paths:
+  /runner/status:
+    get:
+      summary: Get runner status
+      responses:
+        "200":
+          description: Runner status information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RunnerStatus"
+  /deploy/targets:
+    get:
+      summary: List approved deployment targets
+      responses:
+        "200":
+          description: List of deployment targets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DeploymentTarget"
+    post:
+      summary: Approve a deployment target
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeploymentTargetCreate"
+      responses:
+        "201":
+          description: Target approved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeploymentTarget"
+  /deploy/targets/{targetId}:
+    delete:
+      summary: Revoke a deployment target
+      parameters:
+        - name: targetId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Target revoked
+  /audit/jobs:
+    get:
+      summary: List recent job audit records
+      responses:
+        "200":
+          description: Job audit list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/JobAudit"
+components:
+  schemas:
+    RunnerStatus:
+      type: object
+      required:
+        - status
+        - lastSeenAt
+        - lastJobResult
+      properties:
+        status:
+          type: string
+          enum: [online, offline]
+        lastSeenAt:
+          type: string
+          format: date-time
+        lastJobResult:
+          type: string
+          enum: [success, failure, cancelled, unknown]
+    DeploymentTarget:
+      type: object
+      required:
+        - id
+        - name
+        - address
+        - status
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        address:
+          type: string
+        status:
+          type: string
+          enum: [approved, revoked]
+        approvedAt:
+          type: string
+          format: date-time
+    DeploymentTargetCreate:
+      type: object
+      required:
+        - name
+        - address
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+    JobAudit:
+      type: object
+      required:
+        - jobId
+        - runId
+        - status
+        - timestamp
+      properties:
+        jobId:
+          type: string
+        runId:
+          type: string
+        targetId:
+          type: string
+        status:
+          type: string
+          enum: [success, failure, cancelled]
+        timestamp:
+          type: string
+          format: date-time

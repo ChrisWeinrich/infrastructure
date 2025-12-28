@@ -1,0 +1,16 @@
+---
+# Prepare host directories for the runner container.
+
+- name: Ensure runner data directory exists
+  # Prepare the persistent directory for runner state.
+  ansible.builtin.file:
+    path: "{{ github_runner_data_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Ensure runner work directory exists
+  # Prepare the job work directory for the runner.
+  ansible.builtin.file:
+    path: "{{ github_runner_workdir }}"
+    state: directory
+    mode: "0755"

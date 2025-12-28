@@ -1,0 +1,11 @@
+---
+# Default values for the GitHub Actions runner role.
+
+# Runner data directory on the host (registration data + workdir).
+github_runner_data_dir: "{{ github_runner_workdir | dirname }}"
+github_runner_container_data_dir: "/runner"
+github_runner_container_workdir: "/runner/_work"
+
+github_runner_image: "myoung34/github-runner:latest"
+github_runner_container_name: "github-runner"
+github_runner_compose_project_name: "github-runner"

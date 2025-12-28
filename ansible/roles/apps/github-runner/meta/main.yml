@@ -1,0 +1,9 @@
+---
+galaxy_info:
+  role_name: github-runner
+  description: "Install and configure a self-hosted GitHub Actions runner container."
+  author: "infrastructure"
+  license: "MIT"
+  min_ansible_version: "2.14"
+
+dependencies: []
