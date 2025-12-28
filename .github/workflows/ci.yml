@@ -10,7 +10,16 @@ permissions:
 
 jobs:
   lint-and-docs:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64, atlas, docker]
+    container:
+      image: ubuntu:22.04
+    services:
+      docker:
+        image: docker:dind
+        options: --privileged
+    env:
+      DOCKER_HOST: tcp://docker:2375
+      DOCKER_TLS_CERTDIR: ""
 
     steps:
       - name: Checkout
@@ -22,7 +31,10 @@ jobs:
           python-version: "3.11"
 
       - name: Install pre-commit
-        run: pip install pre-commit
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends python3 python3-pip git
+          pip install pre-commit
 
       - name: Install docs dependencies
         run: pip install -r requirements-docs.txt
