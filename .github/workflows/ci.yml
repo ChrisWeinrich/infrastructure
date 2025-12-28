@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   lint-and-docs:
-    runs-on: [self-hosted, linux, x64, atlas, docker]
+    runs-on: [self-hosted, Linux, X64, docker]
     container:
       image: ubuntu:22.04
     services:

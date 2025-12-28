@@ -3,10 +3,8 @@
 github_runner:
   name: "atlas-runner"
   labels:
-    - "self-hosted"
     - "linux"
     - "x64"
-    - "atlas"
     - "docker"
   workdir: "/opt/actions-runner/_work"
   approved_targets:
