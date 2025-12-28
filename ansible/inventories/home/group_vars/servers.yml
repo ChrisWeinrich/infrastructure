@@ -3,7 +3,7 @@
 github_runner_config_path: "{{ inventory_dir }}/../../configs/github-runner.yml"
 
 # GitHub.com repository or org URL for runner registration.
-github_runner_url: "https://github.com/ChrisWeinrich"
+github_runner_url: "https://github.com/ChrisWeinrich/infrastructure"
 
 # Secret lookup path for the GitHub runner registration token.
 github_runner_registration_token_dcli_path: github-runner/atlas-host/registration_token

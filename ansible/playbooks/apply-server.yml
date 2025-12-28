@@ -60,7 +60,7 @@
       ansible.builtin.include_role:
         name: compose
       vars:
-        compose_project_name: "{{ github_runner_compose_project_name }}"
+        compose_project_name: "github-runner"
         compose_template: "{{ playbook_dir }}/../roles/apps/github-runner/templates/compose.yml.j2"
 
     # Run post-configuration IaC for GitHub runner (after Compose).

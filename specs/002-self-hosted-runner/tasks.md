@@ -47,7 +47,7 @@ description: "Task list for Self-hosted GitHub Runner MVP"
 
 ### Implementation for User Story 1
 
-- [ ] T005 [US1] Confirm runner appears online in GitHub.com settings (Repository or Org: Actions > Runners)
+- [X] T005 [US1] Confirm runner appears online in GitHub.com settings (Repository or Org: Actions > Runners)
 - [X] T006 [P] [US1] Add runner defaults in `ansible/roles/apps/github-runner/defaults/main.yml` (paths, labels, service name)
 - [X] T007 [P] [US1] Create install tasks in `ansible/roles/apps/github-runner/tasks/install.yml`
 - [X] T008 [P] [US1] Create registration tasks in `ansible/roles/apps/github-runner/tasks/register.yml`

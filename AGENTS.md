@@ -15,6 +15,7 @@
 - `pre-commit run --all-files`: run yamllint, ansible-lint, and formatting checks.
 - `npm run lint:md -- "**/*.md"`: lint Markdown with markdownlint-cli2.
 - `mkdocs build --strict`: validate and build documentation.
+- When running `ansible/scripts/*`, start with a 1-minute timeout and extend only if needed.
 
 ## Coding Style & Naming Conventions
 
